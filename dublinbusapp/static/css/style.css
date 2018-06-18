@@ -2,3 +2,18 @@ h1 {
 	color: red;
 	font-weight: bold;
 }
+
+#map {
+	height: 400px;
+	width: 100%;
+}
+
+#test1 {
+	color: red;
+	height: 50px;
+	width: 50%;
+}
+
+h2 {
+	color: yellow;
+}
