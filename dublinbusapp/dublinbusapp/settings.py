@@ -77,11 +77,7 @@ WSGI_APPLICATION = 'dublinbusapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'dublinbusdb',
-	'USERNAME': 'dublinbususer',
-	'PASSWORD': 'dublinbuspass',
-	'HOST': 'dublinbusdb.cww5dmspazsv.ue-west-1.rds.amazonaws.com',
-	'PORT': '3306',
+        'NAME': 'mydatabase',
     }
 }
 
