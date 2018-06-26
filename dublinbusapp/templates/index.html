@@ -11,10 +11,16 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
 
-    <title>Hello, world!</title>
+
+    <title>Dublin Bus</title>
   </head>
   <body>
 
@@ -56,20 +62,73 @@
     </nav>
     <!-- Navbar -->
 
-    <h1 class="col-lg-3">Hello, world!</h1>
+    <h1 class="col-lg-6">Dublin Bus Predictions</h1>
+    
+
+    <!-- Route Dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Route
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#" data-value="15">15</a></li>
+        <!-- <li><a href="#" data-value="17">17</a></li>
+        <li><a href="#" data-value="49">49</a></li>
+        <li><a href="#" data-value="145">145</a></li> -->
+      </ul>
+    </div>
+    <!-- Route Dropdown -->
+
+    <!-- Start Location Dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Start Location
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#" data-value="0-5">0-5</a></li>
+        <li><a href="#" data-value="6-10">6-10</a></li>
+        <li><a href="#" data-value="11-15">11-15</a></li>
+        <li><a href="#" data-value="16-20">16-20</a></li>
+      </ul>
+    </div>
+    <!-- Start Location Dropdown -->
+
+    <!-- End Location Dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        End Location
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#" data-value="0-5">0-5</a></li>
+        <li><a href="#" data-value="6-10">6-10</a></li>
+        <li><a href="#" data-value="11-15">11-15</a></li>
+        <li><a href="#" data-value="16-20">16-20</a></li>
+      </ul>
+    </div>
+    <!-- End Location Dropdown -->
+
+    
+
+    <script>
+    $(".dropdown-menu li a").click(function(){
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    });
+    </script>
+    
 
     <input type="button" id="routebtn" value="Find Route" onclick="drawRoute();"/>
 
+    <!-- Google map -->
     <div id='map'></div>
+    <!-- Google map -->
 
     <div id='test1'></div>
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
     <script>
