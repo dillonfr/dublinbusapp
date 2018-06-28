@@ -173,20 +173,25 @@
     </div>
     
     <script>
-
-        var dict = {
-          "1" : 'one',
-          "2" : 'two',
-          "3" : 'three'
-        };
         
+        var dict = [{stopid : 123, lat : 9.9}, {stopid : 234, lat : 9.99}, {stopid : 345, lat : 9.999}]     
+        
+        console.log(dict[0]['stopid'])
+        
+        for (var i=0; i < 3; i++){
+            console.log(dict[i]['lat'])
+            $('#selected').append('<option value=' + dict[i]['lat'] + '>' + dict[i]['stopid'] + '</option>');
+        }
+        
+/*
         for (let key in dict) {
             i=0;
-            let value = dict[key];
+            let value = dict[0];
             console.log(value);
-            $('#selected').append('<option value=' + value + '>' + key + '</option>');
+            $('#selected').append('<option value=' + dict[i].value[1] + '>' + dict[i].key + '</option>');
             i++;
         }
+*/
         
     </script>
 
