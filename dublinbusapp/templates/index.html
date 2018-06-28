@@ -168,6 +168,27 @@
 
     </script>
 
+    <div id ="options">
+        <select id="selected"></select>
+    </div>
+    
+    <script>
+
+        var dict = {
+          "1" : 'one',
+          "2" : 'two',
+          "3" : 'three'
+        };
+        
+        for (let key in dict) {
+            i=0;
+            let value = dict[key];
+            console.log(value);
+            $('#selected').append('<option value=' + value + '>' + key + '</option>');
+            i++;
+        }
+        
+    </script>
 
     <!-- Footer -->
     <footer class="page-footer font-small blue-grey lighten-5 mt-4">
