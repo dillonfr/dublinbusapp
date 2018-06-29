@@ -1,9 +1,7 @@
-from django.views.generic.base import TemplateView
 from django.http import HttpResponse
+from django.shortcuts import render
 from .models import Bus
-
-class HomeView(TemplateView):
-	template_name = 'index.html'
+from dict import *
 
 def index(request):
 	all_buses = Bus.objects.all()
@@ -13,7 +11,15 @@ def index(request):
 		url = str(bus.route) + '/'
 		html += '<a href="' + url + '">' + bus.bus_id + '</a><br>'
 
-	return HttpResponse(html)
+	#return HttpResponse(html)
+
+	buslist = makeBusStopDict()
+
+	context = {
+		'buslist': buslist
+	}
+
+	return render(request, 'index.html', context)
 
 def detail(request, route):
 	return HttpResponse("<h2>Details for route id: " + str(route) + "</h2>")
