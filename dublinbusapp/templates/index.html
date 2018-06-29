@@ -71,12 +71,12 @@
 
 	<div id ="options">
        <h3>Start</h3>
-       <select id="selectstart"></select>
+       <select id="selectstart" onchange="calcRoute();"></select>
     </div>
 
     <div id ="options">
        <h3>End</h3>
-       <select id="selectend"></select>
+       <select id="selectend" onchange="calcRoute();"></select>
     </div>
 
     <script>
@@ -166,6 +166,9 @@
 
     <script>
         function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            
             var myLatLng = {
                 lat: 53.349976,
                 lng: -6.260354
@@ -175,6 +178,7 @@
                 zoom: 11,
             };
             var map = new google.maps.Map(document.getElementById("map"), mapProp);
+            directionsDisplay.setMap(map);
 
             var markerStart = new google.maps.Marker({
                 position: myLatLng,
@@ -198,6 +202,21 @@
                 document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
             });
         }
+        
+        function calcRoute() {
+              var start = document.getElementById('selectstart').value;
+              var end = document.getElementById('selectend').value;
+              var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'TRANSIT'
+              };
+              directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                  directionsDisplay.setDirections(result);
+                }
+              });
+            }
 
     </script>
 
