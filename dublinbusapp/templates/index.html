@@ -209,7 +209,11 @@
               var request = {
                 origin: start,
                 destination: end,
-                travelMode: 'TRANSIT'
+                travelMode: 'TRANSIT',
+                transitOptions: {
+                    modes: ['BUS'],
+                    routingPreference: 'FEWER_TRANSFERS'
+                }
               };
               directionsService.route(request, function(result, status) {
                 if (status == 'OK') {
