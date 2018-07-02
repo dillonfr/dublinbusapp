@@ -63,6 +63,39 @@
     <!-- Navbar -->
 
     <h1 class="col-lg-6">Dublin Bus Predictions</h1>
+
+    <h1>The first dict is {{ buslist.0 }}</h1>
+    <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1>
+    <h1>The latitude of the 5000th dict is {{ buslist.5000.latitude }}</h1>
+
+
+	<div id ="options">
+       <h3>Start</h3>
+       <select id="selectstart" onchange="calcRoute();"></select>
+    </div>
+
+    <div id ="options">
+       <h3>End</h3>
+       <select id="selectend" onchange="calcRoute();"></select>
+    </div>
+
+    <script>
+    	var buslist = {{ buslist|safe }}
+    	console.log(buslist)
+    	console.log(buslist[5].stopid)
+    	console.log(buslist[5].latitude)
+    	console.log(buslist[5].longitude)
+
+    	for (var i=0; i < buslist.length; i++) {
+           //console.log(buslist[i]['latitude'], buslist[i]['longitude'])
+           $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
+           $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
+           //console.log(selectstart.value);
+       }
+
+    </script>
+
+
     
 
     <!-- Route Dropdown -->
@@ -133,6 +166,9 @@
 
     <script>
         function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            
             var myLatLng = {
                 lat: 53.349976,
                 lng: -6.260354
@@ -142,6 +178,7 @@
                 zoom: 11,
             };
             var map = new google.maps.Map(document.getElementById("map"), mapProp);
+            directionsDisplay.setMap(map);
 
             var markerStart = new google.maps.Marker({
                 position: myLatLng,
@@ -165,6 +202,25 @@
                 document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
             });
         }
+        
+        function calcRoute() {
+              var start = document.getElementById('selectstart').value;
+              var end = document.getElementById('selectend').value;
+              var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'TRANSIT',
+                transitOptions: {
+                    modes: ['BUS'],
+                    routingPreference: 'FEWER_TRANSFERS'
+                }
+              };
+              directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                  directionsDisplay.setDirections(result);
+                }
+              });
+            }
 
     </script>
 
