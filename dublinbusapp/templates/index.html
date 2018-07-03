@@ -78,7 +78,7 @@
 
     <script>
     	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
-
+        
     	for (var i=0; i < buslist.length; i++) { // iterates through buslist array and adds options to dropdowns with respective values
            $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
@@ -223,7 +223,8 @@
                 if (status == 'OK') { // checks that the returned object contains the correct information
                     directionsDisplay.setDirections(response); // displays the route on the map
                     
-                    console.log(response);
+                    //console.log(response);
+                    //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
                     
                     var stepsamount = response.routes[0].legs[0].steps.length; // caluclate how many steps are involved in the journey
                     var stepsarray = []; // create an empty array to store data for each bus on the journey
@@ -245,8 +246,8 @@
                             var distance = parseFloat(response.routes[0].legs[0].steps[i].distance['text']); // distance travelled on this bus
                             var departurestop = response.routes[0].legs[0].steps[i].transit.departure_stop.name; // departure address name
                             var arrivalstop = response.routes[0].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
-                            var departurelatlng = response.routes[0].legs[0].steps[i].transit.departure_stop.location; // departure lat/lng
-                            var arrivallatlng = response.routes[0].legs[0].steps[i].transit.arrival_stop.location; //arrival lat/lng
+                            var departurelatlng = response.routes[0].legs[0].steps[i].start_location.lat() + ',' + response.routes[0].legs[0].steps[i].start_location.lng(); // departure lat/lng
+                            var arrivallatlng = response.routes[0].legs[0].steps[i].end_location.lat() + ',' + response.routes[0].legs[0].steps[i].end_location.lng(); //arrival lat/lng
                             
                             // add each key/value pair to the dictionary
                             routedict['route'] = chosenroute;
@@ -421,7 +422,7 @@
     </footer>
     <!-- Footer -->
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
 
 
   </body>
