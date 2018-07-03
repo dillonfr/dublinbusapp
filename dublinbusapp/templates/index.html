@@ -64,33 +64,24 @@
 
     <h1 class="col-lg-6">Dublin Bus Predictions</h1>
 
-    <h1>The first dict is {{ buslist.0 }}</h1>
-    <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1>
-    <h1>The latitude of the 5000th dict is {{ buslist.5000.latitude }}</h1>
-
-
+    <!-- Div that contains the dopdown for start location. Populated using JQuery -->
 	<div id ="options">
        <h3>Start</h3>
        <select id="selectstart" onchange="calcRoute();"></select>
     </div>
 
+    <!-- Div that contains the dopdown for end location. Populated using JQuery -->
     <div id ="options">
        <h3>End</h3>
        <select id="selectend" onchange="calcRoute();"></select>
     </div>
 
     <script>
-    	var buslist = {{ buslist|safe }}
-    	console.log(buslist)
-    	console.log(buslist[5].stopid)
-    	console.log(buslist[5].latitude)
-    	console.log(buslist[5].longitude)
+    	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
 
-    	for (var i=0; i < buslist.length; i++) {
-           //console.log(buslist[i]['latitude'], buslist[i]['longitude'])
+    	for (var i=0; i < buslist.length; i++) { // iterates through buslist array and adds options to dropdowns with respective values
            $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
-           //console.log(selectstart.value);
        }
 
     </script>
@@ -166,6 +157,8 @@
 
     <script>
         function initMap() {
+            /* Function that displays the Google map on the web app */
+            
             directionsService = new google.maps.DirectionsService();
             directionsDisplay = new google.maps.DirectionsRenderer();
             
@@ -173,12 +166,17 @@
                 lat: 53.349976,
                 lng: -6.260354
             };
+            
+            // Positions the map
             var mapProp = {
                 center: new google.maps.LatLng(53.349976, -6.260354),
                 zoom: 11,
             };
+            
+            // Generates and displays Google map
             var map = new google.maps.Map(document.getElementById("map"), mapProp);
             directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
             var markerStart = new google.maps.Marker({
                 position: myLatLng,
@@ -194,62 +192,92 @@
             	draggable: true
             });
 
+            // Draggable marker for start location
             google.maps.event.addListener(markerStart, 'dragend', function(evt){
                 document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
             });
 
+            // Draggable marker for end location
             google.maps.event.addListener(markerEnd, 'dragend', function(evt){
                 document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
             });
         }
         
         function calcRoute() {
-              var start = document.getElementById('selectstart').value;
-              var end = document.getElementById('selectend').value;
+            /* Function that displays a user's route on the map
+            Called every time the user changes a dropdown option */
+            
+              var start = document.getElementById('selectstart').value; // this value is captured from the start dropdown
+              var end = document.getElementById('selectend').value; // this value is captured from the end dropdown
               var request = {
                 origin: start,
                 destination: end,
-                travelMode: 'TRANSIT',
+                //provideRouteAlternatives: true,
+                travelMode: 'TRANSIT', // signifies that we want a public transport route
                 transitOptions: {
-                    modes: ['BUS'],
-                    routingPreference: 'FEWER_TRANSFERS'
+                    modes: ['BUS'], // specifies that we only want Dublin Bus to be considered
+                    routingPreference: 'FEWER_TRANSFERS' // we want the route with the least amount of bus transfers
                 }
               };
-              directionsService.route(request, function(result, status) {
-                if (status == 'OK') {
-                  directionsDisplay.setDirections(result);
+              directionsService.route(request, function(response, status) {
+                if (status == 'OK') { // checks that the returned object contains the correct information
+                    directionsDisplay.setDirections(response); // displays the route on the map
+                    
+                    console.log(response);
+                    
+                    var stepsamount = response.routes[0].legs[0].steps.length; // caluclate how many steps are involved in the journey
+                    var stepsarray = []; // create an empty array to store data for each bus on the journey
+                    var totalwalking = 0; // initilaise walking time to 0
+                    
+                    for (var i = 0; i < stepsamount; i++) { // iterates through each step in the provided route
+                        
+                        var travelmode = response.routes[0].legs[0].steps[i].travel_mode; // check if the step in journey involves walking or bus
+                        
+                        if (travelmode == "WALKING") { // If the step is walking, we only care about the length of time the walk takes
+                            
+                            var walkingtime = parseInt(response.routes[0].legs[0].steps[i].duration['text']);
+                            totalwalking += walkingtime; // total walking time involved is captured
+                            
+                        } else if (travelmode == "TRANSIT") { 
+                            
+                            var routedict = {}; // a new dictionary is created for each bus 
+                            var chosenroute = response.routes[0].legs[0].steps[i].transit.line.short_name; // route number
+                            var distance = parseFloat(response.routes[0].legs[0].steps[i].distance['text']); // distance travelled on this bus
+                            var departurestop = response.routes[0].legs[0].steps[i].transit.departure_stop.name; // departure address name
+                            var arrivalstop = response.routes[0].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
+                            var departurelatlng = response.routes[0].legs[0].steps[i].transit.departure_stop.location; // departure lat/lng
+                            var arrivallatlng = response.routes[0].legs[0].steps[i].transit.arrival_stop.location; //arrival lat/lng
+                            
+                            // add each key/value pair to the dictionary
+                            routedict['route'] = chosenroute;
+                            routedict['distance'] = distance;
+                            routedict['departurestop'] = departurestop;
+                            routedict['arrivalstop'] = arrivalstop;
+                            routedict['departurelatlng'] = departurelatlng;
+                            routedict['arrivallatlng'] = arrivallatlng;
+                            
+                            // append the dictionary to the array
+                            stepsarray.push(routedict);
+                        }
+                    }
+                    
+                    // create a new dictionary to store walking time and append it to the array
+                    var timedict = {};
+                    timedict['walkingtime'] = totalwalking;
+                    stepsarray.push(timedict);
+                    
+                    //console.log(totalwalking)
+                    //console.log(stepsamount);
+                    console.log(stepsarray);
+                    
+                    
                 }
               });
             }
 
     </script>
-
-    <div id ="options">
-        <select id="selected"></select>
-    </div>
     
-    <script>
-        
-        var dict = [{stopid : 123, lat : 9.9}, {stopid : 234, lat : 9.99}, {stopid : 345, lat : 9.999}]     
-        
-        console.log(dict[0]['stopid'])
-        
-        for (var i=0; i < 3; i++){
-            console.log(dict[i]['lat'])
-            $('#selected').append('<option value=' + dict[i]['lat'] + '>' + dict[i]['stopid'] + '</option>');
-        }
-        
-/*
-        for (let key in dict) {
-            i=0;
-            let value = dict[0];
-            console.log(value);
-            $('#selected').append('<option value=' + dict[i].value[1] + '>' + dict[i].key + '</option>');
-            i++;
-        }
-*/
-        
-    </script>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%"></div>
 
     <!-- Footer -->
     <footer class="page-footer font-small blue-grey lighten-5 mt-4">
