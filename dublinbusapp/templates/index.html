@@ -1,3 +1,4 @@
+<!-- loads static files from django -->
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -9,6 +10,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Load custom css stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <!-- Optional JavaScript -->
@@ -63,31 +65,25 @@
     <!-- Navbar -->
 
     <h1 class="col-lg-6">Dublin Bus Predictions</h1>
+    
+    
+    <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
-    <h1>The first dict is {{ buslist.0 }}</h1>
-    <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1>
-    <h1>The latitude of the 5000th dict is {{ buslist.5000.latitude }}</h1>
-
-
-	<div id ="options">
+    <div id ="options">
        <h3>Start</h3>
-       <select id="selectstart" onchange="calcRoute();"></select>
+       <select id="selectstart"></select>
     </div>
 
     <div id ="options">
        <h3>End</h3>
-       <select id="selectend" onchange="calcRoute();"></select>
+       <select id="selectend"></select>
     </div>
 
     <script>
     	var buslist = {{ buslist|safe }}
-    	console.log(buslist)
-    	console.log(buslist[5].stopid)
-    	console.log(buslist[5].latitude)
-    	console.log(buslist[5].longitude)
-
+	
+	/* Adding all stopid's as options to the start and end dropdowns */
     	for (var i=0; i < buslist.length; i++) {
-           //console.log(buslist[i]['latitude'], buslist[i]['longitude'])
            $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            //console.log(selectstart.value);
@@ -95,72 +91,26 @@
 
     </script>
 
-
+<!-- Accessing query results from db
+{% for item in query_results %}
+<p>{{ item.tripid }}</p>
+{% endfor %}    
+-->
     
 
-    <!-- Route Dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        Route
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="#" data-value="15">15</a></li>
-        <!-- <li><a href="#" data-value="17">17</a></li>
-        <li><a href="#" data-value="49">49</a></li>
-        <li><a href="#" data-value="145">145</a></li> -->
-      </ul>
-    </div>
-    <!-- Route Dropdown -->
-
-    <!-- Start Location Dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        Start Location
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="#" data-value="0-5">0-5</a></li>
-        <li><a href="#" data-value="6-10">6-10</a></li>
-        <li><a href="#" data-value="11-15">11-15</a></li>
-        <li><a href="#" data-value="16-20">16-20</a></li>
-      </ul>
-    </div>
-    <!-- Start Location Dropdown -->
-
-    <!-- End Location Dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        End Location
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="#" data-value="0-5">0-5</a></li>
-        <li><a href="#" data-value="6-10">6-10</a></li>
-        <li><a href="#" data-value="11-15">11-15</a></li>
-        <li><a href="#" data-value="16-20">16-20</a></li>
-      </ul>
-    </div>
-    <!-- End Location Dropdown -->
-
-    
-
-    <script>
+    <script>/*
     $(".dropdown-menu li a").click(function(){
       $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
       $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-    });
+    }); */
     </script>
     
 
-    <input type="button" id="routebtn" value="Find Route" onclick="drawRoute();"/>
+    <input type="button" id="routebtn" value="Find Route" onclick="calcRoute();"/>
 
     <!-- Google map -->
     <div id='map'></div>
     <!-- Google map -->
-
-    <div id='test1'></div>
-
 
 
 
@@ -366,9 +316,10 @@
 
     </footer>
     <!-- Footer -->
-
+    
+    <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script>
-
+    <!-- Google Maps API -->
 
   </body>
 </html>

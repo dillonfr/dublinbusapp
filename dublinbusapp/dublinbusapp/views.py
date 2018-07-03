@@ -1,22 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Bus
+#from .models import Bus
+from .models import Trips2017
 from dict import *
 
 def index(request):
-	all_buses = Bus.objects.all()
-	html = ''
-
-	for bus in all_buses:
-		url = str(bus.route) + '/'
-		html += '<a href="' + url + '">' + bus.bus_id + '</a><br>'
-
-	#return HttpResponse(html)
-
 	buslist = makeBusStopDict()
+	
+	query_results = Trips2017.objects.raw('SELECT * FROM trips2017 LIMIT 20')
 
 	context = {
-		'buslist': buslist
+		'buslist': buslist,
+		'query_results': query_results,
 	}
 
 	return render(request, 'index.html', context)
