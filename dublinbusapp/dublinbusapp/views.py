@@ -23,4 +23,3 @@ def index(request):
 
 def detail(request, route):
 	return HttpResponse("<h2>Details for route id: " + str(route) + "</h2>")
-

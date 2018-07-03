@@ -25,4 +25,5 @@ urlpatterns = [
     #/15/
     url(r'^(?P<route>[0-9]+)/$', views.detail, name='detail'),
     url(r'^admin/', admin.site.urls),
+
 ]
