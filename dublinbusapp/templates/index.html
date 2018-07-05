@@ -69,23 +69,47 @@
     
     <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
+    <form action="/145/" method="post">
+        {% csrf_token %}
+        <label for="your_name">Your Name: </label>
+        <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
+        <input type="submit" value="OK">
+    </form>
+
+
+    <form action="" method="post">
+    {% csrf_token %}
     <div id ="options">
        <h3>Start</h3>
-       <select id="selectstart"></select>
+       <select id="selectstart" name="selectstart1" value="" onchange="setIdValue();"></select>
     </div>
 
     <div id ="options">
        <h3>End</h3>
-       <select id="selectend"></select>
+       <select id="selectend" name="selectend1" value="" onchange="setIdValue();"></select>
     </div>
+    <input type="submit" id="start_id" name="start_id" value="Find Route" onclick="calcRoute();"/>
+    </form>
+
+    <h2>You chose {{ start_id }} as your start point.</h2>
+    <h2>You chose {{ end_id }} as your end point.</h2>
+
+    <script>
+        function setIdValue() {
+		var start_id = document.getElementById("selectstart").value;
+		console.log(start_id);
+		document.getElementById("start_id").value = start_id;
+		}
+    </script>
 
     <script>
     	var buslist = {{ buslist|safe }}
 	
 	/* Adding all stopid's as options to the start and end dropdowns */
     	for (var i=0; i < buslist.length; i++) {
-           $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
-           $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
+           //can get lat/long by using: buslist[i]['latitude'] and buslist[i]['longitude']
+           $('#selectstart').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
+           $('#selectend').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
            //console.log(selectstart.value);
        }
 
@@ -105,8 +129,7 @@
     }); */
     </script>
     
-
-    <input type="button" id="routebtn" value="Find Route" onclick="calcRoute();"/>
+    <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
 
     <!-- Google map -->
     <div id='map'></div>

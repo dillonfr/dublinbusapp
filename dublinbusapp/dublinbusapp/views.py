@@ -3,19 +3,57 @@ from django.shortcuts import render
 #from .models import Bus
 from .models import Trips2017
 from dict import *
+from .forms import *
 
 def index(request):
 	buslist = makeBusStopDict()
-	
-	query_results = Trips2017.objects.raw('SELECT * FROM trips2017 LIMIT 20')
-
 	context = {
 		'buslist': buslist,
-		'query_results': query_results,
 	}
 
+
+	if request.method == 'POST':
+		print("method is post")
+		form = StartForm(request.POST)
+		
+		#start_id = form.cleaned_data['start_id']
+		
+		#context['start_id'] = start_id
+	
+		if form.is_valid():
+			start_id = form.cleaned_data['start_id']
+			#end_id = form.cleaned_data['end_id']
+			print("OK")
+			print("Start: ", start_id)
+			#print("End: ", end_id)	
+			context['start_id'] = start_id
+			#context['end_id'] = end_id
+			return render(request, 'index.html', context)
+	
+	else:
+		form = StartForm()
+	
+	#query_results = Trips2017.objects.raw('SELECT * FROM trips2017 LIMIT 20')
+
+	#context = {
+		#'buslist': buslist,
+		#'query_results': query_results,
+		#'form': form,
+	#}
+	print("fell through")
 	return render(request, 'index.html', context)
 
 def detail(request, route):
-	return HttpResponse("<h2>Details for route id: " + str(route) + "</h2>")
+	if request.method == 'POST':
+		form = NameForm(request.POST)
+		if form.is_valid():
+			name = form.cleaned_data['your_name']
+			
+			context = {
+				'name': name,
+			}
+			return render(request, 'name.html', context)
+	else:
+		form = NameForm()
 
+	return render(request, 'index.html', {'form': form})
