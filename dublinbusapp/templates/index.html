@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -108,26 +108,50 @@
             <input type="button" id="routebtn" value="Find Route" onclick="drawRoute();"/>
               
               
-            <!-- Twitter widge to do -->
+            <!-- Twitter widge -->
             <div id="twitter">
                 <div><h3>Twitter widge</h3></div>
-                <a class="twitter-timeline" data-lang="en" data-height="400" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                
-            </div>
-              
-              
-              
-            <!-- Weather widge to do -->
-            <div id="weather">
-                <div><h3>Current weather</h3></div>
-                <div id="weather-descript" class="descript center-align"></div>
+                <a class="twitter-timeline" data-height="500" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
             
-            <!-- Google map -->
+            
             <div class="col-md-8 column">
+                
+                <!-- Google map -->
                 <div id='map'></div>
+                
+                
+                <!-- Weather widge to do -->
+                <div id="weather">
+                    <div><h3>Current weather</h3></div>
+                    <div id="weather-descript" class="descript center-align"></div>
+                    <!-- Current weather need to move -->
+                    <script>
+                        var weatherUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=3c9902414a4351073a2f8a5a3314a8fb&units=metric';
+
+                        function currentWeather(weatherUrl) {
+                            $.getJSON(weatherUrl, function(w_result) {
+                                var weather = w_result.list[0].weather[2]
+                                $("#weather-descript").html(weather.description + "&nbsp" + "<img src='http://openweathermap.org/img/w/"
+                                + weather.icon
+                                + ".png' alt='weather icon'>");
+                            })
+                            .fail(function() {
+                                console.log("Error: Failed to get JSON data from "+ weatherUrl);
+                            });
+                        }
+
+                    </script>
+
+                   <!-- <a class="weatherwidget-io" href="https://forecast7.com/en/53d36n6d32/dublin-city/" data-label_1="DUBLIN CITY" data-label_2="WEATHER" data-theme="orange" data-basecolor="#f8d50e" >DUBLIN CITY WEATHER</a>
+                    <script>
+                    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];
+                        if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+                    </script>-->
             </div>
+            </div>
+            
         </div>
         
     </section>   
@@ -279,16 +303,13 @@
     <!-- buslist -->
      <script>
     	var buslist = {{ buslist|safe }}
-    	console.log(buslist)
-    	console.log(buslist[5].stopid)
-    	console.log(buslist[5].latitude)
-    	console.log(buslist[5].longitude)
+
 
     	for (var i=0; i < buslist.length; i++) {
-           //console.log(buslist[i]['latitude'], buslist[i]['longitude'])
+           
            $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
-           //console.log(selectstart.value);
+        
        }
     </script>
 
@@ -335,6 +356,7 @@
     </script>
     
     <!-- Current weather -->
+
 
     <!-- Google Map -->
 
@@ -401,7 +423,7 @@
     
       
     <!-- Main JavaScript -->
-    <script src="{% static 'js/siteScript.js' %}" type=text/javascript></script>
+    
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script>
 
