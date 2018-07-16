@@ -18,7 +18,7 @@ function initMap() {
     // Generates and displays Google map
     var map = new google.maps.Map(document.getElementById("map"), mapProp);
     directionsDisplay.setMap(map);
-    directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+    //directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
     var markerStart = new google.maps.Marker({
         position: myLatLng,
@@ -65,7 +65,7 @@ function calcRoute() {
         if (status == 'OK') { // checks that the returned object contains the correct information
             directionsDisplay.setDirections(response); // displays the route on the map
 
-            //console.log(response);
+            console.log(response);
             //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
 
             var stepsamount = response.routes[0].legs[0].steps.length; // caluclate how many steps are involved in the journey
@@ -90,6 +90,7 @@ function calcRoute() {
                     var arrivalstop = response.routes[0].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
                     var departurelatlng = response.routes[0].legs[0].steps[i].start_location.lat() + ',' + response.routes[0].legs[0].steps[i].start_location.lng(); // departure lat/lng
                     var arrivallatlng = response.routes[0].legs[0].steps[i].end_location.lat() + ',' + response.routes[0].legs[0].steps[i].end_location.lng(); //arrival lat/lng
+                    var numstops = response.routes[0].legs[0].steps[i].transit.num_stops; // number of stops to take on bus
 
                     // add each key/value pair to the dictionary
                     routedict['route'] = chosenroute;
@@ -98,6 +99,7 @@ function calcRoute() {
                     routedict['arrivalstop'] = arrivalstop;
                     routedict['departurelatlng'] = departurelatlng;
                     routedict['arrivallatlng'] = arrivallatlng;
+                    routedict['numstops'] = numstops;
 
                     // append the dictionary to the array
                     stepsarray.push(routedict);
