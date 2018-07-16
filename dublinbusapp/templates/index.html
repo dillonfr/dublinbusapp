@@ -7,8 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
@@ -94,7 +96,7 @@
         
             <!-- datetimepicker -->
             <div id="datetimepicker">
-                <h3>DateTime</h3>
+                <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
                     <input class="form-control" size="16" type="text" value="" readonly>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
@@ -108,9 +110,9 @@
             <input type="button" id="routebtn" value="Find Route" onclick="drawRoute();"/>
               
               
-            <!-- Twitter widge -->
+            <!-- Twitter widget -->
             <div id="twitter">
-                <div><h3>Twitter widge</h3></div>
+                <div><h3>Twitter widget</h3></div>
                 <a class="twitter-timeline" data-height="500" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
@@ -122,34 +124,11 @@
                 <div id='map'></div>
                 
                 
-                <!-- Weather widge to do -->
+                <!-- Weather widget -->
                 <div id="weather">
-                    <div><h3>Current weather</h3></div>
-                    <div id="weather-descript" class="descript center-align"></div>
-                    <!-- Current weather need to move -->
-                    <script>
-                        var weatherUrl = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=3c9902414a4351073a2f8a5a3314a8fb&units=metric';
-
-                        function currentWeather(weatherUrl) {
-                            $.getJSON(weatherUrl, function(w_result) {
-                                var weather = w_result.list[0].weather[2]
-                                $("#weather-descript").html(weather.description + "&nbsp" + "<img src='http://openweathermap.org/img/w/"
-                                + weather.icon
-                                + ".png' alt='weather icon'>");
-                            })
-                            .fail(function() {
-                                console.log("Error: Failed to get JSON data from "+ weatherUrl);
-                            });
-                        }
-
-                    </script>
-
-                   <!-- <a class="weatherwidget-io" href="https://forecast7.com/en/53d36n6d32/dublin-city/" data-label_1="DUBLIN CITY" data-label_2="WEATHER" data-theme="orange" data-basecolor="#f8d50e" >DUBLIN CITY WEATHER</a>
-                    <script>
-                    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];
-                        if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-                    </script>-->
-            </div>
+                    <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-label_1="DUBLIN" data-label_2="WEATHER" data-font="Times New Roman" data-icons="Climacons Animated" data-theme="pure" data-basecolor="#edd504" data-suncolor="#dc2b2b" >DUBLIN WEATHER</a>
+                </div>
+                   
             </div>
             
         </div>
@@ -353,9 +332,18 @@
             maxView: 1,
             forceParse: 0
         });
+        
     </script>
     
     <!-- Current weather -->
+
+<!--<div id="openweathermap-widget-11"></div>
+<script src='//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/d3.min.js'></script><script>window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];  window.myWidgetParam.push({id: 11,cityid: '2964574',appid: '3c9902414a4351073a2f8a5a3314a8fb',units: 'metric',containerid: 'openweathermap-widget-11',  });  (function() {var script = document.createElement('script');script.async = true;script.charset = "utf-8";script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(script, s);  })();</script> -->
+
+
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+</script>
 
 
     <!-- Google Map -->

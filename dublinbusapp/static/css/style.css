@@ -8,6 +8,11 @@ h1 {
 	width: 100%;
 }
 
+#weather{
+    position:relative; 
+    z-index:99999;
+}
+
 #test1 {
 	color: red;
 	height: 50px;
