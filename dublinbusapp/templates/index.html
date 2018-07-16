@@ -12,6 +12,7 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Load custom css stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="{% static 'javascript/main.js' %}"></script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -76,7 +77,7 @@
         <input type="submit" value="OK">
     </form>
 
-
+    <!-- Div that contains the dopdown for start location. Populated using JQuery -->
     <form action="" method="post">
     {% csrf_token %}
     <div id ="options">
@@ -84,6 +85,7 @@
        <select id="selectstart" name="selectstart1" value="" onchange="setIdValue();"></select>
     </div>
 
+    <!-- Div that contains the dopdown for end location. Populated using JQuery -->
     <div id ="options">
        <h3>End</h3>
        <select id="selectend" name="selectend1" value="" onchange="setIdValue();"></select>
@@ -103,10 +105,10 @@
     </script>
 
     <script>
-    	var buslist = {{ buslist|safe }}
+    	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
 	
 	/* Adding all stopid's as options to the start and end dropdowns */
-    	for (var i=0; i < buslist.length; i++) {
+    	for (var i=0; i < buslist.length; i++) {  // iterates through buslist array and adds options to dropdowns with respective values
            //can get lat/long by using: buslist[i]['latitude'] and buslist[i]['longitude']
            $('#selectstart').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
            $('#selectend').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
@@ -137,7 +139,7 @@
 
 
 
-    <script>
+    <!-- <script>
         function initMap() {
             directionsService = new google.maps.DirectionsService();
             directionsDisplay = new google.maps.DirectionsRenderer();
@@ -195,7 +197,9 @@
               });
             }
 
-    </script>
+    </script> -->
+
+    <div id="directionsPanel" style="float:right;width:30%;height 100%"></div>
 
 
     <!-- Footer -->
@@ -341,7 +345,9 @@
     <!-- Footer -->
     
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
     <!-- Google Maps API -->
 
   </body>
