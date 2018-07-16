@@ -110,8 +110,8 @@
 	/* Adding all stopid's as options to the start and end dropdowns */
     	for (var i=0; i < buslist.length; i++) {  // iterates through buslist array and adds options to dropdowns with respective values
            //can get lat/long by using: buslist[i]['latitude'] and buslist[i]['longitude']
-           $('#selectstart').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
-           $('#selectend').append('<option value=' + buslist[i]['stopid'] + '>' + buslist[i]['stopid'] + '</option>')
+           $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
+           $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
            //console.log(selectstart.value);
        }
 
@@ -122,85 +122,13 @@
 <p>{{ item.tripid }}</p>
 {% endfor %}    
 -->
-    
 
-    <script>/*
-    $(".dropdown-menu li a").click(function(){
-      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-    }); */
-    </script>
     
     <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
 
     <!-- Google map -->
     <div id='map'></div>
     <!-- Google map -->
-
-
-
-    <!-- <script>
-        function initMap() {
-            directionsService = new google.maps.DirectionsService();
-            directionsDisplay = new google.maps.DirectionsRenderer();
-            
-            var myLatLng = {
-                lat: 53.349976,
-                lng: -6.260354
-            };
-            var mapProp = {
-                center: new google.maps.LatLng(53.349976, -6.260354),
-                zoom: 11,
-            };
-            var map = new google.maps.Map(document.getElementById("map"), mapProp);
-            directionsDisplay.setMap(map);
-
-            var markerStart = new google.maps.Marker({
-                position: myLatLng,
-                map: map,
-                title: 'Start',
-                draggable: true
-            });
-
-            var markerEnd = new google.maps.Marker({
-            	position: myLatLng,
-            	map: map,
-            	title: 'Finish',
-            	draggable: true
-            });
-
-            google.maps.event.addListener(markerStart, 'dragend', function(evt){
-                document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
-            });
-
-            google.maps.event.addListener(markerEnd, 'dragend', function(evt){
-                document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
-            });
-        }
-        
-        function calcRoute() {
-              var start = document.getElementById('selectstart').value;
-              var end = document.getElementById('selectend').value;
-              var request = {
-                origin: start,
-                destination: end,
-                travelMode: 'TRANSIT',
-                transitOptions: {
-                    modes: ['BUS'],
-                    routingPreference: 'FEWER_TRANSFERS'
-                }
-              };
-              directionsService.route(request, function(result, status) {
-                if (status == 'OK') {
-                  directionsDisplay.setDirections(result);
-                }
-              });
-            }
-
-    </script> -->
-
-    <div id="directionsPanel" style="float:right;width:30%;height 100%"></div>
-
 
     <!-- Footer -->
     <footer class="page-footer font-small blue-grey lighten-5 mt-4">

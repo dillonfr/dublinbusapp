@@ -1,6 +1,5 @@
 function initMap() {
     /* Function that displays the Google map on the web app */
-
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer();
 
@@ -48,7 +47,7 @@ function initMap() {
 function calcRoute() {
     /* Function that displays a user's route on the map
     Called every time the user changes a dropdown option */
-
+    console.log("entered calc route function");
     var start = document.getElementById('selectstart').value; // this value is captured from the start dropdown
     var end = document.getElementById('selectend').value; // this value is captured from the end dropdown
     var request = {
@@ -61,7 +60,9 @@ function calcRoute() {
             routingPreference: 'FEWER_TRANSFERS' // we want the route with the least amount of bus transfers
         }
     };
+
     directionsService.route(request, function (response, status) {
+        console.log(status);
         if (status == 'OK') { // checks that the returned object contains the correct information
             directionsDisplay.setDirections(response); // displays the route on the map
 
@@ -119,8 +120,3 @@ function calcRoute() {
         }
     });
 }
-
-$(".dropdown-menu li a").click(function () {
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-});
