@@ -85,16 +85,16 @@
     <section id="info-map" class="container">
         <!-- Panel for displaying journey informations -->
         <div class="row clearfix">
-          <div class="col-md-4 column">
+          <div class="col-md-3 column">
             <div id="journey-info">
                 <h2>Journey Information</h2>
             </div>
 
     <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
-    <input type="text" id="searchStart"/>
+    
 
-    <input type="text" id="searchEnd"/>
+    
 
     <form action="/145/" method="post">
         {% csrf_token %}
@@ -107,16 +107,17 @@
     <form action="" method="post">
     {% csrf_token %}
     <div id ="options">
-       <h3>Start</h3>
-       <select id="selectstart" name="selectstart1" value="" onchange="setIdValue();"></select>
+       <h3>From</h3>
+       <input type="text" id="searchStart"/>
     </div>
 
     <!-- Div that contains the dopdown for end location. Populated using JQuery -->
     <div id ="options">
-       <h3>End</h3>
-       <select id="selectend" name="selectend1" value="" onchange="setIdValue();"></select>
+       <h3>To</h3>
+       <input type="text" id="searchEnd"/>
+       
     </div>
-    <input type="submit" id="start_id" name="start_id" value="Find Route" onclick="calcRoute();"/>
+    
     </form>
 
     <script>
@@ -160,13 +161,10 @@
     
     <input type="button" id"toggle" value="Toggle" onclick="toggleMarkers();"/>
 
-    <div id="twitter">
-                <div><h3>Twitter widget</h3></div>
-                <a class="twitter-timeline" data-height="500" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </div>
+
     </div>
 
-    <div class="col-md-8 column">
+    <div class="col-md-6 column">
     <!-- Google map -->
     <div id='map'></div>
     <!-- Google map -->
@@ -176,7 +174,17 @@
                     <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-label_1="DUBLIN" data-label_2="WEATHER" data-font="Times New Roman" data-icons="Climacons Animated" data-theme="pure" data-basecolor="#edd504" data-suncolor="#dc2b2b" >DUBLIN WEATHER</a>
                 </div>
     </div>
-    </div>
+    
+    <!-- twitter widget -->
+    <div class="col-md-3 column">
+            <div id="twitter">
+                <div><h3>Twitter widget</h3></div>
+                <a class="twitter-timeline" data-height="500" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+     </div>
+            </div>
+        
+        
     </section>
 
     <!-- Footer -->
