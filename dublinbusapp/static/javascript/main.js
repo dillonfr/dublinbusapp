@@ -83,8 +83,8 @@ function initMap() {
 
     // Search options for addresses bound to Dublin
     var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(53.002697, -6.843280),
-      new google.maps.LatLng(53.647383, -5.964374));
+      new google.maps.LatLng(52.999804, -6.841221),
+      new google.maps.LatLng(53.693350, -5.914248));
 
     var input1 = document.getElementById('searchStart');
     var input2 = document.getElementById('searchEnd');
