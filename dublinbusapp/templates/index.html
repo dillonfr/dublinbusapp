@@ -92,6 +92,10 @@
 
     <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
+    <input type="text" id="searchStart"/>
+
+    <input type="text" id="searchEnd"/>
+
     <form action="/145/" method="post">
         {% csrf_token %}
         <label for="your_name">Your Name: </label>

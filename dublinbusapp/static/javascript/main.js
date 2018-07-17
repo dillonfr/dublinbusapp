@@ -80,6 +80,25 @@ function initMap() {
         calcRoute(true);
         //document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
     });
+
+    // Search options for addresses bound to Dublin
+    var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(53.002697, -6.843280),
+      new google.maps.LatLng(53.647383, -5.964374));
+
+    var input1 = document.getElementById('searchStart');
+    var input2 = document.getElementById('searchEnd');
+
+    var options = {
+      bounds: defaultBounds,
+      strictBounds: true,
+    };
+
+    autocompleteStart = new google.maps.places.Autocomplete(input1, options);
+    autocompleteEnd = new google.maps.places.Autocomplete(input2, options);
+
+    autocompleteStart.bindTo('bounds', map);
+    autocompleteEnd.bindTo('bounds', map);
 }
 
 function calcRoute(usedDragMarker) {
@@ -93,9 +112,9 @@ function calcRoute(usedDragMarker) {
         var end = markerEndLat + ',' + markerEndLng;
     }
     else {
-        console.log("Used the dropdown");
-        var start = document.getElementById('selectstart').value; // this value is captured from the start dropdown
-        var end = document.getElementById('selectend').value; // this value is captured from the end dropdown        
+        console.log("Used the search option");
+        var start = document.getElementById('searchStart').value; // this value is captured from the start dropdown
+        var end = document.getElementById('searchEnd').value; // this value is captured from the end dropdown        
     } 
     var request = {
         origin: start,
@@ -169,12 +188,6 @@ function calcRoute(usedDragMarker) {
 
 function toggleMarkers() {
     for (var i = 0; i < markers.length; i++) {
-      //var marker = markers[i];
-
       markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
-      console.log(markers);
-      console.log(markers[i]);
-      console.log("Set to: " + markers[i].visible);
-      //markers[i].setVisible(false);
     }
 }
