@@ -119,44 +119,48 @@ function calcRoute(usedDragMarker) {
     var request = {
         origin: start,
         destination: end,
-        //provideRouteAlternatives: true,
         travelMode: 'TRANSIT', // signifies that we want a public transport route
         transitOptions: {
             modes: ['BUS'], // specifies that we only want Dublin Bus to be considered
             routingPreference: 'FEWER_TRANSFERS' // we want the route with the least amount of bus transfers
-        }
+        },
+        provideRouteAlternatives: true
     };
 
     directionsService.route(request, function (response, status) {
         if (status == 'OK') { // checks that the returned object contains the correct information
             directionsDisplay.setDirections(response); // displays the route on the map
-
+            
+            var alternativeArray = [];
+            
             console.log(response);
             //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
-
-            var stepsamount = response.routes[0].legs[0].steps.length; // caluclate how many steps are involved in the journey
+            
+            for (var j = 0; j < response.routes.length; j++) {
+            
+            var stepsamount = response.routes[j].legs[0].steps.length; // caluclate how many steps are involved in the journey
             var stepsarray = []; // create an empty array to store data for each bus on the journey
             var totalwalking = 0; // initilaise walking time to 0
 
             for (var i = 0; i < stepsamount; i++) { // iterates through each step in the provided route
 
-                var travelmode = response.routes[0].legs[0].steps[i].travel_mode; // check if the step in journey involves walking or bus
+                var travelmode = response.routes[j].legs[0].steps[i].travel_mode; // check if the step in journey involves walking or bus
 
                 if (travelmode == "WALKING") { // If the step is walking, we only care about the length of time the walk takes
 
-                    var walkingtime = parseInt(response.routes[0].legs[0].steps[i].duration['text']);
+                    var walkingtime = parseInt(response.routes[j].legs[0].steps[i].duration['text']);
                     totalwalking += walkingtime; // total walking time involved is captured
 
                 } else if (travelmode == "TRANSIT") {
 
                     var routedict = {}; // a new dictionary is created for each bus 
-                    var chosenroute = response.routes[0].legs[0].steps[i].transit.line.short_name; // route number
-                    var distance = parseFloat(response.routes[0].legs[0].steps[i].distance['text']); // distance travelled on this bus
-                    var departurestop = response.routes[0].legs[0].steps[i].transit.departure_stop.name; // departure address name
-                    var arrivalstop = response.routes[0].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
-                    var departurelatlng = response.routes[0].legs[0].steps[i].start_location.lat() + ',' + response.routes[0].legs[0].steps[i].start_location.lng(); // departure lat/lng
-                    var arrivallatlng = response.routes[0].legs[0].steps[i].end_location.lat() + ',' + response.routes[0].legs[0].steps[i].end_location.lng(); //arrival lat/lng
-                    var numstops = response.routes[0].legs[0].steps[i].transit.num_stops; // number of stops to take on bus
+                    var chosenroute = response.routes[j].legs[0].steps[i].transit.line.short_name; // route number
+                    var distance = parseFloat(response.routes[j].legs[0].steps[i].distance['text']); // distance travelled on this bus
+                    var departurestop = response.routes[j].legs[0].steps[i].transit.departure_stop.name; // departure address name
+                    var arrivalstop = response.routes[j].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
+                    var departurelatlng = response.routes[j].legs[0].steps[i].start_location.lat() + ',' + response.routes[j].legs[0].steps[i].start_location.lng(); // departure lat/lng
+                    var arrivallatlng = response.routes[j].legs[0].steps[i].end_location.lat() + ',' + response.routes[j].legs[0].steps[i].end_location.lng(); //arrival lat/lng
+                    var numstops = response.routes[j].legs[0].steps[i].transit.num_stops; // number of stops to take on bus
 
                     // add each key/value pair to the dictionary
                     routedict['route'] = chosenroute;
@@ -176,12 +180,16 @@ function calcRoute(usedDragMarker) {
             var timedict = {};
             timedict['walkingtime'] = totalwalking;
             stepsarray.push(timedict);
+                
+            alternativeArray.push(stepsarray);
+            }
 
             //console.log(totalwalking)
             //console.log(stepsamount);
             console.log(stepsarray);
+            console.log(alternativeArray);
 
-            console.log(stepsarray[0]['route'])
+            //console.log(stepsarray[0]['route'])
         }
     });
 }
