@@ -1,11 +1,25 @@
+var markerStartLat;
+var markerStartLng;
+var markerEndLat;
+var markerEndLng;
+var markers = [];
+
+
 function initMap() {
     /* Function that displays the Google map on the web app */
     directionsService = new google.maps.DirectionsService();
-    directionsDisplay = new google.maps.DirectionsRenderer();
+    directionsDisplay = new google.maps.DirectionsRenderer({
+      suppressMarkers: true
+      });
 
-    var myLatLng = {
+    var startLatLng = {
         lat: 53.349976,
         lng: -6.260354
+    };
+
+    var endLatLng = {
+        lat: 53.352573,
+        lng: -6.261665
     };
 
     // Positions the map
@@ -20,36 +34,88 @@ function initMap() {
     //directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
     var markerStart = new google.maps.Marker({
-        position: myLatLng,
+        position: startLatLng,
         map: map,
         title: 'Start',
-        draggable: true
+        draggable: true,
+        visible: true,
+        icon: {
+          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+          scale: 7,
+          strokeColor: 'green',
+          strokeWeight: 3
+        },
+
     });
 
     var markerEnd = new google.maps.Marker({
-        position: myLatLng,
+        position: endLatLng,
         map: map,
         title: 'Finish',
-        draggable: true
+        draggable: true,
+        visible: true,
+        icon: {
+          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+          scale: 7,
+          strokeColor: 'red',
+          strokeWeight: 3
+        },
     });
+
+    markers.push(markerStart);
+    markers.push(markerEnd);
 
     // Draggable marker for start location
     google.maps.event.addListener(markerStart, 'dragend', function (evt) {
-        document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+        console.log("changed start");
+        markerStartLat = evt.latLng.lat().toFixed(3);
+        markerStartLng = evt.latLng.lng().toFixed(3);
+        calcRoute(true);
     });
 
     // Draggable marker for end location
     google.maps.event.addListener(markerEnd, 'dragend', function (evt) {
-        document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+        markerEndLat = evt.latLng.lat().toFixed(3);
+        markerEndLng = evt.latLng.lng().toFixed(3);
+        calcRoute(true);
+        //document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
     });
+
+    // Search options for addresses bound to Dublin
+    var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(53.002697, -6.843280),
+      new google.maps.LatLng(53.647383, -5.964374));
+
+    var input1 = document.getElementById('searchStart');
+    var input2 = document.getElementById('searchEnd');
+
+    var options = {
+      bounds: defaultBounds,
+      strictBounds: true,
+    };
+
+    autocompleteStart = new google.maps.places.Autocomplete(input1, options);
+    autocompleteEnd = new google.maps.places.Autocomplete(input2, options);
+
+    autocompleteStart.bindTo('bounds', map);
+    autocompleteEnd.bindTo('bounds', map);
 }
 
-function calcRoute() {
+function calcRoute(usedDragMarker) {
     /* Function that displays a user's route on the map
-    Called every time the user changes a dropdown option */
-    //console.log("entered calc route function");
-    var start = document.getElementById('selectstart').value; // this value is captured from the start dropdown
-    var end = document.getElementById('selectend').value; // this value is captured from the end dropdown
+    Called by button "Find Route" */
+
+    usedDragMarker = usedDragMarker || false; //sets usedDragMarker to argument passed in or false by default
+
+    if (usedDragMarker) {
+        var start = markerStartLat + ',' + markerStartLng;
+        var end = markerEndLat + ',' + markerEndLng;
+    }
+    else {
+        console.log("Used the search option");
+        var start = document.getElementById('searchStart').value; // this value is captured from the start dropdown
+        var end = document.getElementById('searchEnd').value; // this value is captured from the end dropdown        
+    } 
     var request = {
         origin: start,
         destination: end,
@@ -62,7 +128,6 @@ function calcRoute() {
     };
 
     directionsService.route(request, function (response, status) {
-        //console.log(status);
         if (status == 'OK') { // checks that the returned object contains the correct information
             directionsDisplay.setDirections(response); // displays the route on the map
             
@@ -127,4 +192,10 @@ function calcRoute() {
             //console.log(stepsarray[0]['route'])
         }
     });
+}
+
+function toggleMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
+    }
 }

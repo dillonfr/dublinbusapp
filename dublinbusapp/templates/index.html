@@ -92,6 +92,10 @@
 
     <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
+    <input type="text" id="searchStart"/>
+
+    <input type="text" id="searchEnd"/>
+
     <form action="/145/" method="post">
         {% csrf_token %}
         <label for="your_name">Your Name: </label>
@@ -154,6 +158,8 @@
     
     <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
     
+    <input type="button" id"toggle" value="Toggle" onclick="toggleMarkers();"/>
+
     <div id="twitter">
                 <div><h3>Twitter widget</h3></div>
                 <a class="twitter-timeline" data-height="500" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
