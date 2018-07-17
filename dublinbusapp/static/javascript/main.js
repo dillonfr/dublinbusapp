@@ -190,6 +190,8 @@ function calcRoute(usedDragMarker) {
             console.log(alternativeArray);
 
             //console.log(stepsarray[0]['route'])
+            
+            showEstimate();
         }
     });
 }
@@ -198,4 +200,8 @@ function toggleMarkers() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
     }
+}
+
+function showEstimate() {
+    console.log("showEstimateFunc");
 }
