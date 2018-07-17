@@ -25,7 +25,7 @@ SECRET_KEY = 'a-=(ia8lh4ep1zrh-09-62b2x8m4s30v-7=*^0u!rdj@yrqm)w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['137.43.49.50']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -76,12 +76,8 @@ WSGI_APPLICATION = 'dublinbusapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dublinbus',
-	'USER': 'root@localhost',
-	'PASSWORD': 'Team14',
-	'HOST': 'localhost',
-	'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
