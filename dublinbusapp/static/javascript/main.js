@@ -134,7 +134,6 @@ function calcRoute(usedDragMarker) {
             var alternativeArray = [];
             
             console.log(response);
-            //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
             
             for (var j = 0; j < response.routes.length; j++) {
             
@@ -184,14 +183,9 @@ function calcRoute(usedDragMarker) {
             alternativeArray.push(stepsarray);
             }
 
-            //console.log(totalwalking)
-            //console.log(stepsamount);
-            console.log(stepsarray);
             console.log(alternativeArray);
-
-            //console.log(stepsarray[0]['route'])
             
-            showEstimate();
+            //showEstimate();
         }
     });
 }

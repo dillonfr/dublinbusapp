@@ -119,6 +119,7 @@
     <input type="submit" id="start_id" name="start_id" value="Find Route" onclick="calcRoute();"/>
     </form>
 
+<!--
     <script>
         function setIdValue() {
 		var start_id = document.getElementById("selectstart").value;
@@ -126,6 +127,7 @@
 		document.getElementById("start_id").value = start_id;
 		}
     </script>
+-->
 
     <script>
     	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
