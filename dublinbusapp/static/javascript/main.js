@@ -3,6 +3,7 @@ var markerStartLng;
 var markerEndLat;
 var markerEndLng;
 var markers = [];
+var allRoutesArray = ["15B Sample"];
 
 
 function initMap() {
@@ -12,6 +13,7 @@ function initMap() {
       suppressMarkers: true
       });
 
+    // Default start positions for draggable markers
     var startLatLng = {
         lat: 53.349976,
         lng: -6.260354
@@ -99,6 +101,25 @@ function initMap() {
 
     autocompleteStart.bindTo('bounds', map);
     autocompleteEnd.bindTo('bounds', map);
+
+    autocompleteStart.addListener('place_changed', fillInStartAddress);
+    autocompleteEnd.addListener('place_changed', fillInEndAddress);
+}
+
+function fillInStartAddress() {
+    var place = autocompleteStart.getPlace();
+    console.log(place.formatted_address);
+    val = place.formatted_address;
+    document.getElementById("searchStart").value = val;
+    console.log(document.getElementById("searchStart").value);
+}
+
+function fillInEndAddress() {
+    var place = autocompleteEnd.getPlace();
+    console.log(place.formatted_address);
+    val = place.formatted_address;
+    document.getElementById("searchEnd").value = val;
+    console.log(document.getElementById("searchEnd").value);
 }
 
 function calcRoute(usedDragMarker) {
@@ -107,10 +128,12 @@ function calcRoute(usedDragMarker) {
 
     usedDragMarker = usedDragMarker || false; //sets usedDragMarker to argument passed in or false by default
 
+    // If user dragged markers take the marker lat long as start/end
     if (usedDragMarker) {
         var start = markerStartLat + ',' + markerStartLng;
         var end = markerEndLat + ',' + markerEndLng;
     }
+    // Else take the values entered the address search bars
     else {
         console.log("Used the search option");
         var start = document.getElementById('searchStart').value; // this value is captured from the start dropdown
@@ -128,11 +151,13 @@ function calcRoute(usedDragMarker) {
     };
 
     directionsService.route(request, function (response, status) {
+        console.log(response)
         if (status == 'OK') { // checks that the returned object contains the correct information
             directionsDisplay.setDirections(response); // displays the route on the map
             
-            var alternativeArray = [];
+            alternativeArray = [];
             
+            console.log("RESPONSE TO DIRECTION SERVICES")
             console.log(response);
             //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
             
@@ -186,8 +211,11 @@ function calcRoute(usedDragMarker) {
 
             //console.log(totalwalking)
             //console.log(stepsamount);
+            console.log("Here is steps array:");
             console.log(stepsarray);
             console.log(alternativeArray);
+
+            allRoutesArray = alternativeArray;
 
             //console.log(stepsarray[0]['route'])
         }
@@ -198,4 +226,67 @@ function toggleMarkers() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
     }
+}
+
+
+// var allRoutesArray = 
+$(document).ready(function() {
+       $("#journeyForm").submit(function(event){
+            event.preventDefault();
+
+            var journeyData = JSON.stringify($(this).serializeArray());
+            allRoutesArray = JSON.stringify(allRoutesArray);
+
+            $.ajax({
+                 type:"POST",
+                 url:"/journey/",
+                 data: {
+                        'testInput': $('#testInput').val(), // from form
+                        'origin': $('#searchStart').val(),
+                        'destination': $('#searchEnd').val(),
+                        'dateChosen': $('#dateChosen').val(),
+                        query: journeyData,
+                        'allRoutes': allRoutesArray,
+                        },
+                 success: function(response){
+                    console.log("success")
+                    console.log(response)
+                    $('#message').html("<h2>Journey Form Submitted!</h2>")
+
+                    //response is a list coming back from python with the variables or data we need
+                    testInput = response[1]
+                    origin = response[2]
+                    destination = response[3]
+                    journeyTime = response[4]
+                    dateChosen = response[5]
+                    bestRoute = response[6]
+
+                    var journey = {
+                      'testInput': testInput,
+                      'origin': origin,
+                      'destination': destination,
+                      'journeyTime': journeyTime,
+                      'dateChosen': dateChosen,
+                      'bestRoute': bestRoute,
+                    };
+
+                    displayJourney(journey)
+                 }
+            });
+            return false;
+       });
+
+});
+
+function displayJourney(journey) {
+    //Takes a dictionary containing journey info and puts info into HTML elements
+        console.log(journey);
+        document.getElementById("journeySummary").innerHTML = `
+        <b>Text Input:</b> ${journey.testInput}<br>
+        <b>Origin:</b> ${journey.origin}<br>
+        <b>Destination:</b> ${journey.destination}<br>
+        <b>Time:</b> ${journey.journeyTime}<br>
+        <b>Date:</b> ${journey.dateChosen}<br>
+        <b>The Best Route is:</b> ${journey.bestRoute}<br>
+`
 }
