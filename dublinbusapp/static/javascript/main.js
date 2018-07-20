@@ -139,13 +139,17 @@ function calcRoute(usedDragMarker) {
         var start = document.getElementById('searchStart').value; // this value is captured from the start dropdown
         var end = document.getElementById('searchEnd').value; // this value is captured from the end dropdown        
     } 
+
+
+
     var request = {
         origin: start,
         destination: end,
         travelMode: 'TRANSIT', // signifies that we want a public transport route
         transitOptions: {
             modes: ['BUS'], // specifies that we only want Dublin Bus to be considered
-            routingPreference: 'FEWER_TRANSFERS' // we want the route with the least amount of bus transfers
+            routingPreference: 'FEWER_TRANSFERS', // we want the route with the least amount of bus transfers
+            //departureTime: new Date(2018, 07, 20, 17, 28), //TODO specify departure time
         },
         provideRouteAlternatives: true
     };
@@ -260,6 +264,7 @@ $(document).ready(function() {
                     journeyTime = response[4]
                     dateChosen = response[5]
                     bestRoute = response[6]
+                    busTime = response[7]
 
                     var journey = {
                       'testInput': testInput,
@@ -268,6 +273,7 @@ $(document).ready(function() {
                       'journeyTime': journeyTime,
                       'dateChosen': dateChosen,
                       'bestRoute': bestRoute,
+                      'busTime': busTime,
                     };
 
                     displayJourney(journey)
@@ -285,8 +291,9 @@ function displayJourney(journey) {
         <b>Text Input:</b> ${journey.testInput}<br>
         <b>Origin:</b> ${journey.origin}<br>
         <b>Destination:</b> ${journey.destination}<br>
-        <b>Time:</b> ${journey.journeyTime}<br>
+        <b>Last bus leg of your journey takes:</b> ${journey.journeyTime}<br>
         <b>Date:</b> ${journey.dateChosen}<br>
-        <b>The Best Route is:</b> ${journey.bestRoute}<br>
+        <b>Routes to take:</b> ${journey.bestRoute}<br>
+        <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
 `
 }
