@@ -184,6 +184,7 @@ function calcRoute(usedDragMarker) {
             }
 
             console.log(alternativeArray);
+            console.log(alternativeArray[0]);
             
             //showEstimate();
         }

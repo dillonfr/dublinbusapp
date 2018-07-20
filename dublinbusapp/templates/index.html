@@ -131,7 +131,8 @@
 
     <script>
     	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
-	
+        console.log(buslist);
+        
 	/* Adding all stopid's as options to the start and end dropdowns */
     	for (var i=0; i < buslist.length; i++) {  // iterates through buslist array and adds options to dropdowns with respective values
            //can get lat/long by using: buslist[i]['latitude'] and buslist[i]['longitude']
