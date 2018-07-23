@@ -6,89 +6,90 @@ from django.shortcuts import render
 from .models import Trips2017
 from dict import *
 from .forms import *
-#from .dates import *
+from dates import *
 
 from django.views.decorators.csrf import csrf_exempt
 
 import pickle
 import pandas as pd
 
+
 #TODO Put these into dates.py and import
-import urllib.request
-import json
-import geopy
-from geopy import distance
-from geopy.distance import vincenty
-import datetime
+# import urllib.request
+# import json
+# import geopy
+# from geopy import distance
+# from geopy.distance import vincenty
+# import datetime
+
+# def StripDay(date):
+#    if date == "":
+#        DayInt = datetime.datetime.today().weekday()
+#    elif date[-2] == 'p':
+#        DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
+#    elif date[-2] == 'a':
+#        DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
+#    return int(DayInt) + 2
 
 
-def StripDay(date):
-   if date == "":
-       DayInt = datetime.datetime.today().weekday()
-   elif date[-2] == 'p':
-       DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
-   elif date[-2] == 'a':
-       DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
-   return int(DayInt) + 2
+# def stripTime(date):
+#    if date == "":
+#        return datetime.datetime.today().hour
+#    elif date[-2] == 'a':
+#        return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
+#    elif date[-2] == 'p':
+#        return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
 
-def stripTime(date):
-   if date == "":
-       return datetime.datetime.today().hour
-   elif date[-2] == 'a':
-       return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
-   elif date[-2] == 'p':
-       return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
+# def IsPeak(date):
+#    if date == "":
+#        HourInt = datetime.datetime.today().hour
+#        if HourInt >= 7 and HourInt <= 10 or HourInt >= 16 and HourInt <= 19:
+#            return 2
+#        else:
+#            return 1
+#    elif date[-2] == 'a':
+#        HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
+#        if HourInt >= 7 and HourInt <= 10:
+#            return 2
+#        else:
+#            return 1
+#    elif date[-2] == 'p':
+#        HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H'))
+#        if HourInt >= 4 and HourInt <= 7:
+#            return 2
+#        else:
+#            return 1
 
-def IsPeak(date):
-   if date == "":
-       HourInt = datetime.datetime.today().hour
-       if HourInt >= 7 and HourInt <= 10 or HourInt >= 16 and HourInt <= 19:
-           return 2
-       else:
-           return 1
-   elif date[-2] == 'a':
-       HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
-       if HourInt >= 7 and HourInt <= 10:
-           return 2
-       else:
-           return 1
-   elif date[-2] == 'p':
-       HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H'))
-       if HourInt >= 4 and HourInt <= 7:
-           return 2
-       else:
-           return 1
-
-def getRouteStops(routeNumber):
-   ''' Function that returns the latitude and longitude of each bus stopid in a given route
-   Takes a route number as an argument
-   A dictionary is returned: key is stopid and associated value is latitude/longitude '''
+# def getRouteStops(routeNumber):
+#    ''' Function that returns the latitude and longitude of each bus stopid in a given route
+#    Takes a route number as an argument
+#    A dictionary is returned: key is stopid and associated value is latitude/longitude '''
    
-   # Initialise the empty dictionary
-   stopidDict = {}
+#    # Initialise the empty dictionary
+#    stopidDict = {}
    
-   # Scrape all available data on the given route
-   url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
-   with urllib.request.urlopen(url) as req:
-       Stops = json.loads(req.read().decode("utf-8"))
+#    # Scrape all available data on the given route
+#    url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
+#    with urllib.request.urlopen(url) as req:
+#        Stops = json.loads(req.read().decode("utf-8"))
        
-   for chosenRoute in Stops["results"]:
-           for stop in chosenRoute["stops"]:
-               stopID = stop["stopid"]
-               lat = float(stop["latitude"])
-               lng = float(stop['longitude'])
-               stopidDict[stopID] ={"lat":lat, "lng": lng} # We only care about the stopids and their lat/long
+#    for chosenRoute in Stops["results"]:
+#            for stop in chosenRoute["stops"]:
+#                stopID = stop["stopid"]
+#                lat = float(stop["latitude"])
+#                lng = float(stop['longitude'])
+#                stopidDict[stopID] ={"lat":lat, "lng": lng} # We only care about the stopids and their lat/long
    
-   return stopidDict
+#    return stopidDict
 
 
-def getStopId(dictlist, lat_lng):
-	for key in dictlist.keys():
-		dictlist[key].update({"distance": geopy.distance.vincenty([dictlist[key]["lat"], dictlist[key]["lng"]], lat_lng).km})
+# def getStopId(dictlist, lat_lng):
+# 	for key in dictlist.keys():
+# 		dictlist[key].update({"distance": geopy.distance.vincenty([dictlist[key]["lat"], dictlist[key]["lng"]], lat_lng).km})
 
-	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"])
+# 	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"])
 
-	return sortedDict[0][0]
+# 	return sortedDict[0][0]
 
 
 @csrf_exempt
@@ -156,7 +157,9 @@ def journey(request):
 			numStops = bestRoute[i]['numstops']
 
 
-			stopsDictList = getRouteStops(route)
+			stopsDictList = getRouteStops(str(route))
+			print("Made this dictlist")
+			print(stopsDictList)
 
 			originId = int(getStopId(stopsDictList, originLatLng))
 			destinationId = int(getStopId(stopsDictList, destinationLatLng))
@@ -167,6 +170,7 @@ def journey(request):
 
 			print("OUR DF")
 			print(df)
+
 
 			loaded_model = pickle.load(open("C:/Users/dillo_000/Desktop/dublinbusapp/dublinbusapp/dublinbusapp/test_7D_pickle.sav", 'rb'))
 
