@@ -16,11 +16,16 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-
+<!--     <script type="text/javascript"> 
+       var resultJS = "{{ result }}";
+       console.log("The first time result is" + "{{ result }}");
+       var sampleItemJS = "{{ sampleItem }}";
+       var testJS = "{{ TEST }}";
+    </script> -->
     <script src="{% static 'javascript/main.js' %}"></script>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
@@ -92,43 +97,41 @@
 
     <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
-    <input type="text" id="searchStart"/>
-
-    <input type="text" id="searchEnd"/>
-
-    <form action="/145/" method="post">
-        {% csrf_token %}
-        <label for="your_name">Your Name: </label>
-        <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
-        <input type="submit" value="OK">
-    </form>
 
     <!-- Div that contains the dopdown for start location. Populated using JQuery -->
-    <form action="" method="post">
+    <form method="post" id="journeyForm" name="journeyForm"> <!-- onsubmit="return calcRoute()" -->
     {% csrf_token %}
-    <div id ="options">
-       <h3>Start</h3>
-       <select id="selectstart" name="selectstart1" value="" onchange="setIdValue();"></select>
+    <input type="text" id="searchStart" onchange="setTimeout(calcRoute, 1)" value=""/>
+
+    <input type="text" id="searchEnd" onchange="setTimeout(calcRoute, 1)" value=""/>
+
+    <input type="text" id="testInput"/>
+
+    <div id = 'message'>Initial text</div>
+
+    <div id="datetimepicker">
+                <h3>Departure date</h3>
+                <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
+                    <input class="form-control" id="dateChosen" size="16" type="text" value="" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+					<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                </div>
+				<input type="hidden" id="dtp_input1" value="" /><br/>
     </div>
 
-    <!-- Div that contains the dopdown for end location. Populated using JQuery -->
-    <div id ="options">
-       <h3>End</h3>
-       <select id="selectend" name="selectend1" value="" onchange="setIdValue();"></select>
-    </div>
-    <input type="submit" id="start_id" name="start_id" value="Find Route" onclick="calcRoute();"/>
+
+    <button type="submit" id="" value="Find Route" onclick=""/>Submit</button>
     </form>
 
-    <script>
-        function setIdValue() {
-		var start_id = document.getElementById("selectstart").value;
-		console.log(start_id);
-		document.getElementById("start_id").value = start_id;
-		}
-    </script>
+    <h3>Your start point is: {{ startID }}</h3>
 
-    <script>
-    	var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
+    <h3 id= 'resultElement'>Your journey will take: {{ result }}</h3>
+
+    <h3 id= 'journeySummary'></h3>
+
+
+<!--     <script>
+    	var buslist = {{ buslist|safe }}; // allows us to access the Python array of dictionaries containing smartDublin bus data
 	
 	/* Adding all stopid's as options to the start and end dropdowns */
     	for (var i=0; i < buslist.length; i++) {  // iterates through buslist array and adds options to dropdowns with respective values
@@ -139,24 +142,14 @@
        }
 
     </script>
-
+ -->
 <!-- Accessing query results from db
 {% for item in query_results %}
 <p>{{ item.tripid }}</p>
 {% endfor %}    
 -->
     
-    <div id="datetimepicker">
-                <h3>Departure date</h3>
-                <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
-                    <input class="form-control" size="16" type="text" value="" readonly>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-					<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                </div>
-				<input type="hidden" id="dtp_input1" value="" /><br/>
-    </div>
-    
-    <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
+
     
     <input type="button" id"toggle" value="Toggle" onclick="toggleMarkers();"/>
 
