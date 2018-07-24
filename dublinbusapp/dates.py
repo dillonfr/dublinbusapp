@@ -1,5 +1,6 @@
 import urllib.request
 import json
+import time
 import datetime
 import geopy
 from geopy import distance
@@ -50,9 +51,6 @@ def isPeak(date):
 			return 1
 
 def unixTime(date):
-	'''Function that takes in specific date format and returns the unix time of that date
-	Returns the current time if the date given is more than 1 week away
-	'''
     if date == "":
         return int(time.time())
     elif date[-2] == 'p':
@@ -64,9 +62,9 @@ def unixTime(date):
     limit = time.time() + 604800 # Limit is current time + 7 days
 
     if uTime > limit:
-    	return int(time.time())
+        return int(time.time())
     else:
-    	return int(uTime)
+        return int(uTime)
 
 def getRouteStops(routeNumber):
 	''' Function that returns the latitude and longitude of each bus stopid in a given route

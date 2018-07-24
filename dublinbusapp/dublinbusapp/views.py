@@ -36,7 +36,7 @@ def journey(request):
 		walkingTime = bestRoute[-1]['walkingtime']
 
 		# Initialise times that our model will add minutes to
-		
+
 
 		# Reformat date chosen into format that can be passed into model
 		dateChosen = request.POST["dateChosen"]
@@ -44,18 +44,19 @@ def journey(request):
 		peak = isPeak(dateChosen)
 
 		# Check weather conditions
-		unixTime = unixTime(dateChosen)
+		print(unixTime(dateChosen))
+		uTime = unixTime(dateChosen)
 
-		weatherDict = getWeather(unixTime)
+		weatherDict = getWeather(uTime)
 
-		rain = weatherDict['rain']
+		rain = weatherDict['raining']
 		temperature = weatherDict['temperature']
 		windSpeed = weatherDict['windSpeed']
 		print(rain)
 		print(temperature)
 		print(windSpeed)
 
-	
+
 		routesToTake =[]
 		busTime = 0
 
