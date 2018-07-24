@@ -3,26 +3,44 @@ h1,h2,h3 {
 	font-weight: bold;
 }
 
+.title{
+    vertical-align: middle;
+    display: inline;
+    float:left;
+    padding: 5px;
+}
+.header{
+    top: 10px;
+}
+
+img{
+    height: 45px;
+    text-align:center;
+    display: inline;
+    margin-top: -20px;
+}
+
+h1{
+    display: inline;
+    vertical-align: top;
+    color: white;
+    padding:0 20px;
+    line-height: 96px;
+}
+
+b{
+    color: #f0b917;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    background: black;
 }
 
 body,
 html {
     height: 100%;
     width: 100%;
-    background-color: black;
 }
-
-.navbar {
-    padding: 15px 10px;
-    border: none;
-    border-radius: 0;
-    margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-}
-
 
 .wrapper {
     display: block;
@@ -96,19 +114,13 @@ html {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
+    background: black;
 }
-#sidebarCollapse{
-    z-index: 99;
-}
-
-
-#searchStart, searchEnd{
-    z-index: 9999;
-    position: relative;
+#datetimepicker{
+    color: black;
 }
 #content {
-    background-color: black; 
+    background-color: rgba(0, 0, 0, 0.7); 
     width: 100%;
     padding: 20px;
     min-height: 100vh;
@@ -119,8 +131,28 @@ html {
     
 }
 
+#sidebarCollapse{
+    color: #f0b917;
+    font-size: 25px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid;
+    border-radius: 15px;
+    border-bottom-color: white;
+    cursor: pointer; 
+    display: inline;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+#sidebarCollapse:hover{
+    background: #fff;
+    color: #f0b917;
+    width: 100px;
+}
+
 #map {
-	height: 100vh;
+	height: 82vh;
 	width: 100%;
     position: relative; 
     z-index: 99;
@@ -129,9 +161,13 @@ html {
 }
 
 #weather {
-    position:absolute; 
-    z-index:99999;
-    top:20vh；
+    position: relative; 
+    z-index: 99999;
+    width: 240px;
+    height: 70px;
+    top: -10px;
+
+    float: right;
 }
 
 

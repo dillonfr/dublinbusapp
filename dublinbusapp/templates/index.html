@@ -123,41 +123,41 @@
                 <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </nav>
+        
+        <!-- pop up window -->
+        
+        
+        <!-- pop up window -->
+
 
 
           <!-- Main page -->
         <div id="content">
             <!-- Header (introduction) section -->
             <!-- Header title -->
-        <!--
+    
             <header>
-
                 <div class="title">
-                     logo here 
-                    <h1>Dublin Bus Predictions</h1>
+                    <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a>
+                     <h1>Dublin <b>Bus</b></h1>
+                    <button type="button" id="sidebarCollapse">
+                        <i class="fa fa-search"></i>
+                    </button></span>
+                    <!-- Side bar button --> 
                 </div>
             </header>
-        -->
-            <!-- Side bar button -->
-
-            <nav>
-                <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <span>Go!</span>
-                    </button>
-                </div>
-            </nav>
-
+                <!-- Weather widget -->
+            <div id="weather">
+                <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="#b2d0e3" data-raincolor="white" >DUBLIN</a>
+            </div>
+    <!-- Weather widget -->
 
         <!-- Google map -->
             <div id='map'></div>
         <!-- Google map -->
 
-    <!-- Weather widget -->
 
-            <div id="weather">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="rgba(99, 97, 97, 0.6)" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#155263" data-cloudfill="#76b39d" data-raincolor="#155263" >DUBLIN</a>
-            </div>
+            
         </div>
 
 
@@ -173,6 +173,7 @@
         <!-- Footer -->
     </div>
     <div class="overlay"></div>
+     <!-- Main page -->
     <!-- Google Maps API -->
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
 <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
