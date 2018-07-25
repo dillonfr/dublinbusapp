@@ -1,46 +1,192 @@
-h1 {
-	color: red;
+h1,h2,h3 {
+	color: white;
 	font-weight: bold;
 }
 
+.title{
+    vertical-align: middle;
+    display: inline;
+    float:left;
+    padding: 5px;
+}
+.header{
+    top: 10px;
+}
+
+img{
+    height: 45px;
+    text-align:center;
+    display: inline;
+    margin-top: -20px;
+}
+
+h1{
+    display: inline;
+    vertical-align: top;
+    color: white;
+    padding:0 20px;
+    line-height: 96px;
+}
+
+b{
+    color: #f0b917;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+}
+
+.wrapper {
+    display: block;
+    width: 100%;
+    position: relative;
+    align-items: stretch;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+#sidebar {
+    width: 400px;
+    position: fixed;
+    top:0;
+    left:-400px;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7); 
+    transition: all 0.3s;
+    color:white;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    /* top layer */
+    z-index: 999;
+}
+
+#sidebar.active {
+    left: 0;
+}
+
+#dismiss {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#dismiss:hover {
+    background: #fff;
+    color: #f0b917;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    /* full screen */
+    width: 100vw;
+    height: 100vh;
+    /* transparent black */
+    background: none;
+    /* middle layer, i.e. appears below the sidebar */
+    z-index: 998;
+    opacity: 0;
+    /* animate the transition */
+    transition: all 0.5s ease-in-out;
+}
+/* display .overlay when it has the .active class */
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: black;
+}
+#datetimepicker{
+    color: black;
+}
+#content {
+    background-color: rgba(0, 0, 0, 0.7); 
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+    
+}
+
+#sidebarCollapse{
+    color: #f0b917;
+    font-size: 25px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid;
+    border-radius: 15px;
+    border-bottom-color: white;
+    cursor: pointer; 
+    display: inline;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+#sidebarCollapse:hover{
+    background: #fff;
+    color: #f0b917;
+    width: 100px;
+}
+
 #map {
-	height: 400px;
+	height: 82vh;
 	width: 100%;
+    position: relative; 
+    z-index: 99;
+    top: 0px;
+    left: 0px;
 }
 
-#weather{
-    position:relative; 
-    z-index:99999;
+#weather {
+    position: relative; 
+    z-index: 99999;
+    width: 240px;
+    height: 70px;
+    top: -10px;
+
+    float: right;
 }
 
-#test1 {
-	color: red;
-	height: 50px;
-	width: 50%;
+
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
 }
 
-h2 {
-	color: yellow;
-}
 
---------twitter------------
-.twitter-timeline {
-  max-width: 100%;
-  max-height: 1000px;
-}
-.fa {
-  font-size: 25px;
-  color: #FFFFFF;
-}
-.panel-title {
- font-size: 25px; 
- color: #FFFFFF;
- font-family: 'Open Sans', sans-serif;
-}
-.panel-heading {
- background-color: #1da1f2 !important;;
- color: #1da1f2 !important;;
-}
-.panel {
- margin-top: 25px;
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -500px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
 }
