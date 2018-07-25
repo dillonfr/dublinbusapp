@@ -85,7 +85,7 @@ def journey(request):
 			df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
 
 			# Pass df into model and get prediction
-			loaded_model = pickle.load(open("C:/Users/dillo_000/Desktop/dublinbusapp/dublinbusapp/dublinbusapp/test_7D_pickle.sav", 'rb'))
+			loaded_model = pickle.load(open("/home/student/dublinbusapp/dublinbusapp/test_7D_pickle.sav", 'rb'))
 
 			journeyTimePrediction = loaded_model.predict(df)
 			journeyTimePrediction = journeyTimePrediction.tolist()
