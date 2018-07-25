@@ -61,6 +61,8 @@
 
     <div id = 'message'>Initial text</div>
 
+    <div id = 'journeySummary'></div>
+
     <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
@@ -71,7 +73,10 @@
                 <input type="hidden" id="dtp_input1" value="" /><br/>
              </div>
 
-            <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
+        <!-- TODO Fix post request -->
+        <form method="post" id="journeyForm" name="journeyForm">
+            <button type="submit" id="routebtn" name="start_id" value="Find Route"/>Find Route</button>
+        </form>
 
             <input type="button" id="toggle" value="Toggle" onclick="toggleMarkers();"/>
 
