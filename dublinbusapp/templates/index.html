@@ -12,8 +12,9 @@
     <!-- Load custom css stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>    
     <!-- Popper.JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
@@ -50,64 +51,20 @@
                 <h3>Journey Information</h3>
             </div>
 
-        <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
+    <!-- Form to enter start/end/date -->
+    <form method="post" id="journeyForm" name="journeyForm"> <!-- onsubmit="return calcRoute()" -->
+    {% csrf_token %}
+    <input type="text" id="searchStart" onchange="setTimeout(calcRoute, 1)" value=""/>
 
-            <form action="/145/" method="post">
-                {% csrf_token %}
-                <label for="your_name">Your Name: </label>
-                <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
-                <input type="submit" value="OK">
-            </form>
+    <input type="text" id="searchEnd" onchange="setTimeout(calcRoute, 1)" value=""/>
 
-            <!-- Div that contains the dopdown for start location. Populated using JQuery -->
-            <form action="" method="post">
-            {% csrf_token %}
-            <div id ="options">
-               <h3>From</h3>
-               <input type="text" id="searchStart"/>
-            </div>
+    <div id = 'message'>Initial text</div>
 
-            <!-- Div that contains the dopdown for end location. Populated using JQuery -->
-            <div id ="options">
-               <h3>To</h3>
-               <input type="text" id="searchEnd"/>
-
-            </div>
-
-            </form>
-
-            <script>
-                function setIdValue() {
-                var start_id = document.getElementById("selectstart").value;
-                console.log(start_id);
-                document.getElementById("start_id").value = start_id;
-                }
-            </script>
-
-            <script>
-                var buslist = {{ buslist|safe }} // allows us to access the Python array of dictionaries containing smartDublin bus data
-
-            /* Adding all stopid's as options to the start and end dropdowns */
-                for (var i=0; i < buslist.length; i++) {  // iterates through buslist array and adds options to dropdowns with respective values
-                   //can get lat/long by using: buslist[i]['latitude'] and buslist[i]['longitude']
-                   $('#selectstart').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
-                   $('#selectend').append('<option value=' + buslist[i]['latitude'] + ',' + buslist[i]['longitude'] + '>' + buslist[i]['stopid'] + '</option>')
-                   //console.log(selectstart.value);
-               }
-
-            </script>
-
-    <!-- Accessing query results from db
-    {% for item in query_results %}
-    <p>{{ item.tripid }}</p>
-    {% endfor %}    
-    -->
-
-             <div id="datetimepicker">
+    <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
-                    <input class="form-control" size="16" type="text" value="" readonly>
+                    <input class="form-control" id="dateChosen" size="16" type="text" value="" readonly>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                 </div>
@@ -128,8 +85,6 @@
         
         
         <!-- pop up window -->
-
-
 
           <!-- Main page -->
         <div id="content">
@@ -162,8 +117,6 @@
 
 
 
-
-
         <!-- Footer -->
         <footer>
           <!-- Copyright -->
@@ -178,6 +131,8 @@
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
 <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
 
+
+    <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
     <!-- Google Maps API -->
 
