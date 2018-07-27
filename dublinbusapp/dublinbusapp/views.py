@@ -1,61 +1,108 @@
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
-from .models import Trips2017
-from dict import *
-from .forms import *
 
+from buslist import *
+from dates import *
+from weather import *
+
+
+from django.views.decorators.csrf import csrf_exempt
+
+import pickle
+import pandas as pd
+
+@csrf_exempt
 def index(request):
 	buslist = makeBusStopDict()
 
-	#context is a dictionary that will contain anything we want to send to the frontend
 	context = {
 		'buslist': buslist,
 	}
-
-	
-	#if user clicks the find route button on the frontend, this sends a post request to django
-	if request.method == 'POST':
-		form = StartForm(request.POST)
-		
-		#start_id = form.cleaned_data['start_id']
-		
-		#context['start_id'] = start_id
-		
-		#checks the info input into the form to make sure it is legal (security check, checks theres no SQL injection etc.)
-		if form.is_valid():
-			start_id = form.cleaned_data['start_id']
-			#end_id = form.cleaned_data['end_id']
-			print("Start: ", start_id)
-			#print("End: ", end_id)	
-			context['start_id'] = start_id
-			#context['end_id'] = end_id
-			return render(request, 'index.html', context)
-	
-	else:
-		form = StartForm()
-	
-	#how to query database: (add query_results to context to send to frontend)
-	#query_results = Trips2017.objects.raw('SELECT * FROM trips2017 LIMIT 20')
-
-	#context = {
-		#'buslist': buslist,
-		#'query_results': query_results,
-		#'form': form,
-	#}
-	print("fell through")
 	return render(request, 'index.html', context)
 
-def detail(request, route):
-	if request.method == 'POST':
-		form = NameForm(request.POST)
-		if form.is_valid():
-			name = form.cleaned_data['your_name']
-			
-			context = {
-				'name': name,
-			}
-			return render(request, 'name.html', context)
-	else:
-		form = NameForm()
 
-	return render(request, 'index.html', {'form': form})
+@csrf_exempt
+def journey(request):
+	if request.method == "POST":
+
+
+		allRoutes = json.loads(request.POST["allRoutes"])
+
+		bestRoute = allRoutes[0] # The first journey suggested by google is the best
+
+		numBusJourneys = len(bestRoute) - 1
+
+		walkingTime = bestRoute[-1]['walkingtime']
+
+		# Initialise times that our model will add minutes to
+
+
+		# Reformat date chosen into format that can be passed into model
+		dateChosen = request.POST["dateChosen"]
+		dayOfWeek = stripDay(dateChosen)
+		peak = isPeak(dateChosen)
+
+		# Check weather conditions
+		print(unixTime(dateChosen))
+		uTime = unixTime(dateChosen)
+
+		weatherDict = getWeather(uTime)
+
+		rain = weatherDict['raining']
+		temperature = weatherDict['temperature']
+		windSpeed = weatherDict['windSpeed']
+		print(rain)
+		print(temperature)
+		print(windSpeed)
+
+
+		routesToTake =[]
+		busTime = 0
+
+		#Go through each bus leg and get a prediction on journey time for that leg
+		for i in range(0, numBusJourneys):
+			# Add each route to list of routes to take
+			route = bestRoute[i]['route']
+			routesToTake.append(route)
+
+			# Extract data needed to pass into model
+			originLatLng = bestRoute[i]['departureLatLng']
+			destinationLatLng = bestRoute[i]['arrivalLatLng']
+			numStops = bestRoute[i]['numStops']
+
+			# Find all the stopid's on the route
+			stopsDictList = getRouteStops(str(route))
+
+			# Find the closest stopid's with the given latitudes/longitudes
+			originId = int(getStopId(stopsDictList, originLatLng))
+			destinationId = int(getStopId(stopsDictList, destinationLatLng))
+
+			# Assume direction for now
+			direction = 2
+
+			# Create dataframe
+			df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
+
+			# Pass df into model and get prediction
+			loaded_model = pickle.load(open("/home/student/dublinbusapp/dublinbusapp/test_7D_pickle.sav", 'rb'))
+
+			journeyTimePrediction = loaded_model.predict(df)
+			journeyTimePrediction = journeyTimePrediction.tolist()
+			journeyTimePrediction = journeyTimePrediction[0]
+
+			busTime += journeyTimePrediction
+
+		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
+		result = {
+				'query': json.loads(request.POST["query"]),
+				'origin': request.POST["origin"],
+				'destination': request.POST["destination"],
+				'dateChosen': request.POST["dateChosen"],
+				'lastBusStepPrediction': journeyTimePrediction/60, # Seconds to minutes
+				'routesToTake': routesToTake,
+				'busTime': busTime/60, # Seconds to minutes
+				}
+
+	# Return the result dictionary to AJAX as a response
+	return JsonResponse(result, safe=False)
