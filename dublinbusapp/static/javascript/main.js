@@ -360,9 +360,9 @@ function drawPieChart(journey) {
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Travel Mode', 'Minutes'],
-          ['Walking',     5],
-          ['Bus',      20],
-          ['Waiting',  7],
+          ['Walking', 5],
+          ['Bus', 20],
+          ['Waiting', 7],
         ]);
 
         var options = {

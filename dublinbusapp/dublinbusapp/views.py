@@ -114,6 +114,7 @@ def journey(request):
 			busTime += journeyTimePrediction
 
 
+
 		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 		result = {
 				'query': json.loads(request.POST["query"]),
