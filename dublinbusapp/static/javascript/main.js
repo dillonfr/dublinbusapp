@@ -42,10 +42,9 @@ function initMap() {
         draggable: true,
         visible: true,
         icon: {
-          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-          scale: 7,
-          strokeColor: 'green',
-          strokeWeight: 3
+          url: "/static/images/start.png",
+          scaledSize: new google.maps.Size(64,64),
+         
         },
 
     });
@@ -57,10 +56,8 @@ function initMap() {
         draggable: true,
         visible: true,
         icon: {
-          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-          scale: 7,
-          strokeColor: 'red',
-          strokeWeight: 3
+          url: "/static/images/end.png",
+          scaledSize: new google.maps.Size(64,64),
         },
     });
 

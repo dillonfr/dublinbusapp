@@ -38,20 +38,22 @@
     <!-- Navbar -->
 
 
-    <div class="wrapper">
+    <div class="wrapper visible-lg-block visible-md-block visible-xs-block">
         <!-- Sidebar -->
         <nav id="sidebar">
             <!-- Panel for displaying journey informations -->
+        <div class="container visible-lg-block  visible-md-block visible-xs-block">
 
             <div id="dismiss">
                 <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="sidebar-header">
-                <h3>Journey Information</h3>
+            <div class="visible-lg-block  visible-md-block visible-xs-block sidebar-header ">
+                <h2>Journey Information</h2>
             </div>
 
         <!-- How to access buslist being received from django: <h1>The id of the 1000th dict is {{ buslist.1000.stopid }}</h1> -->
 
+<!--
 
             <form action="/145/" method="post">
                 {% csrf_token %}
@@ -59,20 +61,23 @@
                 <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
                 <input type="submit" value="OK">
             </form>
+-->
 
             <!-- Div that contains the dopdown for start location. Populated using JQuery -->
             <form action="" method="post">
             {% csrf_token %}
-            <div id ="options">
-               <h3>From</h3>
-               <input type="text" id="searchStart"/>
-            </div>
+            <div class="row">
+                <div class="col">
+                   <h3>From</h3>
+                   <input type="text" class="form-control" id="searchStart"/>
+                </div>
 
-            <!-- Div that contains the dopdown for end location. Populated using JQuery -->
-            <div id ="options">
-               <h3>To</h3>
-               <input type="text" id="searchEnd"/>
+                <!-- Div that contains the dopdown for end location. Populated using JQuery -->
+                <div class="col">
+                   <h3>To</h3>
+                   <input type="text" class="form-control" id="searchEnd"/>
 
+                </div>
             </div>
 
             </form>
@@ -103,7 +108,7 @@
     <p>{{ item.tripid }}</p>
     {% endfor %}    
     -->
-
+            <!--datetimepicker-->
              <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
@@ -113,56 +118,80 @@
                 </div>
                 <input type="hidden" id="dtp_input1" value="" /><br/>
              </div>
+            <!--datetimepicker-->
+            
+            <form method="post" id="journeyForm" name="journeyForm">
+                <button class="btn btn-primary btn-lg" type="submit" id="routebtn" name="start_id" value="Find Route">Find Route</button>
+               
+            </form>
 
-            <input type="button" id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();"/>
-
-            <input type="button" id="toggle" value="Toggle" onclick="toggleMarkers();"/>
+            <input type="button"  id="routebtn" name="start_id" value="Find Route" onclick="calcRoute();" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#popWindow"/>
+            <input type="button" class="btn btn-primary btn-lg" id="toggle" value="Toggle" onclick="toggleMarkers();"/>
+            
+        <!-- pop up window -->
+        <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"data-backdrop="false" >
+            <!-- /.modal-dialog -->
+            <div class="modal-dialog" data-backdrop="static">
+                <!-- /.modal-content -->
+                <div class="modal-content" id="move">
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            Journey info
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" 
+                                aria-hidden="true">&times;
+                        </button>
+                        
+                    </div>
+                    <div class="modal-body">
+                        <h4>journey time:
+                        walking time:</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" 
+                                data-dismiss="modal">CLOSED
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            OK
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!-- pop up window -->
 
         <!-- twitter widget -->
             <div id="twitter">
-                <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a class="twitter-timeline" data-height="380" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
+        </div>
         </nav>
-        
-        <!-- pop up window -->
-        
-        
-        <!-- pop up window -->
-
 
 
           <!-- Main page -->
-        <div id="content">
+        <div id="content" class="visible-lg-block  visible-md-block visible-xs-block">
             <!-- Header (introduction) section -->
             <!-- Header title -->
     
             <header>
                 <div class="title">
-                    <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a>
-                     <h1>Dublin <b>Bus</b></h1>
-                    <button type="button" id="sidebarCollapse">
+                    <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1><button type="button" id="sidebarCollapse">
                         <i class="fa fa-search"></i>
                     </button></span>
                     <!-- Side bar button --> 
                 </div>
             </header>
-                <!-- Weather widget -->
-            <div id="weather">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="#b2d0e3" data-raincolor="white" >DUBLIN</a>
+            
+            <!-- Weather widget -->
+            <div id="weather" class="visible-lg-block  visible-md-block visible-xs-block">
+                <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
             </div>
-    <!-- Weather widget -->
+            <!-- Weather widget -->
 
         <!-- Google map -->
             <div id='map'></div>
         <!-- Google map -->
-
-
-            
         </div>
-
-
-
-
 
         <!-- Footer -->
         <footer>
@@ -172,8 +201,9 @@
         </footer>
         <!-- Footer -->
     </div>
-    <div class="overlay"></div>
+   
      <!-- Main page -->
+      
     <!-- Google Maps API -->
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
 <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
@@ -188,20 +218,79 @@
         $('#dismiss, .overlay').on('click', function () {
             // hide sidebar
             $('#sidebar').removeClass('active');
-            // hide overlay
-            $('.overlay').removeClass('active');
         });
 
         $('#sidebarCollapse').on('click', function () {
             // open sidebar
             $('#sidebar').addClass('active');
-            // fade in the overlay
-            $('.overlay').addClass('active');
         });
     });
 </script>
 <!-- Sidebar -->
       
+<!--pop up window-->
+<script type="text/javascript">
+//$(function() {
+//    function reposition() {
+//    var modal = $(this),
+//    dialog = modal.find('.modal-dialog');
+//    modal.css('display', 'block');
+//
+//    // Dividing by two centers the modal exactly, but dividing by three 
+//    // or four works better for larger screens.
+//    dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2));
+//    }
+//    // Reposition when a modal is shown
+//    $('.modal').on('show.bs.modal', reposition);
+//    // Reposition when the window is resized
+//    $(window).on('resize', function() {
+//    $('.modal:visible').each(reposition);
+//    });
+//    });
+    
+    
+		var mouseStartPoint = {"left":0,"top":  0};
+		var mouseEndPoint = {"left":0,"top":  0};
+		var mouseDragDown = false;
+		var oldP = {"left":0,"top":  0};
+		var moveTartet ;
+		$(document).ready(function(){
+			$(document).on("mousedown",".modal-header",function(e){
+				if($(e.target).hasClass("close"))
+					return;
+				mouseDragDown = true;
+				moveTartet = $(this).parent();
+				mouseStartPoint = {"left":e.clientX,"top":  e.clientY};
+				oldP = moveTartet.offset();
+			});
+			$(document).on("mouseup",function(e){
+				mouseDragDown = false;
+				moveTartet = undefined;
+				mouseStartPoint = {"left":0,"top":  0};
+				oldP = {"left":0,"top":  0};
+			});
+			$(document).on("mousemove",function(e){
+				if(!mouseDragDown || moveTartet == undefined)return;
+				var mousX = e.clientX;
+				var mousY = e.clientY;
+				if(mousX < 0)mousX = 0;
+				if(mousY < 0)mousY = 25;
+				mouseEndPoint = {"left":mousX,"top": mousY};
+				var width = moveTartet.width();
+				var height = moveTartet.height();
+				mouseEndPoint.left = mouseEndPoint.left - (mouseStartPoint.left - oldP.left);
+				mouseEndPoint.top = mouseEndPoint.top - (mouseStartPoint.top - oldP.top);
+				moveTartet.offset(mouseEndPoint);
+			});
+		});
+
+
+</script>
+
+    
+      
+<!--pop up window-->
+
 <!-- datetimepicker -->
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({
