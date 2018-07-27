@@ -12,7 +12,6 @@ function initMap() {
       suppressMarkers: true
       });
 
-    // Default start positions for draggable markers
     var startLatLng = {
         lat: 53.349976,
         lng: -6.260354
@@ -34,34 +33,31 @@ function initMap() {
     // Generates and displays Google map
     var map = new google.maps.Map(document.getElementById("map"), mapProp);
     directionsDisplay.setMap(map);
+    //directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
-    // Create our own custom markers
-    markerStart = new google.maps.Marker({
+    var markerStart = new google.maps.Marker({
         position: startLatLng,
         map: map,
         title: 'Start',
         draggable: true,
         visible: true,
         icon: {
-          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-          scale: 7,
-          strokeColor: 'green',
-          strokeWeight: 3
+          url: "/static/images/start.png",
+          scaledSize: new google.maps.Size(64,64),
+         
         },
 
     });
 
-    markerEnd = new google.maps.Marker({
+    var markerEnd = new google.maps.Marker({
         position: endLatLng,
         map: map,
         title: 'Finish',
         draggable: true,
         visible: true,
         icon: {
-          path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-          scale: 7,
-          strokeColor: 'red',
-          strokeWeight: 3
+          url: "/static/images/end.png",
+          scaledSize: new google.maps.Size(64,64),
         },
     });
 
@@ -70,224 +66,135 @@ function initMap() {
 
     // Draggable marker for start location
     google.maps.event.addListener(markerStart, 'dragend', function (evt) {
+        console.log("changed start");
         markerStartLat = evt.latLng.lat().toFixed(3);
         markerStartLng = evt.latLng.lng().toFixed(3);
-        calcRoute(true); //true indicates the marker was dragged
+        calcRoute(true);
     });
 
     // Draggable marker for end location
     google.maps.event.addListener(markerEnd, 'dragend', function (evt) {
         markerEndLat = evt.latLng.lat().toFixed(3);
         markerEndLng = evt.latLng.lng().toFixed(3);
-        calcRoute(true); //true indicates the marker was dragged
+        calcRoute(true);
+        //document.getElementById('test1').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
     });
 
-    // Set search options for addresses bound to Dublin
+    // Search options for addresses bound to Dublin
     var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(52.999804, -6.841221),
-      new google.maps.LatLng(53.693350, -5.914248));
+      new google.maps.LatLng(53.002697, -6.843280),
+      new google.maps.LatLng(53.647383, -5.964374));
 
-    // Setting up Autocomplete search bars
-    var input1 = document.getElementById('searchStart'); // start search bar
-    var input2 = document.getElementById('searchEnd'); // end search bar
+    var input1 = document.getElementById('searchStart');
+    var input2 = document.getElementById('searchEnd');
 
     var options = {
       bounds: defaultBounds,
       strictBounds: true,
     };
 
-    // Create new Autocompletes
     autocompleteStart = new google.maps.places.Autocomplete(input1, options);
     autocompleteEnd = new google.maps.places.Autocomplete(input2, options);
 
-    // Update values of the search bar instantly when a new place is chosen
-    autocompleteStart.addListener('place_changed', fillInStartAddress);
-    autocompleteEnd.addListener('place_changed', fillInEndAddress);
+    autocompleteStart.bindTo('bounds', map);
+    autocompleteEnd.bindTo('bounds', map);
 }
-
-function fillInStartAddress() {
-    /* Function that instantly updates the value of the start address element when a new place is chosen from Autocomplete*/
-    var place = autocompleteStart.getPlace();
-
-    val = place.formatted_address; // Get address of the place chosen
-
-    document.getElementById("searchStart").value = val;
-}
-
-function fillInEndAddress() {
-    /* Function that instantly updates the value of the end address element when a new place is chosen from Autocomplete*/
-    var place = autocompleteEnd.getPlace();
-
-    val = place.formatted_address; // Get address of the place chosen
-
-    document.getElementById("searchEnd").value = val;
-}
-
-
-function toggleMarkers() {
-    /* Toggles visibility of the markers in the global markers array */
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
-    }
-}
-
-
 
 function calcRoute(usedDragMarker) {
-    /* Function that displays a user's route on the map */
+    /* Function that displays a user's route on the map
+    Called by button "Find Route" */
 
-    // Check if user dragged the markers
-    usedDragMarker = usedDragMarker || false; // true if user dragged marker, defaults to false
+    usedDragMarker = usedDragMarker || false; //sets usedDragMarker to argument passed in or false by default
 
-    // If user dragged markers take the markers lat/lng as the start and end
     if (usedDragMarker) {
         var start = markerStartLat + ',' + markerStartLng;
         var end = markerEndLat + ',' + markerEndLng;
     }
-    // Else take the values entered the address search bars
     else {
-        var start = document.getElementById('searchStart').value; // This value is captured from the start address search bar
-        var end = document.getElementById('searchEnd').value; // This value is captured from the end address search bar    
+        console.log("Used the search option");
+        var start = document.getElementById('searchStart').value; // this value is captured from the start dropdown
+        var end = document.getElementById('searchEnd').value; // this value is captured from the end dropdown        
     } 
-
-
-
-    // Set up the request that will be sent to Google
     var request = {
         origin: start,
         destination: end,
-        travelMode: 'TRANSIT',
+        travelMode: 'TRANSIT', // signifies that we want a public transport route
         transitOptions: {
-            modes: ['BUS'], // Specifies that we only want Dublin Bus to be considered
-            routingPreference: 'FEWER_TRANSFERS',
-            //departureTime: new Date(2018, 07, 20, 17, 28), //TODO specify departure time
+            modes: ['BUS'], // specifies that we only want Dublin Bus to be considered
+            routingPreference: 'FEWER_TRANSFERS' // we want the route with the least amount of bus transfers
         },
         provideRouteAlternatives: true
     };
 
-    // Send our request to DirectionsService
     directionsService.route(request, function (response, status) {
-        console.log("success")
-        console.log(response)
-        if (status == 'OK') { // Checks there were no problems with the request and response
-            directionsDisplay.setDirections(response); // Displays the route on the map
+        if (status == 'OK') { // checks that the returned object contains the correct information
+            directionsDisplay.setDirections(response); // displays the route on the map
             
-            // Create global array that will contain the routes suggested by Google
-            allRoutesArray = [];
-
-            var newStartPosition = response.routes[0].legs[0].start_location;
-            var newEndPosition = response.routes[0].legs[0].end_location; //.toUrlValue(6)
-
-            markerStart.setPosition(newStartPosition);
-            markerEnd.setPosition(newEndPosition);
+            var alternativeArray = [];
             
-            // Iterates through every journey suggested by Google's response
+            console.log(response);
+            //console.log(response.routes[0].legs[0].steps[0].start_point.lat());
+            
             for (var j = 0; j < response.routes.length; j++) {
             
-                var numSteps = response.routes[j].legs[0].steps.length; // Number of steps involved in the journey (walk, bus, walk = 3)
-                var busStepsArray = []; // Array to store data for each bus on the journey
-                var totalWalkingTime = 0;
+            var stepsamount = response.routes[j].legs[0].steps.length; // caluclate how many steps are involved in the journey
+            var stepsarray = []; // create an empty array to store data for each bus on the journey
+            var totalwalking = 0; // initilaise walking time to 0
 
-                // Iterate through each step in the provided journey and extract information needed
-                for (var i = 0; i < numSteps; i++) {
+            for (var i = 0; i < stepsamount; i++) { // iterates through each step in the provided route
 
-                    var travelMode = response.routes[j].legs[0].steps[i].travel_mode; // Check if the step in journey involves walking or bus
+                var travelmode = response.routes[j].legs[0].steps[i].travel_mode; // check if the step in journey involves walking or bus
 
-                    if (travelMode == "WALKING") {
-                        var walkingtime = parseInt(response.routes[j].legs[0].steps[i].duration['text']); // Parse walking time from the response
-                        totalWalkingTime += walkingtime;
+                if (travelmode == "WALKING") { // If the step is walking, we only care about the length of time the walk takes
 
-                    } else if (travelMode == "TRANSIT") {
+                    var walkingtime = parseInt(response.routes[j].legs[0].steps[i].duration['text']);
+                    totalwalking += walkingtime; // total walking time involved is captured
 
-                        var routeDict = {}; // New dictionary created for each bus
-                        var chosenRoute = response.routes[j].legs[0].steps[i].transit.line.short_name; // Route number
-                        var distance = parseFloat(response.routes[j].legs[0].steps[i].distance['text']); // Distance travelled on this bus
-                        var departureStop = response.routes[j].legs[0].steps[i].transit.departure_stop.name; // Departure address name
-                        var arrivalStop = response.routes[j].legs[0].steps[i].transit.arrival_stop.name; // Arrival address name
-                        var departureLatLng = response.routes[j].legs[0].steps[i].start_location.lat() + ',' + response.routes[j].legs[0].steps[i].start_location.lng();
-                        var arrivalLatLng = response.routes[j].legs[0].steps[i].end_location.lat() + ',' + response.routes[j].legs[0].steps[i].end_location.lng();
-                        var numStops = response.routes[j].legs[0].steps[i].transit.num_stops; // Number of stops to take on bus
+                } else if (travelmode == "TRANSIT") {
 
-                        // Add each key/value pair to the dictionary
-                        routeDict['route'] = chosenRoute;
-                        routeDict['distance'] = distance;
-                        routeDict['departureStop'] = departureStop;
-                        routeDict['arrivalStop'] = arrivalStop;
-                        routeDict['departureLatLng'] = departureLatLng;
-                        routeDict['arrivalLatLng'] = arrivalLatLng;
-                        routeDict['numStops'] = numStops;
+                    var routedict = {}; // a new dictionary is created for each bus 
+                    var chosenroute = response.routes[j].legs[0].steps[i].transit.line.short_name; // route number
+                    var distance = parseFloat(response.routes[j].legs[0].steps[i].distance['text']); // distance travelled on this bus
+                    var departurestop = response.routes[j].legs[0].steps[i].transit.departure_stop.name; // departure address name
+                    var arrivalstop = response.routes[j].legs[0].steps[i].transit.arrival_stop.name; // arrival address name
+                    var departurelatlng = response.routes[j].legs[0].steps[i].start_location.lat() + ',' + response.routes[j].legs[0].steps[i].start_location.lng(); // departure lat/lng
+                    var arrivallatlng = response.routes[j].legs[0].steps[i].end_location.lat() + ',' + response.routes[j].legs[0].steps[i].end_location.lng(); //arrival lat/lng
+                    var numstops = response.routes[j].legs[0].steps[i].transit.num_stops; // number of stops to take on bus
 
-                        // Append the dictionary made for each bus
-                        busStepsArray.push(routeDict);
-                    }
+                    // add each key/value pair to the dictionary
+                    routedict['route'] = chosenroute;
+                    routedict['distance'] = distance;
+                    routedict['departurestop'] = departurestop;
+                    routedict['arrivalstop'] = arrivalstop;
+                    routedict['departurelatlng'] = departurelatlng;
+                    routedict['arrivallatlng'] = arrivallatlng;
+                    routedict['numstops'] = numstops;
+
+                    // append the dictionary to the array
+                    stepsarray.push(routedict);
+                }
             }
 
-            // Create a new dictionary to store walking time and append it to the array
+            // create a new dictionary to store walking time and append it to the array
             var timedict = {};
-            timedict['walkingtime'] = totalWalkingTime;
-            busStepsArray.push(timedict);
+            timedict['walkingtime'] = totalwalking;
+            stepsarray.push(timedict);
                 
-            allRoutesArray.push(busStepsArray); // allRoutesArray: Array of arrays that contain info on each journey suggested by Google
-
+            alternativeArray.push(stepsarray);
             }
 
-        // Updates everytime a new allRoutesArray is made
-        JSONallRoutesArray = JSON.stringify(allRoutesArray); // Convert to JSON so AJAX can send it
+            //console.log(totalwalking)
+            //console.log(stepsamount);
+            console.log(stepsarray);
+            console.log(alternativeArray);
+
+            //console.log(stepsarray[0]['route'])
         }
     });
 }
 
-// AJAX function that deals with POST request and response
-$(document).ready(function() {
-        $("#journeyForm").submit(function(event){
-            event.preventDefault();
-
-            var journeyData = JSON.stringify($(this).serializeArray());
-
-            $.ajax({
-                type:"POST",
-                url:"/journey/", // Sends post request to the url journey, which calls a function in views.py
-
-                // Collect the data we want to send to Django
-                data: {
-                        query: journeyData,
-                        'origin': $('#searchStart').val(),
-                        'destination': $('#searchEnd').val(),
-                        'dateChosen': $('#dateChosen').val(),
-                        'allRoutes': JSONallRoutesArray, // Contains all the journeys collected from the Google Direction Service object
-                    },
-
-                // Gets a response from Django
-                success: function(response){
-                    console.log("success")
-                    console.log(response)
-                    $('#message').html("<h2>Journey Form Submitted!</h2>")
-
-                    // Create dictionary with information received from Django/Python
-                    var journey = {
-                        'origin': response.origin,
-                        'destination': response.destination,
-                        'dateChosen': response.dateChosen,
-                        'lastBusStepPrediction': response.lastBusStepPrediction,
-                        'routesToTake': response.routesToTake,
-                        'busTime': response.busTime,
-                    };
-
-                    displayJourney(journey)
-                 }
-            });
-            return false;
-       });
-});
-
-function displayJourney(journey) {
-    //Takes a dictionary containing journey info and puts info into HTML elements
-        document.getElementById("journeySummary").innerHTML = `
-        <b>Origin:</b> ${journey.origin}<br>
-        <b>Destination:</b> ${journey.destination}<br>
-        <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
-        <b>Date:</b> ${journey.dateChosen}<br>
-        <b>Routes to take:</b> ${journey.routesToTake}<br>
-        <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
-`
+function toggleMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
+    }
 }

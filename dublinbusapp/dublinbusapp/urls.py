@@ -19,10 +19,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    # Homepage (blank url)
     url(r'^$', views.index, name='home'),
-    #/journey/
-    url(r'^journey/', views.journey, name='journey'),
+
+    #E.g. /15/
+    url(r'^(?P<route>[0-9]+)/$', views.detail, name='detail'),
     #/admin/
     url(r'^admin/', admin.site.urls),
 ]
