@@ -158,6 +158,8 @@ html {
     z-index: 99;
     top: 0px;
     left: 0px;
+    border: 3px solid #f0b917;
+    border-radius: 5px;
 }
 
 #weather {
@@ -168,6 +170,11 @@ html {
     top: -10px;
 
     float: right;
+}
+
+#piechart {
+    height: 200px;
+    width: 200px;
 }
 
 
