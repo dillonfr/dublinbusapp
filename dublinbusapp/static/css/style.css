@@ -8,7 +8,9 @@ h1,h2,h3 {
     display: inline;
     float:left;
     padding: 5px;
+    width: 100vh;
 }
+
 .header{
     top: 10px;
 }
@@ -17,7 +19,7 @@ img{
     height: 45px;
     text-align:center;
     display: inline;
-    margin-top: -20px;
+    margin-top: -30px;
 }
 
 h1{
@@ -26,6 +28,20 @@ h1{
     color: white;
     padding:0 20px;
     line-height: 96px;
+    font-size: 2.2rem;
+}
+
+h2{
+    display: inline;
+    color: white;
+    font-size: 1.5rem;
+}
+h3{
+    color: white;
+    font-size: 1rem;
+}
+h4{
+    color: black;
 }
 
 b{
@@ -54,10 +70,10 @@ html {
 ----------------------------------------------------- */
 
 #sidebar {
-    width: 400px;
+    width: 60vh;
     position: fixed;
     top:0;
-    left:-400px;
+    left:-60vh;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7); 
     transition: all 0.3s;
@@ -90,35 +106,30 @@ html {
 #dismiss:hover {
     background: #fff;
     color: #f0b917;
+    width: 35px;
+    height: 35px;
 }
 
-.overlay {
-    display: none;
-    position: fixed;
-    /* full screen */
-    width: 100vw;
-    height: 100vh;
-    /* transparent black */
-    background: none;
-    /* middle layer, i.e. appears below the sidebar */
-    z-index: 998;
-    opacity: 0;
-    /* animate the transition */
-    transition: all 0.5s ease-in-out;
-}
-/* display .overlay when it has the .active class */
-.overlay.active {
-    display: block;
-    opacity: 1;
-}
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 30px;
     background: black;
+    height: 15vh;
+    top:10vh;
 }
+
 #datetimepicker{
     color: black;
 }
+#twitter{
+    top:1vh;
+    position: relative;
+    width: 55vh;
+}
+/* ---------------------------------------------------
+    MAIN PAGE
+----------------------------------------------------- */
+
 #content {
     background-color: rgba(0, 0, 0, 0.7); 
     width: 100%;
@@ -133,23 +144,36 @@ html {
 
 #sidebarCollapse{
     color: #f0b917;
-    font-size: 25px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid;
+    font-size: 35px;
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px;
     border-radius: 15px;
     border-bottom-color: white;
     cursor: pointer; 
     display: inline;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     text-align: center;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
 #sidebarCollapse:hover{
-    background: #fff;
+    background-color: #fff;
     color: #f0b917;
-    width: 100px;
+    width: 50px;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
+
+
+/*
+#popWindow{
+    width: 60vh;
+    position: absolute;
+    top:45vh;
+    overflow: auto;
+    overflow-y: auto;   
+}
+*/
 
 #map {
 	height: 82vh;
@@ -162,15 +186,11 @@ html {
 
 #weather {
     position: relative; 
-    z-index: 99999;
-    width: 240px;
+    width: 221px;
     height: 70px;
-    top: -10px;
-
+    top: -5px;
     float: right;
 }
-
-
 
 .footer {
     position: fixed;
@@ -184,9 +204,20 @@ html {
 
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -500px;
+        margin-left: -100vh;
+        height: 120vh;
     }
     #sidebar.active {
         margin-left: 0;
+    }
+    #popWindow{
+        width: 58vh;
+        position: fixed;
+        top: 55vh;
+    }
+    #weather{
+        top: -5vh;
+        float: right;
+        width: 221px;
     }
 }
