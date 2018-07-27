@@ -22,7 +22,11 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <!-- Skycons Weather Icons -->
+    <script src="https://rawgithub.com/darkskyapp/skycons/master/skycons.js"></script>
 
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script src="{% static 'javascript/main.js' %}"></script>
     <!-- datetimepicker -->
@@ -55,14 +59,30 @@
     <!-- Form to enter start/end/date -->
     <form method="post" id="journeyForm" name="journeyForm"> <!-- onsubmit="return calcRoute()" -->
     {% csrf_token %}
-    <input type="text" id="searchStart" onchange="setTimeout(calcRoute, 1)" value=""/>
+    <input type="text" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/>
+    <button onclick="document.getElementById('searchStart').value = ''">X</button>
 
-    <input type="text" id="searchEnd" onchange="setTimeout(calcRoute, 1)" value=""/>
+    <input type="text" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
+    <button onclick="document.getElementById('searchEnd').value = ''">X</button>
 
     <div id = 'message'>Initial text</div>
 
 
+    <div id = 'journeySummary'>
+    	<canvas id = 'weatherIcon' height="64" width="64"></canvas>
+    </div>
+
+    <script type="text/javascript">
+    	var skycons = new Skycons({"color": "orange"});
+    	skycons.set("weatherIcon", Skycons.PARTLY_CLOUDY_DAY);
+    	skycons.play();
+    </script>
+
+    <div id = 'realTimeInfo'></div>
+
+
     <div id = 'journeySummary'></div>
+
 
             <div id="datetimepicker">
                 <h3>Departure date</h3>
@@ -160,7 +180,12 @@
         </footer>
         <!-- Footer -->
     </div>
-   
+
+    <div class="overlay"></div>
+
+
+    <div id="piechart"></div>
+
      <!-- Main page -->
       
     <!-- Google Maps API -->

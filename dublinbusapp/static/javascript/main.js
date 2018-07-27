@@ -4,6 +4,16 @@ var markerEndLat;
 var markerEndLng;
 var markers = [];
 
+var startPosition = {
+	lat: 53.321712,
+	lng: -6.266006
+};
+
+var endPosition ={
+	lat: 53.360863,
+	lng: -6.272701
+};
+
 
 function initMap() {
     /* Function that displays the Google map on the web app */
@@ -13,15 +23,15 @@ function initMap() {
       });
 
     // Default start positions for draggable markers
-    var startLatLng = {
-        lat: 53.349976,
-        lng: -6.260354
-    };
+    // var startLatLng = {
+    //     lat: 53.321712,
+    //     lng: -6.266006
+    // };
 
-    var endLatLng = {
-        lat: 53.352573,
-        lng: -6.261665
-    };
+    // var endLatLng = {
+    //     lat: 53.360863,
+    //     lng: -6.272701
+    // };
 
     // Positions the map
     var mapProp = {
@@ -37,7 +47,7 @@ function initMap() {
 
     // Create our own custom markers
     markerStart = new google.maps.Marker({
-        position: startLatLng,
+        position: startPosition,
         map: map,
         title: 'Start',
         draggable: true,
@@ -51,7 +61,7 @@ function initMap() {
     });
 
     markerEnd = new google.maps.Marker({
-        position: endLatLng,
+        position: endPosition,
         map: map,
         title: 'Finish',
         draggable: true,
@@ -69,14 +79,18 @@ function initMap() {
     google.maps.event.addListener(markerStart, 'dragend', function (evt) {
         markerStartLat = evt.latLng.lat().toFixed(3);
         markerStartLng = evt.latLng.lng().toFixed(3);
-        calcRoute(true); //true indicates the marker was dragged
+
+        startPosition = String(markerStartLat) + "," + String(markerStartLng);
+        setTimeout(calcRoute(true), 500) //true indicates the marker was dragged
     });
 
     // Draggable marker for end location
     google.maps.event.addListener(markerEnd, 'dragend', function (evt) {
         markerEndLat = evt.latLng.lat().toFixed(3);
         markerEndLng = evt.latLng.lng().toFixed(3);
-        calcRoute(true); //true indicates the marker was dragged
+
+        endPosition = String(markerEndLat) + "," + String(markerEndLng);
+        setTimeout(calcRoute(true), 500); //true indicates the marker was dragged
     });
 
     // Set search options for addresses bound to Dublin
@@ -108,6 +122,8 @@ function fillInStartAddress() {
 
     val = place.formatted_address; // Get address of the place chosen
 
+    startPosition = String(val);
+
     document.getElementById("searchStart").value = val;
 }
 
@@ -116,6 +132,8 @@ function fillInEndAddress() {
     var place = autocompleteEnd.getPlace();
 
     val = place.formatted_address; // Get address of the place chosen
+
+    endPosition = String(val);
 
     document.getElementById("searchEnd").value = val;
 }
@@ -137,22 +155,25 @@ function calcRoute(usedDragMarker) {
     usedDragMarker = usedDragMarker || false; // true if user dragged marker, defaults to false
 
     // If user dragged markers take the markers lat/lng as the start and end
-    if (usedDragMarker) {
-        var start = markerStartLat + ',' + markerStartLng;
-        var end = markerEndLat + ',' + markerEndLng;
-    }
-    // Else take the values entered the address search bars
-    else {
-        var start = document.getElementById('searchStart').value; // This value is captured from the start address search bar
-        var end = document.getElementById('searchEnd').value; // This value is captured from the end address search bar    
-    } 
+    // if (usedDragMarker) {
+    //     var start = markerStartLat + ',' + markerStartLng;
+    //     var end = markerEndLat + ',' + markerEndLng;
+    // }
+    // // Else take the values entered the address search bars
+    // else {
+    //     var start = document.getElementById('searchStart').value; // This value is captured from the start address search bar
+    //     var end = document.getElementById('searchEnd').value; // This value is captured from the end address search bar    
+    // } 
 
+    // var start = startPosition;
+    // var end = endPosition;
 
+    console.log("Start: " + String(startPosition) + ". End: " + String(endPosition));
 
     // Set up the request that will be sent to Google
     var request = {
-        origin: start,
-        destination: end,
+        origin: startPosition,
+        destination: endPosition,
         travelMode: 'TRANSIT',
         transitOptions: {
             modes: ['BUS'], // Specifies that we only want Dublin Bus to be considered
@@ -268,23 +289,86 @@ $(document).ready(function() {
                         'lastBusStepPrediction': response.lastBusStepPrediction,
                         'routesToTake': response.routesToTake,
                         'busTime': response.busTime,
+                        'walkingTime': response.walkingTime,
+                        'totalTime': response.totalTime,
+                        'realTimeInfo': response.realTimeInfo,
+                        'weatherNowText': response.weatherNowText,
+                        'weatherIcon': response.weatherIcon,
                     };
 
                     displayJourney(journey)
+                    displayRealTimeInfo(journey.realTimeInfo)
+                    //displayWeatherIcon(journey.weatherIcon)
+                    drawPieChart(journey)
                  }
             });
             return false;
        });
 });
 
+
 function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
-        document.getElementById("journeySummary").innerHTML = `
-        <b>Origin:</b> ${journey.origin}<br>
-        <b>Destination:</b> ${journey.destination}<br>
-        <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
-        <b>Date:</b> ${journey.dateChosen}<br>
-        <b>Routes to take:</b> ${journey.routesToTake}<br>
-        <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
+
+    document.getElementById("journeySummary").innerHTML = `
+    <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
+    <b>Date:</b> ${journey.dateChosen}<br>
+    <b>Routes to take:</b> ${journey.routesToTake}<br>
+    <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
+    <b>Time spent walking:</b> ${journey.walkingTime}<br>
+    <b>Total journey time:</b> ${journey.totalTime}<br>
+    <b>Weather forecast:</b> ${journey.weatherNowText}<br>
+    <b>Weather icon:</b> ${journey.weatherIcon}<br>
+
 `
+}
+
+function displayRealTimeInfo(realTimeArray) {
+	/* Takes in a list of dictionaries
+	Each dict contains route:arrivalTime as key:value
+	Displays realtime info on frontend */
+
+	document.getElementById("realTimeInfo").innerHTML = "<b>Real Time information</b><br>"
+
+	var numResults = realTimeArray.length;
+
+	for (var i = 0; i < numResults; i++) {
+		// Select single dict from the array
+		var busDict = realTimeArray[i];
+
+		// The key is the route
+		var route = Object.keys(busDict)[0];
+
+		// The value is the arrival time
+		var arrivalTime = Object.values(busDict)[0];
+
+		// Add to frontend
+		if (arrivalTime == "Due") {
+			document.getElementById("realTimeInfo").innerHTML += "<b>Route:</b> " + route + "<b> Due: </b>Now<br>";
+		} else {
+			document.getElementById("realTimeInfo").innerHTML += "<b>Route:</b> " + route + "<b> Due: </b>" + arrivalTime + " mins<br>";
+		}
+	}
+}
+
+function drawPieChart(journey) {
+	google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Travel Mode', 'Minutes'],
+          ['Walking', 5],
+          ['Bus', 20],
+          ['Waiting', 7],
+        ]);
+
+        var options = {
+          title: 'Journey Details',
+          is3D: true,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
+
 }

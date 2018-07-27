@@ -27,6 +27,8 @@ def getWeather(unixTime):
 		'temperature': currentWeather['temperature'], # Celsius
 		'windSpeed': currentWeather['windSpeed'], # Metres per Second
 		'visibility': currentWeather['visibility'], # Kilometers
+		'weatherNowText': currentWeather['summary'],
+		'weatherIcon': currentWeather['icon'],
 	}
 
 	return weatherDict

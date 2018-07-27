@@ -5,12 +5,16 @@ from django.shortcuts import render
 from buslist import *
 from dates import *
 from weather import *
+from realtime import *
 
 
 from django.views.decorators.csrf import csrf_exempt
 
 import pickle
 import pandas as pd
+from sklearn.externals import joblib
+
+
 
 @csrf_exempt
 def index(request):
@@ -20,6 +24,7 @@ def index(request):
 		'buslist': buslist,
 	}
 	return render(request, 'index.html', context)
+
 
 
 @csrf_exempt
@@ -44,21 +49,27 @@ def journey(request):
 		peak = isPeak(dateChosen)
 
 		# Check weather conditions
-		print(unixTime(dateChosen))
+		#print(unixTime(dateChosen))
 		uTime = unixTime(dateChosen)
 
 		weatherDict = getWeather(uTime)
+		print(weatherDict)
 
 		rain = weatherDict['raining']
 		temperature = weatherDict['temperature']
 		windSpeed = weatherDict['windSpeed']
+		weatherNowText = weatherDict['weatherNowText']
+		weatherIcon = weatherDict['weatherIcon']
+
 		print(rain)
 		print(temperature)
 		print(windSpeed)
 
 
+
 		routesToTake =[]
 		busTime = 0
+		isFirstStopId = False
 
 		#Go through each bus leg and get a prediction on journey time for that leg
 		for i in range(0, numBusJourneys):
@@ -78,6 +89,12 @@ def journey(request):
 			originId = int(getStopId(stopsDictList, originLatLng))
 			destinationId = int(getStopId(stopsDictList, destinationLatLng))
 
+			# Get realtime info for the first bus stop id of the journey
+			if isFirstStopId == False:
+				realTimeInfo = getRealTimeInfo(originId) # Returns a list
+				isFirstStopId = True
+
+
 			# Assume direction for now
 			direction = 2
 
@@ -85,13 +102,18 @@ def journey(request):
 			df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
 
 			# Pass df into model and get prediction
-			loaded_model = pickle.load(open("/home/student/dublinbusapp/dublinbusapp/test_7D_pickle.sav", 'rb'))
+
+
+			loaded_model = pickle.load(open("C:/Users/dillo_000/Desktop/dublinbusapp/dublinbusapp/dublinbusapp/pickles/test_7D_pickle.sav", 'rb'))
+
 
 			journeyTimePrediction = loaded_model.predict(df)
 			journeyTimePrediction = journeyTimePrediction.tolist()
 			journeyTimePrediction = journeyTimePrediction[0]
 
 			busTime += journeyTimePrediction
+
+
 
 		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 		result = {
@@ -102,6 +124,11 @@ def journey(request):
 				'lastBusStepPrediction': journeyTimePrediction/60, # Seconds to minutes
 				'routesToTake': routesToTake,
 				'busTime': busTime/60, # Seconds to minutes
+				'walkingTime': walkingTime,
+				'totalTime': (busTime/60) + walkingTime,
+				'realTimeInfo': realTimeInfo,
+				'weatherNowText': weatherNowText,
+				'weatherIcon': weatherIcon,
 				}
 
 	# Return the result dictionary to AJAX as a response
