@@ -1,5 +1,5 @@
-h1,h2,h3 {
-	color: white;
+h1,h2,h3,h4 {
+	color: #fff;
 	font-weight: bold;
 }
 
@@ -25,7 +25,6 @@ img{
 h1{
     display: inline;
     vertical-align: top;
-    color: white;
     padding:0 20px;
     line-height: 96px;
     font-size: 2.2rem;
@@ -33,15 +32,11 @@ h1{
 
 h2{
     display: inline;
-    color: white;
     font-size: 1.5rem;
 }
+
 h3{
-    color: white;
     font-size: 1rem;
-}
-h4{
-    color: black;
 }
 
 b{
@@ -58,13 +53,23 @@ html {
     width: 100%;
 }
 
-.wrapper {
+.container-fluid {
     display: block;
     width: 100%;
     position: relative;
     align-items: stretch;
 }
 
+.btn{
+    display: block;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.btn:hover{
+    background-color: #f0b917;
+    color: #f0b917;
+}
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -118,14 +123,31 @@ html {
     top:10vh;
 }
 
+#journeyInput{
+    color: black;
+}
+
 #datetimepicker{
     color: black;
+}
+
+#popWindow{
+/*    background-color: rgba(0, 0, 0, 0.7); */
+}
+
+#move{
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+}
+#modal{
+    color: white;
 }
 #twitter{
     top:1vh;
     position: relative;
     width: 55vh;
 }
+
 /* ---------------------------------------------------
     MAIN PAGE
 ----------------------------------------------------- */
@@ -220,4 +242,11 @@ html {
         float: right;
         width: 221px;
     }
+    .container-fluid {
+        display: block;
+        width: 100%;
+        position: relative;
+        align-items: stretch;
+    }
+
 }
