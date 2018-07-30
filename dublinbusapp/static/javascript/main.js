@@ -300,6 +300,7 @@ $(document).ready(function() {
                     displayRealTimeInfo(journey.realTimeInfo)
                     //displayWeatherIcon(journey.weatherIcon)
                     drawPieChart(journey)
+
                  }
             });
             return false;
@@ -321,6 +322,19 @@ function displayJourney(journey) {
     <b>Weather icon:</b> ${journey.weatherIcon}<br>
 
 `
+	
+	document.getElementById("modalBody").innerHTML = `<b>Your total journey time take ${journey.totalTime} mins</b>`
+
+    document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
+
+    document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+
+
+	// <div id = 'popupDiv1' class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
+	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
+	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
+	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
+
 }
 
 function displayRealTimeInfo(realTimeArray) {
@@ -354,17 +368,22 @@ function displayRealTimeInfo(realTimeArray) {
 function drawPieChart(journey) {
 	google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(drawChart);
+
+
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Travel Mode', 'Minutes'],
-          ['Walking', 5],
-          ['Bus', 20],
-          ['Waiting', 7],
+          ['Walking: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
+          ['Bus: ' + String(journey.busTime.toFixed(2)) + ' mins', journey.busTime],
+          ['Waiting: 6 mins', 6],
         ]);
 
         var options = {
-          title: 'Journey Details',
-          is3D: true,
+          title: 'Journey Breakdown',
+          pieHole: 0.6,
+          enableInteractivity: false,
+          pieSliceText: 'none',
+          legend: { position:'labeled' },
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));

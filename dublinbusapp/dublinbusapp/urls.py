@@ -25,4 +25,6 @@ urlpatterns = [
     url(r'^journey/', views.journey, name='journey'),
     #/admin/
     url(r'^admin/', admin.site.urls),
+    # Catch all other urls
+    url(r'^.*', views.index, name='unmatched')
 ]
