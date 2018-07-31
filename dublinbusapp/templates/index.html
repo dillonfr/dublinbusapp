@@ -12,7 +12,6 @@
     <!-- Load custom css stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>    
     <!-- Popper.JS -->
@@ -24,9 +23,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <!-- Skycons Weather Icons -->
     <script src="https://rawgithub.com/darkskyapp/skycons/master/skycons.js"></script>
-
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 
     <script src="{% static 'javascript/main.js' %}"></script>
     <!-- datetimepicker -->
@@ -38,51 +37,39 @@
     <title>Dublin Bus</title>
   </head>
   <body>
-
-    <!-- Navbar -->
-    <!-- Navbar -->
-
-
-    <div class="wrapper visible-lg-block visible-md-block visible-xs-block">
+    <div class="container">
         <!-- Sidebar -->
         <nav id="sidebar">
-            <!-- Panel for displaying journey informations -->
-        <div class="container visible-lg-block  visible-md-block visible-xs-block">
-
+        <!-- Panel for displaying journey informations -->
+        <div class="wrapper">
+            <!-- Back button -->
             <div id="dismiss">
                 <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="visible-lg-block  visible-md-block visible-xs-block sidebar-header ">
+            <!-- sidebar-header-->
+            <div class="sidebar-header">
                 <h2>Journey Information</h2>
             </div>
 
-    <!-- Form to enter start/end/date -->
-    <form method="post" id="journeyForm" name="journeyForm"> <!-- onsubmit="return calcRoute()" -->
-    {% csrf_token %}
-    <input type="text" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/>
-    <button onclick="document.getElementById('searchStart').value = ''">X</button>
 
-    <input type="text" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
-    <button onclick="document.getElementById('searchEnd').value = ''">X</button>
+            <!-- Form to enter start/end/date -->
+            {% csrf_token %}
+            <div id="journeyInput">
+                <h3>From</h3>
+                <div class="input-group col-md-10">
+                    <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
+                </div>
+                <h3>To</h3>
+                <div class="input-group col-md-10">
+                    <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
+                    <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
+                </div>
+            </div>
 
-    <div id = 'message'>Initial text</div>
+            <div id = 'message'>Initial text</div>
+            <div id = 'journeySummary'></div>
 
-
-    <div id = 'journeySummary'>
-    	<canvas id = 'weatherIcon' height="64" width="64"></canvas>
-    </div>
-
-    <script type="text/javascript">
-    	var skycons = new Skycons({"color": "orange"});
-    	skycons.set("weatherIcon", Skycons.PARTLY_CLOUDY_DAY);
-    	skycons.play();
-    </script>
-
-    <!-- <div id = 'realTimeInfo'></div> -->
-
-
-    <div id = 'journeySummary'></div>
-
+            <!--datetimepicker-->
 
             <div id="datetimepicker">
                 <h3>Departure date</h3>
@@ -96,6 +83,8 @@
             <!--datetimepicker-->
             
       
+
+
         <!-- TODO Fix post request -->
         <form method="post" id="journeyForm" name="journeyForm">
             <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#popWindow"/>Find Route</button>
@@ -135,7 +124,8 @@
         <!-- pop up window -->
 
 
-        <!-- twitter widget -->
+
+            <!-- twitter widget -->
             <div id="twitter">
                 <a class="twitter-timeline" data-height="380" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
@@ -143,11 +133,10 @@
         </nav>
 
 
-          <!-- Main page -->
-        <div id="content" class="visible-lg-block  visible-md-block visible-xs-block">
+        <!-- Main page -->
+        <div id="content" class="container-fluid col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <!-- Header (introduction) section -->
             <!-- Header title -->
-    
             <header>
                 <div class="title">
                     <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1><button type="button" id="sidebarCollapse">
@@ -158,25 +147,27 @@
             </header>
             
             <!-- Weather widget -->
-            <div id="weather" class="visible-lg-block  visible-md-block visible-xs-block">
+            <div id="weather" class="">
                 <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
             </div>
             <!-- Weather widget -->
 
-        <!-- Google map -->
+            <!-- Google map -->
             <div id='map'></div>
-        <!-- Google map -->
-        </div>
-
-
-        <!-- Footer -->
+            <!-- Google map -->
         <footer>
           <!-- Copyright -->
           <div class="footer">© 2018 Copyright: Team 14</div>
           <!-- Copyright -->
         </footer>
+        </div>
+
+
+        <!-- Footer -->
+        
         <!-- Footer -->
     </div>
+
 
     <div class="overlay"></div>
 
@@ -188,6 +179,11 @@
 <!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
 
 
+
+    <div id="piechart"></div>
+
+     <!-- Main page -->
+
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
     <!-- Google Maps API -->
@@ -196,14 +192,14 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('#dismiss, .overlay').on('click', function () {
+        $('#dismiss').on('click', function () {
             // hide sidebar
             $('#sidebar').removeClass('active');
         });
 
         $('#sidebarCollapse').on('click', function () {
             // open sidebar
-            $('#sidebar').addClass('active');
+            $('#sidebar').toggleClass('active');
         });
     });
 </script>
@@ -245,13 +241,19 @@
             moveTartet.offset(mouseEndPoint);
         });
     });
-
-
 </script>
-
-    
-      
 <!--pop up window-->
+      
+<!--      fix-->
+<!--
+<script type="text/javascript">
+$(function(){
+    $(".container-fluid").width($(".container-fluid").width()+30);
+});
+</script>
+-->
+      <!--      fix-->
+
 
 <!-- datetimepicker -->
 <script type="text/javascript">
@@ -287,10 +289,12 @@
     });
 </script>
 <!-- datetimepicker -->
+      
 <!-- Weather widget -->
 <script>
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 </script>
 <!-- Weather widget -->
+      
   </body>
 </html>
