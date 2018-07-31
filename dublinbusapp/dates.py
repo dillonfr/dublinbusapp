@@ -93,6 +93,7 @@ def getRouteStops(routeNumber):
 	return stopidDict
 
 
+
 def getStopId(dictlist, lat_lng):
 	''' Function that returns the stopid for the stop that is closest to the given lat/long
 	The Google Directions Service returns lat/long for each stop that is slightly different to Dublin Bus lat/long for the same stop
