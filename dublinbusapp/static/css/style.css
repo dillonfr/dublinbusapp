@@ -135,7 +135,6 @@ html {
 #twitter{
     top:1vh;
     position: relative;
-    width: 50vh;
 }
 /* ---------------------------------------------------
     popWindow
@@ -145,6 +144,9 @@ html {
 /*    background-color: rgba(0, 0, 0, 0.7); */
 }
 
+#close{
+    color: #fff;
+}
 #move{
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
@@ -168,7 +170,7 @@ html {
     left: 0;
     margin-left: 0;
     margin-right: 0;
-    width: 182%;
+    width: 100%;
 }
 
 #sidebarCollapse{
