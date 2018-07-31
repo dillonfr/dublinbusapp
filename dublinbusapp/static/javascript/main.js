@@ -269,7 +269,7 @@ $(document).ready(function() {
                 success: function(response){
                     console.log("success")
                     console.log(response)
-                    $('#message').html("<h2>Journey Form Submitted!</h2>")
+                    // $('#message').html("<h2>Journey Form Submitted!</h2>")
 
                     // Create dictionary with information received from Django/Python
                     var journey = {
@@ -284,6 +284,7 @@ $(document).ready(function() {
                         'realTimeInfo': response.realTimeInfo,
                         'weatherNowText': response.weatherNowText,
                         'weatherIcon': response.weatherIcon,
+                        'temperature': response.temperature,
                     };
 
                     displayJourney(journey)
@@ -301,23 +302,36 @@ $(document).ready(function() {
 function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
 
-    document.getElementById("journeySummary").innerHTML = `
-    <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
-    <b>Date:</b> ${journey.dateChosen}<br>
-    <b>Routes to take:</b> ${journey.routesToTake}<br>
-    <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
-    <b>Time spent walking:</b> ${journey.walkingTime}<br>
-    <b>Total journey time:</b> ${journey.totalTime}<br>
-    <b>Weather forecast:</b> ${journey.weatherNowText}<br>
-    <b>Weather icon:</b> ${journey.weatherIcon}<br>
+//     document.getElementById("journeySummary").innerHTML = `
+//     <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
+//     <b>Date:</b> ${journey.dateChosen}<br>
+//     <b>Routes to take:</b> ${journey.routesToTake}<br>
+//     <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
+//     <b>Time spent walking:</b> ${journey.walkingTime}<br>
+//     <b>Total journey time:</b> ${journey.totalTime}<br>
+//     <b>Weather forecast:</b> ${journey.weatherNowText}<br>
+//     <b>Weather icon:</b> ${journey.weatherIcon}<br>
 
-`
+// `
 	
-	document.getElementById("modalBody").innerHTML = `<b>Your total journey time take ${journey.totalTime} mins</b>`
+	document.getElementById("modalBody").innerHTML = `
+    <b>Total journey time: ${journey.totalTime} mins</b><br>
+    <b>Routes: ${journey.routesToTake}</b><br>
+    `
+    //<b>Date: ${journey.dateChosen}</b><br>
 
     document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
 
+    document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
+
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+
+    document.getElementById("weatherForecast").innerHTML = `
+    <b>Weather Forecast: ${journey.weatherNowText}</b><br>
+    <b>Temperature: ${journey.temperature}</b><br>
+    <b>Weather Icon: ${journey.weatherIcon}</b><br>
+
+    `
 
 
 	// <div id = 'popupDiv1' class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
@@ -373,7 +387,8 @@ function drawPieChart(journey) {
           pieHole: 0.6,
           enableInteractivity: false,
           pieSliceText: 'none',
-          legend: { position:'labeled' },
+          legend: { position:'labeled', textStyle: {color: 'white', fontSize: 16} },
+          backgroundColor: 'transparent',
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
