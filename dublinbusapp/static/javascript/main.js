@@ -14,24 +14,12 @@ var endPosition ={
 	lng: -6.272701
 };
 
-
 function initMap() {
     /* Function that displays the Google map on the web app */
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer({
       suppressMarkers: true
       });
-
-    // Default start positions for draggable markers
-    // var startLatLng = {
-    //     lat: 53.321712,
-    //     lng: -6.266006
-    // };
-
-    // var endLatLng = {
-    //     lat: 53.360863,
-    //     lng: -6.272701
-    // };
 
     // Positions the map
     var mapProp = {
@@ -170,6 +158,8 @@ function calcRoute(usedDragMarker) {
 
     console.log("Start: " + String(startPosition) + ". End: " + String(endPosition));
 
+    var unixDateChosen = findUnixDateChosen();
+
     // Set up the request that will be sent to Google
     var request = {
         origin: startPosition,
@@ -178,7 +168,7 @@ function calcRoute(usedDragMarker) {
         transitOptions: {
             modes: ['BUS'], // Specifies that we only want Dublin Bus to be considered
             routingPreference: 'FEWER_TRANSFERS',
-            //departureTime: new Date(2018, 07, 20, 17, 28), //TODO specify departure time
+            departureTime: new Date(unixDateChosen),
         },
         provideRouteAlternatives: true
     };
@@ -390,4 +380,21 @@ function drawPieChart(journey) {
         chart.draw(data, options);
       }
 
+}
+
+function findUnixDateChosen() {
+    var dateChosen =  document.getElementById("dateChosen").value;
+    var unixDateChosen;
+
+    // Convert dateChosen into unix timestamp
+    if ( (dateChosen == "") || Date.parse(dateChosen) < Date.now() ) {
+        unixDateChosen = Date.now();
+    } else {
+        unixDateChosen = Date.parse(dateChosen);
+    }
+
+    console.log(unixDateChosen);
+
+    return unixDateChosen + 3600000; // Add 3.6 million milliseconds to the time (adding 1 hour) to correct for timezone difference
+    // Returns datetime with an hour too early if you dont add the milliseconds needed
 }

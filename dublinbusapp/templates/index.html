@@ -87,7 +87,7 @@
             <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
-                    <input class="form-control" id="dateChosen" size="16" type="text" value="" readonly>
+                    <input class="form-control" id="dateChosen" onchange="setTimeout(calcRoute, 500)" size="16" type="text" value="" readonly>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                 </div>
