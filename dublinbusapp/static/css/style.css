@@ -49,15 +49,7 @@ body {
 
 body,
 html {
-    height: 100%;
-    width: 100%;
-}
-
-.container-fluid {
-    display: block;
-    width: 100%;
-    position: relative;
-    align-items: stretch;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .btn{
@@ -70,15 +62,19 @@ html {
     background-color: #f0b917;
     color: #f0b917;
 }
+
+*{margin:0;padding:0}
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
 
 #sidebar {
-    width: 60vh;
+    display:inline-block;
+    min-width: 380px;
+    max-width: 380px;
     position: fixed;
     top:0;
-    left:-60vh;
+    left:-380px;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7); 
     transition: all 0.3s;
@@ -91,6 +87,10 @@ html {
 
 #sidebar.active {
     left: 0;
+}
+
+.wrapper{
+    padding: 15px;
 }
 
 #dismiss {
@@ -121,6 +121,7 @@ html {
     background: black;
     height: 15vh;
     top:10vh;
+    text-align: center;
 }
 
 #journeyInput{
@@ -130,6 +131,15 @@ html {
 #datetimepicker{
     color: black;
 }
+
+#twitter{
+    top:1vh;
+    position: relative;
+    width: 50vh;
+}
+/* ---------------------------------------------------
+    popWindow
+----------------------------------------------------- */
 
 #popWindow{
 /*    background-color: rgba(0, 0, 0, 0.7); */
@@ -142,11 +152,7 @@ html {
 #modal{
     color: white;
 }
-#twitter{
-    top:1vh;
-    position: relative;
-    width: 55vh;
-}
+
 
 /* ---------------------------------------------------
     MAIN PAGE
@@ -154,14 +160,15 @@ html {
 
 #content {
     background-color: rgba(0, 0, 0, 0.7); 
-    width: 100%;
-    padding: 20px;
+    padding: 15px;
     min-height: 100vh;
-    transition: all 0.3s;
     position: absolute;
     top: 0;
     right: 0;
-    
+    left: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 182%;
 }
 
 #sidebarCollapse{
@@ -185,17 +192,6 @@ html {
     width: 50px;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
-
-
-/*
-#popWindow{
-    width: 60vh;
-    position: absolute;
-    top:45vh;
-    overflow: auto;
-    overflow-y: auto;   
-}
-*/
 
 #map {
 	height: 82vh;
@@ -226,8 +222,10 @@ html {
 
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -100vh;
-        height: 120vh;
+        min-width: 380px;
+        max-width: 380px;
+        margin-left: -380px;
+        height: 112vh;
     }
     #sidebar.active {
         margin-left: 0;
@@ -241,12 +239,6 @@ html {
         top: -5vh;
         float: right;
         width: 221px;
-    }
-    .container-fluid {
-        display: block;
-        width: 100%;
-        position: relative;
-        align-items: stretch;
     }
 
 }

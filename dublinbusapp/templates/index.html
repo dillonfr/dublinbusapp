@@ -12,7 +12,6 @@
     <!-- Load custom css stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>    
     <!-- Popper.JS -->
@@ -22,7 +21,6 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-
 
     <script src="{% static 'javascript/main.js' %}"></script>
     <!-- datetimepicker -->
@@ -34,46 +32,36 @@
     <title>Dublin Bus</title>
   </head>
   <body>
-
-    <!-- Navbar -->
-    <!-- Navbar -->
-
-
-    <div class="container-fluid">
+    <div class="container">
         <!-- Sidebar -->
         <nav id="sidebar">
-            <!-- Panel for displaying journey informations -->
-        <div class="container">
-
+        <!-- Panel for displaying journey informations -->
+        <div class="wrapper">
+            <!-- Back button -->
             <div id="dismiss">
                 <i class="fas fa-arrow-left"></i>
             </div>
+            <!-- sidebar-header-->
             <div class="sidebar-header">
                 <h2>Journey Information</h2>
             </div>
 
-    <!-- Form to enter start/end/date -->
-<!--            <form id="journeyForm" role="form"> -->
-                <!-- onsubmit="return calcRoute()" -->
-                {% csrf_token %}
-                <div id="journeyInput">
-                    <h3>From</h3>
-                    <div class="input-group col-md-10">
-                        <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
-                    </div>
-                    <h3>To</h3>
-                    <div class="input-group col-md-10">
-                        <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
-                        <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
-                    </div>
+            <!-- Form to enter start/end/date -->
+            {% csrf_token %}
+            <div id="journeyInput">
+                <h3>From</h3>
+                <div class="input-group col-md-10">
+                    <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
                 </div>
-<!--            </form>-->
+                <h3>To</h3>
+                <div class="input-group col-md-10">
+                    <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
+                    <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
+                </div>
+            </div>
 
-
-    <div id = 'message'>Initial text</div>
-
-
-    <div id = 'journeySummary'></div>
+            <div id = 'message'>Initial text</div>
+            <div id = 'journeySummary'></div>
 
             <!--datetimepicker-->
             <div id="datetimepicker">
@@ -88,58 +76,58 @@
             <!--datetimepicker-->
             
       
-        <!-- TODO Fix post request -->
-        <form method="post" id="journeyForm" name="journeyForm">
-            <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-lg" data-toggle="modal" data-target="#popWindow">Find Route</button>
-        
-            <input type="button" id="toggle" value="Toggle" class="btn btn-lg" onclick="toggleMarkers();"/>
-        </form>
+            <!-- TODO Fix post request -->
+            <form method="post" id="journeyForm" name="journeyForm">
+                <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-lg" data-toggle="modal" data-target="#popWindow">Find Route</button>
+
+                <input type="button" id="toggle" value="Toggle" class="btn btn-lg" onclick="toggleMarkers();"/>
+            </form>
 
 
-        <!-- pop up window -->
-        <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false" >
-            <!-- /.modal-dialog -->
-            <div class="modal-dialog" data-backdrop="static">
-                <!-- /.modal-content -->
-                <div class="modal-content" id="move">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Journey info
-                        </h4>
-                        <button type="button" class="close" data-dismiss="modal" 
-                                aria-hidden="true" id="modal">&times;
-                        </button>
-                        
-                    </div>
-                    <div class="modal-body">
-                      	<div class="row">
-                            <div class="col-md-6"><h4>12</h4>
+            <!-- pop up window -->
+            <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false" >
+                <!-- /.modal-dialog -->
+                <div class="modal-dialog" data-backdrop="static">
+                    <!-- /.modal-content -->
+                    <div class="modal-content" id="move">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                Journey info
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" 
+                                    aria-hidden="true" id="modal">&times;
+                            </button>
+
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6"><h4>12</h4>
+                                </div>
+                                <div class="col-md-6"><h4>13</h4>
+                                </div>
                             </div>
-                            <div class="col-md-6"><h4>13</h4>
+                            <div class="row">
+                                <div class="col-md-6"><h4>14</h4>
+                                </div>
+                                <div class="col-md-6"><h4>15</h4>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6"><h4>14</h4>
-                            </div>
-                            <div class="col-md-6"><h4>15</h4>
-                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" 
+                                    data-dismiss="modal">CLOSED
+                            </button>
+                            <button type="button" class="btn" data-dismiss="modal">
+                                OK
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" 
-                                data-dismiss="modal">CLOSED
-                        </button>
-                        <button type="button" class="btn" data-dismiss="modal">
-                            OK
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-        <!-- pop up window -->
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div>
+            <!-- pop up window -->
 
 
-        <!-- twitter widget -->
+            <!-- twitter widget -->
             <div id="twitter">
                 <a class="twitter-timeline" data-height="380" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
@@ -147,11 +135,10 @@
         </nav>
 
 
-          <!-- Main page -->
-        <div id="content" class="">
+        <!-- Main page -->
+        <div id="content" class="container-fluid col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <!-- Header (introduction) section -->
             <!-- Header title -->
-    
             <header>
                 <div class="title">
                     <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1><button type="button" id="sidebarCollapse">
@@ -167,18 +154,19 @@
             </div>
             <!-- Weather widget -->
 
-        <!-- Google map -->
+            <!-- Google map -->
             <div id='map'></div>
-        <!-- Google map -->
-        </div>
-
-
-        <!-- Footer -->
+            <!-- Google map -->
         <footer>
           <!-- Copyright -->
           <div class="footer">© 2018 Copyright: Team 14</div>
           <!-- Copyright -->
         </footer>
+        </div>
+
+
+        <!-- Footer -->
+        
         <!-- Footer -->
     </div>
 
@@ -186,11 +174,6 @@
     <div id="piechart"></div>
 
      <!-- Main page -->
-      
-    <!-- Google Maps API -->
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
-<!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
-
 
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
@@ -200,14 +183,14 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('#dismiss, .overlay').on('click', function () {
+        $('#dismiss').on('click', function () {
             // hide sidebar
             $('#sidebar').removeClass('active');
         });
 
         $('#sidebarCollapse').on('click', function () {
             // open sidebar
-            $('#sidebar').addClass('active');
+            $('#sidebar').toggleClass('active');
         });
     });
 </script>
@@ -249,15 +232,14 @@
             moveTartet.offset(mouseEndPoint);
         });
     });
-
-
 </script>
 <!--pop up window-->
+      
 <!--      fix-->
 <!--
 <script type="text/javascript">
-      $(function(){
-    $(".container-fluid").width($(".container-fluid").width()-30);
+$(function(){
+    $(".container-fluid").width($(".container-fluid").width()+30);
 });
 </script>
 -->
@@ -298,10 +280,12 @@
     });
 </script>
 <!-- datetimepicker -->
+      
 <!-- Weather widget -->
 <script>
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 </script>
 <!-- Weather widget -->
+      
   </body>
 </html>
