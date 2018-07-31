@@ -41,7 +41,7 @@
         <!-- Sidebar -->
         <nav id="sidebar">
         <!-- Panel for displaying journey informations -->
-        <div class="wrapper">
+        <div class="col-md-12">
             <!-- Back button -->
             <div id="dismiss">
                 <i class="fas fa-arrow-left"></i>
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div id = 'message'>Initial text</div>
+<!--            <div id = 'message'>Initial text</div>-->
             <div id = 'journeySummary'></div>
 
             <!--datetimepicker-->
@@ -87,10 +87,11 @@
 
         <!-- TODO Fix post request -->
         <form method="post" id="journeyForm" name="journeyForm">
-            <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#popWindow"/>Find Route</button>
+            <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Find Route</button>
+            <input type="button" id="toggle" value="Toggle" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
         </form>
 
-            <input type="button" id="toggle" value="Toggle" class="btn btn-primary btn-lg" onclick="toggleMarkers();"/>
+            
 
         <!-- pop up window -->
         <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="false">
@@ -111,10 +112,10 @@
                        <div class="loader"></div> 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" 
+                        <button type="button" class="btn" 
                                 data-dismiss="modal">CLOSED
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <button type="button" class="btn" data-dismiss="modal">
                             OK
                         </button>
                     </div>
