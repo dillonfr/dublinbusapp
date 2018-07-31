@@ -21,6 +21,11 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <!-- Skycons Weather Icons -->
+    <script src="https://rawgithub.com/darkskyapp/skycons/master/skycons.js"></script>
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 
     <script src="{% static 'javascript/main.js' %}"></script>
     <!-- datetimepicker -->
@@ -46,6 +51,7 @@
                 <h2>Journey Information</h2>
             </div>
 
+
             <!-- Form to enter start/end/date -->
             {% csrf_token %}
             <div id="journeyInput">
@@ -64,10 +70,11 @@
             <div id = 'journeySummary'></div>
 
             <!--datetimepicker-->
+
             <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
-                    <input class="form-control" id="dateChosen" size="16" type="text" value="" readonly>
+                    <input class="form-control" id="dateChosen" onchange="setTimeout(calcRoute, 500)" size="16" type="text" value="" readonly>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                 </div>
@@ -76,55 +83,46 @@
             <!--datetimepicker-->
             
       
-            <!-- TODO Fix post request -->
-            <form method="post" id="journeyForm" name="journeyForm">
-                <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-lg" data-toggle="modal" data-target="#popWindow">Find Route</button>
-
-                <input type="button" id="toggle" value="Toggle" class="btn btn-lg" onclick="toggleMarkers();"/>
-            </form>
 
 
-            <!-- pop up window -->
-            <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false" >
-                <!-- /.modal-dialog -->
-                <div class="modal-dialog" data-backdrop="static">
-                    <!-- /.modal-content -->
-                    <div class="modal-content" id="move">
-                        <div class="modal-header">
-                            <h4 class="modal-title">
-                                Journey info
-                            </h4>
-                            <button type="button" class="close" data-dismiss="modal" 
-                                    aria-hidden="true" id="modal">&times;
-                            </button>
+        <!-- TODO Fix post request -->
+        <form method="post" id="journeyForm" name="journeyForm">
+            <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#popWindow"/>Find Route</button>
+        </form>
 
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6"><h4>12</h4>
-                                </div>
-                                <div class="col-md-6"><h4>13</h4>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6"><h4>14</h4>
-                                </div>
-                                <div class="col-md-6"><h4>15</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn" 
-                                    data-dismiss="modal">CLOSED
-                            </button>
-                            <button type="button" class="btn" data-dismiss="modal">
-                                OK
-                            </button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
-            <!-- pop up window -->
+            <input type="button" id="toggle" value="Toggle" class="btn btn-primary btn-lg" onclick="toggleMarkers();"/>
+
+        <!-- pop up window -->
+        <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="false">
+            <!-- /.modal-dialog -->
+            <div class="modal-dialog" data-backdrop="static">
+                <!-- /.modal-content -->
+                <div class="modal-content" id="move">
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            Journey info
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" 
+                                aria-hidden="true">&times;
+                        </button>
+                        
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                       <div class="loader"></div> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" 
+                                data-dismiss="modal">CLOSED
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            OK
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!-- pop up window -->
+
 
 
             <!-- twitter widget -->
@@ -169,6 +167,17 @@
         
         <!-- Footer -->
     </div>
+
+
+    <div class="overlay"></div>
+
+
+     <!-- Main page -->
+      
+    <!-- Google Maps API -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
+<!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
+
 
 
     <div id="piechart"></div>
