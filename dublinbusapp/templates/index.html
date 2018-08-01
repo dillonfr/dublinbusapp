@@ -37,7 +37,7 @@
     <title>Dublin Bus</title>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
         <!-- Sidebar -->
         <nav id="sidebar">
         <!-- Panel for displaying journey informations -->
@@ -139,42 +139,40 @@
 
 
         <!-- Main page -->
-        <div id="content" class="container-fluid col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="content" class="container-fluid">
             <!-- Header (introduction) section -->
             <!-- Header title -->
-            <header>
-                <div class="title">
-                    <span><a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1><button type="button" id="sidebarCollapse">
+            <div class="row">
+                <div class="title col-sm-9 align-left">
+                    <a href="/">  <img src="{% static 'images/logo1.png' %}" alt="site logo"></a>
+                        <h1>Dublin <b>Bus</b></h1>
+                        <button type="button" id="sidebarCollapse">
                         <i class="fa fa-search"></i>
-                    </button></span>
+                    </button>
                     <!-- Side bar button --> 
                 </div>
-            </header>
-            
             <!-- Weather widget -->
-            <div id="weather" class="">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
+                <div id="weather" class="col-sm-3 align-right">
+                    <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
+                </div>
+            <!-- Weather widget -->
             </div>
-            <!-- Weather widget -->
-
             <!-- Google map -->
             <div id='map'></div>
             <!-- Google map -->
-        <footer>
           <!-- Copyright -->
           <div class="footer">© 2018 Copyright: Team 14</div>
           <!-- Copyright -->
-        </footer>
         </div>
 
 
         <!-- Footer -->
         
         <!-- Footer -->
-    </div>
+</div>
 
 
-    <div class="overlay"></div>
+<!--    <div class="overlay"></div>-->
 
 
      <!-- Main page -->

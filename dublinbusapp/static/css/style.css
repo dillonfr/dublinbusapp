@@ -170,7 +170,6 @@ html {
     left: 0;
     margin-left: 0;
     margin-right: 0;
-    width: 100%;
 }
 
 #sidebarCollapse{
@@ -196,7 +195,7 @@ html {
 }
 
 #map {
-	height: 82vh;
+	height: 80vh;
 	width: 100%;
     position: relative; 
     z-index: 99;
@@ -230,7 +229,6 @@ html {
         min-width: 380px;
         max-width: 380px;
         margin-left: -380px;
-        height: 112vh;
     }
     #sidebar.active {
         margin-left: 0;
@@ -240,11 +238,13 @@ html {
         position: fixed;
         top: 55vh;
     }
+/*
     #weather{
         top: -5vh;
         float: right;
         width: 221px;
     }
+*/
 }
 
 
