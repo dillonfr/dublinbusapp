@@ -56,8 +56,7 @@ html {
 
 #sidebar {
     display:inline-block;
-    min-width: 380px;
-    max-width: 380px;
+    width: 380px;
     position: fixed;
     top:0;
     left:-380px;
@@ -211,9 +210,8 @@ html {
 
 @media (max-width: 768px) {
     #sidebar {
-        min-width: 380px;
-        max-width: 380px;
-        margin-left: -380px;
+        width: 400px;
+        margin-left: -400px;
     }
     
     #sidebar.active {
@@ -258,8 +256,7 @@ html {
     }
 
     #sidebar {
-        min-width: 320px;
-        max-width: 320px;
+        width: 320px;
         margin-left: -320px;
     }
     
