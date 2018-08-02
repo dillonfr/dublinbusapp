@@ -69,12 +69,9 @@
 
             <!-- <div id = 'message'></div> -->
 
-<!--            <div id = 'message'>Initial text</div>-->
-
             <div id = 'journeySummary'></div>
 
             <!--datetimepicker-->
-
             <div id="datetimepicker">
                 <h3>Departure date</h3>
                 <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
@@ -134,6 +131,7 @@
             <div id="twitter" class="col-md-12">
                 <a class="twitter-timeline" data-height="380" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
+            <!-- twitter widget -->
         </div>
         </nav>
 
@@ -144,9 +142,8 @@
             <!-- Header title -->
             <div class="row">
                 <div class="title col-sm-9 align-left">
-                    <a href="/">  <img src="{% static 'images/logo1.png' %}" alt="site logo"></a>
-                        <h1>Dublin <b>Bus</b></h1>
-                        <button type="button" id="sidebarCollapse">
+                    <a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1>
+                    <button type="button" id="sidebarCollapse">
                         <i class="fa fa-search"></i>
                     </button>
                     <!-- Side bar button --> 
@@ -160,22 +157,16 @@
             <!-- Google map -->
             <div id='map'></div>
             <!-- Google map -->
+            
+          <!-- Footer -->
           <!-- Copyright -->
           <div class="footer">© 2018 Copyright: Team 14</div>
           <!-- Copyright -->
+          <!-- Footer -->
         </div>
-
-
-        <!-- Footer -->
-        
-        <!-- Footer -->
+        <!-- Main page -->
 </div>
 
-
-<!--    <div class="overlay"></div>-->
-
-
-     <!-- Main page -->
       
     <!-- Google Maps API -->
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
@@ -247,17 +238,6 @@
 </script>
 <!--pop up window-->
       
-<!--      fix-->
-<!--
-<script type="text/javascript">
-$(function(){
-    $(".container-fluid").width($(".container-fluid").width()+30);
-});
-</script>
--->
-      <!--      fix-->
-
-
 <!-- datetimepicker -->
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({

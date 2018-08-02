@@ -3,14 +3,6 @@ h1,h2,h3,h4 {
 	font-weight: bold;
 }
 
-.title{
-    vertical-align: middle;
-    display: inline;
-    float:left;
-    padding: 5px;
-    width: 100vh;
-}
-
 img{
     height: 45px;
     text-align:center;
@@ -58,8 +50,6 @@ html {
     background-color: #f0b917;
     color: #f0b917;
 }
-
-*{margin:0;padding:0}
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
@@ -204,8 +194,7 @@ html {
 #weather {
     position: relative; 
     width: 221px;
-    height: 70px;
-    top: -5px;
+    height: 40px;
     float: right;
 }
 
@@ -226,21 +215,66 @@ html {
         max-width: 380px;
         margin-left: -380px;
     }
+    
     #sidebar.active {
         margin-left: 0;
     }
+    
     #popWindow{
-        width: 58vh;
         position: fixed;
-        top: 55vh;
+        top: 52vh;
     }
-/*
+    
     #weather{
         top: -5vh;
         float: right;
         width: 221px;
     }
-*/
+}
+
+@media (max-width: 568px) {
+    h1{
+        font-size: 1.5rem;
+    }
+    
+    img{
+        height: 40px;
+        text-align:center;
+        display: inline;
+        margin-top: -30px;
+    }
+    
+    #sidebarCollapse{
+        font-size: 1.8rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    #sidebarCollapse:hover{
+        background-color: #fff;
+        color: #f0b917;
+        width: 40px;
+        -webkit-tap-highlight-color:rgba(0,0,0,0);
+    }
+
+    #sidebar {
+        min-width: 320px;
+        max-width: 320px;
+        margin-left: -320px;
+    }
+    
+    #sidebar.active {
+        margin-left: 0;
+    }
+    
+    #popWindow{
+        position: fixed;
+        top: 52vh;
+    }
+    #weather{
+        height: 40px;
+        top: -40px;
+    }
 }
 
 
