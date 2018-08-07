@@ -3,13 +3,6 @@ h1,h2,h3,h4 {
 	font-weight: bold;
 }
 
-img{
-    height: 45px;
-    text-align:center;
-    display: inline;
-    margin-top: -30px;
-}
-
 h1{
     display: inline;
     vertical-align: top;
@@ -113,8 +106,35 @@ html {
     color: black;
 }
 
+#change{
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#change img{
+    height: 30px;
+    width: 30px;
+    z-index: 99999;
+    display: block;
+}
+
+#transfer{
+    background-color: rgba(0, 0, 0, 0);  
+}
+
+#transit{
+    width: 20px;
+    height: 20px;
+}
+
 #datetimepicker{
     color: black;
+    margin-top:20px;
+}
+
+#journeyForm{
+    top:5px;
+    position: relative;
 }
 
 #twitter{
@@ -157,10 +177,16 @@ html {
     margin-right: 0;
 }
 
+#logo{
+    height: 45px;
+    text-align:center;
+    display: inline;
+    margin-top: -30px;
+}
+
 #sidebarCollapse{
     color: #f0b917;
     font-size: 35px;
-    background-color: rgba(0, 0, 0, 0);
     border: 1px;
     border-radius: 15px;
     border-bottom-color: white;
@@ -169,6 +195,7 @@ html {
     width: 50px;
     height: 50px;
     text-align: center;
+    background-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
@@ -228,6 +255,15 @@ html {
         float: right;
         width: 221px;
     }
+    
+/*
+    #change{
+        margin: 10px 10px;
+        height: 30px;
+        position: relative;
+    }
+*/
+
 }
 
 @media (max-width: 568px) {
@@ -264,6 +300,12 @@ html {
         margin-left: 0;
     }
     
+    #sidebar .sidebar-header {
+        padding: 20px;
+        height: 10vh;
+        top:8vh;
+    }
+    
     #popWindow{
         position: fixed;
         top: 52vh;
@@ -271,6 +313,12 @@ html {
     #weather{
         height: 40px;
         top: -40px;
+    }
+    #change{
+        margin: 10px 10px;
+        height: 20px;
+        top:10px;
+        position: relative;
     }
 }
 
