@@ -1,0 +1,4 @@
+{
+  "tests.py::TestDates": true,
+  "tests.py::TestDates::testStripDay": true
+}
