@@ -16,10 +16,12 @@ def stripDay(date):
 		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
 	elif date[-2] == 'a':
 		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
+
 	return int(DayInt) + 2
 
 def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''
+
 	if date == "":
 		return datetime.datetime.today().hour
 	elif date[-2] == 'a': # Check if time is AM
@@ -74,7 +76,7 @@ def getRouteStops(routeNumber):
 
 	#url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
 
-	jsonFile = "/home/student/dublinbusapp/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
+	jsonFile = "C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
 
 	# with urllib.request.urlopen(url) as req:
 	# 	Stops = json.loads(req.read().decode("utf-8"))

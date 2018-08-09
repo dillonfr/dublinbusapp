@@ -6,6 +6,7 @@ from buslist import *
 from dates import *
 from weather import *
 from realtime import *
+from routedb import *
 
 
 from django.views.decorators.csrf import csrf_exempt
@@ -31,6 +32,7 @@ def index(request):
 def journey(request):
 	if request.method == "POST":
 
+		conn = connectDB()
 
 		allRoutes = json.loads(request.POST["allRoutes"])
 
@@ -53,7 +55,7 @@ def journey(request):
 		uTime = unixTime(dateChosen)
 
 		weatherDict = getWeather(uTime)
-		print(weatherDict)
+		#print(weatherDict)
 
 		rain = weatherDict['raining']
 		temperature = weatherDict['temperature']
@@ -61,10 +63,9 @@ def journey(request):
 		weatherNowText = weatherDict['weatherNowText']
 		weatherIcon = weatherDict['weatherIcon']
 
-		print(rain)
-		print(temperature)
-		print(windSpeed)
-
+		# print(rain)
+		# print(temperature)
+		# print(windSpeed)
 
 
 		routesToTake =[]
@@ -86,8 +87,8 @@ def journey(request):
 			stopsDictList = getRouteStops(str(route))
 
 			# Find the closest stopid's with the given latitudes/longitudes
-			originId = int(getStopId(stopsDictList, originLatLng))
-			destinationId = int(getStopId(stopsDictList, destinationLatLng))
+			originId = str(getStopId(stopsDictList, originLatLng))
+			destinationId = str(getStopId(stopsDictList, destinationLatLng))
 
 			# Get realtime info for the first bus stop id of the journey
 			if isFirstStopId == False:
@@ -98,11 +99,32 @@ def journey(request):
 			# Assume direction for now
 			direction = 2
 
+			# DB queries
+			dbroute = route.upper()
+			print(dbroute)
+			gtfsday = getGTFSday(dateChosen)
+			print(gtfsday)
+			timeOfDay = getSeconds(dateChosen)
+			print(timeOfDay)
+
+			tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
+			trip_id = tripdata[0]
+			startnum = tripdata[1]
+			print(trip_id)
+			print(startnum)
+
+			stopnum = getEndStop(conn, trip_id, destinationId)[0][0]
+			print(stopnum)
+
+			seqstoplist = getStopList(conn, trip_id, startnum, stopnum)
+			for i in range(0, len(seqstoplist), 1):
+				print(seqstoplist[i][0])
+
 			# Create dataframe
 			df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
 
 			# Pass df into model and get prediction
-			loaded_model = joblib.load(open("/home/student/dublinbusapp/dublinbusapp/dublinbusapp/pickles/test_7D_pickle.sav", 'rb'))
+			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\test_7D_pickle.sav", 'rb'))
 
 
 			journeyTimePrediction = loaded_model.predict(df)
