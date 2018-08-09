@@ -48,6 +48,7 @@ def journey(request):
 		# Reformat date chosen into format that can be passed into model
 		dateChosen = request.POST["dateChosen"]
 		dayOfWeek = stripDay(dateChosen)
+		hourOfDay = stripTime(dateChosen)
 		peak = isPeak(dateChosen)
 
 		# Check weather conditions
@@ -97,7 +98,7 @@ def journey(request):
 
 
 			# Assume direction for now
-			direction = 2
+			# direction = 2
 
 			# DB queries
 			dbroute = route.upper()
@@ -120,14 +121,37 @@ def journey(request):
 			for i in range(0, len(seqstoplist), 1):
 				print(seqstoplist[i][0])
 
+			# df created using DB
+			listOfStops = []
+			for i in range(0, len(seqstoplist)):
+				listOfStops.append(seqstoplist[i][0])
+
+			print(listOfStops)
+
+			df_list = pd.DataFrame(listOfStops, columns=['stop_point_id'])
+
+			modelData = {'day' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'rain' : rain, 'temp' : temperature}
+			df_features = pd.DataFrame(modelData, index=[0])
+			# print(df_features)
+
+			df_new = pd.concat([df_features, df_list], axis=1, ignore_index=True)
+			df_new = df_new.fillna(method='ffill')
+
+			df_new[6]=df_new[5].shift(-1)
+			columnsTitles=[0, 2, 1, 5, 6, 3, 4]
+			df_new = df_new.reindex(columns=columnsTitles)
+			df_new = df_new[:-1]
+
+			print(df_new)
+
 			# Create dataframe
-			df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
+			# df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
 
 			# Pass df into model and get prediction
-			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\test_7D_pickle.sav", 'rb'))
+			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route11_LR.sav", 'rb'))
 
 
-			journeyTimePrediction = loaded_model.predict(df)
+			journeyTimePrediction = loaded_model.predict(df_new)
 			journeyTimePrediction = journeyTimePrediction.tolist()
 			journeyTimePrediction = journeyTimePrediction[0]
 

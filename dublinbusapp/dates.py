@@ -17,7 +17,7 @@ def stripDay(date):
 	elif date[-2] == 'a':
 		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
 
-	return int(DayInt) + 2
+	return int(DayInt) + 1
 
 def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''
@@ -36,21 +36,21 @@ def isPeak(date):
 	if date == "":
 		HourInt = datetime.datetime.today().hour
 		if HourInt >= 7 and HourInt <= 10 or HourInt >= 16 and HourInt <= 19:
-			return 2 # Within peak hours
+			return 1 # Within peak hours
 		else:
-			return 1 # Not within peak hours
+			return 0 # Not within peak hours
 	elif date[-2] == 'a':
 		HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
 		if HourInt >= 7 and HourInt <= 10:
-			return 2
-		else:
 			return 1
+		else:
+			return 0
 	elif date[-2] == 'p':
 		HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H'))
 		if HourInt >= 4 and HourInt <= 7:
-			return 2
-		else:
 			return 1
+		else:
+			return 0
 
 def unixTime(date):
     if date == "":
