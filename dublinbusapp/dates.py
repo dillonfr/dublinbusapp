@@ -11,13 +11,19 @@ def stripDay(date):
 	Sample input: "23 July 2018 - 04:30 pm"
 	'''
 	if date == "":
-		DayInt = datetime.datetime.today().weekday()
+		DayInt = int(datetime.datetime.today().weekday()) + 1
+		print(DayInt)
 	elif date[-2] == 'p':
-		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
+		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
+		print(DayInt)
 	elif date[-2] == 'a':
-		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
+		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
+		print(DayInt)
 
-	return int(DayInt) + 1
+	if DayInt == 0:
+		return 7
+	else:
+		return DayInt
 
 def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''

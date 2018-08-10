@@ -12,6 +12,7 @@ from routedb import *
 from django.views.decorators.csrf import csrf_exempt
 
 import pickle
+import numpy
 import pandas as pd
 from sklearn.externals import joblib
 
@@ -96,13 +97,9 @@ def journey(request):
 				realTimeInfo = getRealTimeInfo(originId) # Returns a list
 				isFirstStopId = True
 
-
-			# Assume direction for now
-			# direction = 2
-
 			# DB queries
 			dbroute = route.upper()
-			print(dbroute)
+			# print(dbroute)
 			gtfsday = getGTFSday(dateChosen)
 			print(gtfsday)
 			timeOfDay = getSeconds(dateChosen)
@@ -118,15 +115,13 @@ def journey(request):
 			print(stopnum)
 
 			seqstoplist = getStopList(conn, trip_id, startnum, stopnum)
-			for i in range(0, len(seqstoplist), 1):
-				print(seqstoplist[i][0])
+			# for i in range(0, len(seqstoplist), 1):
+			# 	print(seqstoplist[i][0])
 
 			# df created using DB
 			listOfStops = []
 			for i in range(0, len(seqstoplist)):
 				listOfStops.append(seqstoplist[i][0])
-
-			print(listOfStops)
 
 			df_list = pd.DataFrame(listOfStops, columns=['stop_point_id'])
 
@@ -142,20 +137,76 @@ def journey(request):
 			df_new = df_new.reindex(columns=columnsTitles)
 			df_new = df_new[:-1]
 
-			print(df_new)
+			df_new[0] = df_new[0].astype('int')
+			df_new[1] = df_new[1].astype('int')
+			df_new[2] = df_new[2].astype('int')
+			df_new[3] = df_new[3].astype('int')
+			df_new[4] = df_new[4].astype('int')
+			df_new[5] = df_new[5].astype('int')
+			df_new[6] = df_new[6].astype('float')
 
+			df_new[0] = df_new[0].astype('category')
+			df_new[1] = df_new[1].astype('category')
+			df_new[2] = df_new[2].astype('category')
+			df_new[3] = df_new[3].astype('category')
+			df_new[4] = df_new[4].astype('category')
+			df_new[5] = df_new[5].astype('category')
+			df_new[6] = df_new[6].astype('category')
+
+			# print(df_new.dtypes)
+			print(df_new)
+			# print(df_new.dtypes)
+
+			df_new = df_new.drop(df_new.columns[6], axis=1)
+
+			df_new.columns = ['dayofweek', 'peak', 'hour', 'stoppointid', 'nextstop_id', 'rain']
+
+			# df_dumvars = pd.get_dummies(df_new)
+
+			print(df_new)
+			# print(df_dumvars)
 			# Create dataframe
 			# df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
 
 			# Pass df into model and get prediction
-			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route11_LR.sav", 'rb'))
 
+			dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route1_dummies_final.sav", 'rb'))
 
-			journeyTimePrediction = loaded_model.predict(df_new)
+			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\test_1_LR_dummi.sav", 'rb'))
+
+			#df_empty = df_new.reindex(columns = dummies.columns, fill_value=0)
+			df_dum = pd.get_dummies(df_new)
+			# print("df_dum \n ", df_dum)
+
+			df_x, df_y = dummies.align(df_dum, fill_value=0)
+
+			df_final = df_y.reindex(dummies.columns, axis=1)
+			print("df_final \n", df_final)
+			# print("df_empty \n", df_empty)
+
+			# print("df_y \n", df_y)
+
+			journeyTimePrediction = loaded_model.predict(df_final)
+			#print(journeyTimePrediction)
 			journeyTimePrediction = journeyTimePrediction.tolist()
-			journeyTimePrediction = journeyTimePrediction[0]
+			# print(journeyTimePrediction)
+			# journeyTimePrediction = journeyTimePrediction[0]
 
-			busTime += journeyTimePrediction
+			print('------------------------------------------')
+			totalTrips = len(journeyTimePrediction)
+			errorCount = 0
+			total = 0
+			for i in range(0, len(journeyTimePrediction)):
+				if journeyTimePrediction[i] > 500:
+					errorCount += 1
+				else:
+					total += int(journeyTimePrediction[i])
+			avgStopTime = total // (totalTrips - errorCount)
+			errorTime = avgStopTime * errorCount
+			total += errorTime
+			print(total)
+
+			busTime += total
 
 
 		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
@@ -164,7 +215,7 @@ def journey(request):
 				'origin': request.POST["origin"],
 				'destination': request.POST["destination"],
 				'dateChosen': request.POST["dateChosen"],
-				'lastBusStepPrediction': journeyTimePrediction/60, # Seconds to minutes
+				'lastBusStepPrediction': total/60, # Seconds to minutes
 				'routesToTake': routesToTake,
 				'busTime': busTime/60, # Seconds to minutes
 				'walkingTime': walkingTime,

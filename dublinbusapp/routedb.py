@@ -19,9 +19,9 @@ def getGTFSday(date):
     if date == "":
         DayInt = datetime.datetime.today().weekday()
     elif date[-2] == 'p':
-        DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
+        DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
     elif date[-2] == 'a':
-        DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
+        DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
 
     if DayInt >= 0 and DayInt <= 4:
         gtfsday = '"y102v", "y1022", "y1023"'
@@ -33,19 +33,23 @@ def getGTFSday(date):
     return str(gtfsday)
 
 def getSeconds(date):
-	''' Takes in specific datetime format and returns the time in seconds since midnight'''
+    ''' Takes in specific datetime format and returns the time in seconds since midnight'''
 
-	now = datetime.datetime.now()
-	midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    now = datetime.datetime.now()
+    midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-	if date == "":
-		seconds = (now - midnight).seconds
-		return int(seconds)
-	elif date[-2] == 'a': # Check if time is AM
-		return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
-	elif date[-2] == 'p': # Check if time is PM
-		return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
+    if date == "":
+        seconds = (now - midnight).seconds
+    elif date[-2] == 'a':
+        time = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H:%M:%S')
+        h, m, s = time.split(':')
+        seconds = int(h) * 3600 + int(m) * 60 + int(s)
+    elif date[-2] =='p':
+        time = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H:%M:%S')
+        h, m, s = time.split(':')
+        seconds = int(h) * 3600 + int(m) * 60 + int(s) + 43200
 
+    return int(seconds)
 
 def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
     c = conn.cursor()
@@ -59,19 +63,6 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
 
     print(rows)
     return rows
-
-# def getEndStop(conn, route, dayOfWeek, destinationId, timeOfDay):
-#     c = conn.cursor()
-#
-#     print("---------------------------------------------------------------------")
-#     #print('SELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'"')
-#
-#     response = c.execute('SELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+destinationId+'" AND departure_time >= ?;', [timeOfDay])
-#
-#     rows = c.fetchall()
-#
-#     print(rows)
-#     return rows
 
 def getEndStop(conn, trip_id, destinationId):
     c = conn.cursor()
