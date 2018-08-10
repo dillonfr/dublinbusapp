@@ -53,10 +53,16 @@ def getSeconds(date):
     return int(seconds)
 
 def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
+    ''' Takes in route, day of the week, stopid of first stop and time of day
+    The database contains the timetable for every stop and every route for the month of August
+    Searches database for trips that fit the given parameters
+    timeOfDay is in seconds from midnight. We return the trip with a departure time from the stop that is closest to the user's chosen one
+    Returns the unique tripid for the chosen trip and the sequence number for the starting stop '''
+
     c = conn.cursor()
 
     print("---------------------------------------------------------------------")
-    print('SELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+originID+'" AND departure_time >= "+timeOfDay+" ORDER BY departure_time LIMIT 1')
+    print('Start Query: \nSELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+originID+'" AND departure_time >= "+timeOfDay+" ORDER BY departure_time LIMIT 1')
 
     response = c.execute('SELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+originID+'" AND departure_time >= ? ORDER BY departure_time LIMIT 1;', [timeOfDay])
 
@@ -65,10 +71,14 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
     return rows
 
 def getEndStop(conn, trip_id, destinationId):
+    ''' Takes in a unique tripid and the stopid for the last stop in the route
+    Only searches entries in the database that have the same tripid. Guarantees that we are using the same trip from the first query
+    Returns the sequence number for the last stop '''
+
     c = conn.cursor()
 
     print("---------------------------------------------------------------------")
-    print('SELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'"')
+    print('End Query: \nSELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'"')
 
     response = c.execute('SELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'";')
 
@@ -77,10 +87,14 @@ def getEndStop(conn, trip_id, destinationId):
     return rows
 
 def getStopList(conn, trip_id, startnum, stopnum):
+    ''' Takes in a unique tripid and the sequence number of the first and last stop in the route
+    Only searches entries in the database that have the same tripid. Guarantees that we are using the same trip from previous queries
+    Returns the stopid for every stop between the starting and end stop '''
+
     c = conn.cursor()
 
     print("---------------------------------------------------------------------")
-    print('SELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN "+startnum+" AND "+stopnum+"')
+    print('Stoplist Query: \nSELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN "+startnum+" AND "+stopnum+"')
 
     response = c.execute('SELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN ? AND ?;', (startnum, stopnum))
 
