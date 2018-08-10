@@ -48,38 +48,44 @@
             </div>
             <!-- sidebar-header-->
             <div class="sidebar-header">
-                <h2>Journey Information</h2>
+                <h2>Find Your Journey</h2>
             </div>
 
 
             <!-- Form to enter start/end/date -->
             {% csrf_token %}
-            <div id="journeyInput">
-                <h3>From</h3>
-                <div class="input-group col-md-10">
-                    <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value=""/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
+            <div id="journeyInput" class="col-md-12">
+
+<!--                    <h3>From</h3>-->
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value="" placeholder="From:"/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
                 </div>
-                <h3>To</h3>
-                <div class="input-group col-md-10">
-                    <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value=""/>
+                <div id="change">
+                    <button type="button" class="btn" id="transfer"> 
+                        <img src="{% static 'images/transfer.png' %}">
+                    </button>
+                </div>
+<!--                    <h3>To</h3>-->
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value="" placeholder="To:"/>
                     <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
                 </div>
+   
             </div>
 
 
             <!-- <div id = 'message'></div> -->
 
-            <div id = 'journeySummary'></div>
+<!--            <div id = 'journeySummary'></div>-->
 
             <!--datetimepicker-->
-            <div id="datetimepicker">
-                <h3>Departure date</h3>
-                <div class="input-group date form_datetime col-md-10" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
-                    <input class="form-control" id="dateChosen" onchange="setTimeout(calcRoute, 500)" size="16" type="text" value="" readonly>
+            <div id="datetimepicker" class="col-md-12">
+<!--                <h3>Departure date</h3>-->
+                <div class="input-group date form_datetime" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
+                    <input class="form-control" id="dateChosen" onchange="setTimeout(calcRoute, 500)" size="16" type="text" value="" readonly placeholder="Departure date:">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                 </div>
-                <input type="hidden" id="dtp_input1" value="" /><br/>
              </div>
             <!--datetimepicker-->
             
@@ -87,8 +93,8 @@
 
 
         <!-- TODO Fix post request -->
-        <form method="post" id="journeyForm" name="journeyForm">
-            <button type="submit" id="routebtn" name="start_id" value="Find Route" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Find Route</button>
+        <form method="post" id="journeyForm" name="journeyForm" class="col-md-12">
+            <button type="submit" id="routebtn" name="start_id" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Go !</button>
             <input type="button" id="toggle" value="Toggle" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
         </form>
 
@@ -142,15 +148,17 @@
             <!-- Header title -->
             <div class="row">
                 <div class="title col-sm-9 align-left">
-                    <a href="/"><img src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1>
+                    <a href="/"><img id="logo" src="{% static 'images/logo1.png' %}" alt="site logo"></a><h1>Dublin <b>Bus</b></h1>
                     <button type="button" id="sidebarCollapse">
                         <i class="fa fa-search"></i>
                     </button>
                     <!-- Side bar button --> 
                 </div>
             <!-- Weather widget -->
-                <div id="weather" class="col-sm-3 align-right">
-                    <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
+                <div class="col-sm-3 align-right">
+                    <div id="weather">
+                        <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-font="Times New Roman" data-icons="Climacons Animated" data-mode="Current" data-theme="original" data-basecolor="" data-textcolor="white" data-highcolor="#f0b917" data-lowcolor="#76b39d" data-mooncolor="#f0b917" data-cloudcolor="#b2d0e3" data-cloudfill="white" data-raincolor="white" >DUBLIN</a>
+                    </div>
                 </div>
             <!-- Weather widget -->
             </div>
@@ -199,7 +207,17 @@
 </script>
 <!-- Sidebar -->
       
-<!--pop up window-->
+<!-- Exchange button -->
+<script type="text/javascript">
+document.getElementById('change').onclick = function() {
+    var tmp = document.getElementById('searchStart').value;
+    document.getElementById('searchStart').value = document.getElementById('searchEnd').value;
+    document.getElementById('searchEnd').value = tmp;
+};
+</script>
+<!-- Exchange button -->
+      
+<!-- pop up window -->
 <script type="text/javascript">
     var mouseStartPoint = {"left":0,"top":  0};
     var mouseEndPoint = {"left":0,"top":  0};
@@ -236,7 +254,7 @@
         });
     });
 </script>
-<!--pop up window-->
+<!-- pop up window -->
       
 <!-- datetimepicker -->
 <script type="text/javascript">
