@@ -1,21 +1,21 @@
+# Import the necessary Django packages
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
+# Import the data analytics packages
+from sklearn.externals import joblib
+import pickle
+import numpy
+import pandas as pd
+
+# Import the packages containing the functions we need
 from buslist import *
 from dates import *
 from weather import *
 from realtime import *
 from routedb import *
-
-
-from django.views.decorators.csrf import csrf_exempt
-
-import pickle
-import numpy
-import pandas as pd
-from sklearn.externals import joblib
-
 
 
 @csrf_exempt
@@ -26,7 +26,6 @@ def index(request):
 		'buslist': buslist,
 	}
 	return render(request, 'index.html', context)
-
 
 
 @csrf_exempt
@@ -43,32 +42,19 @@ def journey(request):
 
 		walkingTime = bestRoute[-1]['walkingtime']
 
-		# Initialise times that our model will add minutes to
-
-
 		# Reformat date chosen into format that can be passed into model
 		dateChosen = request.POST["dateChosen"]
 		dayOfWeek = stripDay(dateChosen)
 		hourOfDay = stripTime(dateChosen)
 		peak = isPeak(dateChosen)
-
-		# Check weather conditions
-		#print(unixTime(dateChosen))
 		uTime = unixTime(dateChosen)
-
 		weatherDict = getWeather(uTime)
-		#print(weatherDict)
 
 		rain = weatherDict['raining']
 		temperature = weatherDict['temperature']
 		windSpeed = weatherDict['windSpeed']
 		weatherNowText = weatherDict['weatherNowText']
 		weatherIcon = weatherDict['weatherIcon']
-
-		# print(rain)
-		# print(temperature)
-		# print(windSpeed)
-
 
 		routesToTake =[]
 		busTime = 0
@@ -99,11 +85,8 @@ def journey(request):
 
 			# DB queries
 			dbroute = route.upper()
-			# print(dbroute)
 			gtfsday = getGTFSday(dateChosen)
-			print(gtfsday)
 			timeOfDay = getSeconds(dateChosen)
-			print(timeOfDay)
 
 			tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
 			trip_id = tripdata[0]
@@ -137,57 +120,39 @@ def journey(request):
 			df_new = df_new.reindex(columns=columnsTitles)
 			df_new = df_new[:-1]
 
-			df_new[0] = df_new[0].astype('int')
-			df_new[1] = df_new[1].astype('int')
-			df_new[2] = df_new[2].astype('int')
-			df_new[3] = df_new[3].astype('int')
-			df_new[4] = df_new[4].astype('int')
-			df_new[5] = df_new[5].astype('int')
-			df_new[6] = df_new[6].astype('float')
-
-			df_new[0] = df_new[0].astype('category')
-			df_new[1] = df_new[1].astype('category')
-			df_new[2] = df_new[2].astype('category')
-			df_new[3] = df_new[3].astype('category')
-			df_new[4] = df_new[4].astype('category')
-			df_new[5] = df_new[5].astype('category')
-			df_new[6] = df_new[6].astype('category')
-
-			# print(df_new.dtypes)
-			print(df_new)
-			# print(df_new.dtypes)
+			for i in range(0, 7):
+				df_new[i] = df_new[i].astype('int')
+				df_new[i] = df_new[i].astype('category')
 
 			df_new = df_new.drop(df_new.columns[6], axis=1)
 
 			df_new.columns = ['dayofweek', 'peak', 'hour', 'stoppointid', 'nextstop_id', 'rain']
 
-			# df_dumvars = pd.get_dummies(df_new)
-
 			print(df_new)
-			# print(df_dumvars)
+
 			# Create dataframe
 			# df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
-
 			# Pass df into model and get prediction
 
-			dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route1_dummies_final.sav", 'rb'))
+			dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\route" + dbroute+ "_dummies.sav", 'rb'))
 
-			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\test_1_LR_dummi.sav", 'rb'))
+			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route" + dbroute + "_model.sav", 'rb'))
 
-			#df_empty = df_new.reindex(columns = dummies.columns, fill_value=0)
+			print(dummies)
+
 			df_dum = pd.get_dummies(df_new)
-			# print("df_dum \n ", df_dum)
+			print("df_dum \n ", df_dum)
 
 			df_x, df_y = dummies.align(df_dum, fill_value=0)
 
+			print("df_y \n", df_y)
+
 			df_final = df_y.reindex(dummies.columns, axis=1)
 			print("df_final \n", df_final)
-			# print("df_empty \n", df_empty)
 
-			# print("df_y \n", df_y)
 
 			journeyTimePrediction = loaded_model.predict(df_final)
-			#print(journeyTimePrediction)
+			print(journeyTimePrediction)
 			journeyTimePrediction = journeyTimePrediction.tolist()
 			# print(journeyTimePrediction)
 			# journeyTimePrediction = journeyTimePrediction[0]
@@ -197,10 +162,12 @@ def journey(request):
 			errorCount = 0
 			total = 0
 			for i in range(0, len(journeyTimePrediction)):
-				if journeyTimePrediction[i] > 500:
+				if journeyTimePrediction[i] > 500 or journeyTimePrediction[i] < -500:
 					errorCount += 1
 				else:
 					total += int(journeyTimePrediction[i])
+			print(errorCount)
+			print(total)
 			avgStopTime = total // (totalTrips - errorCount)
 			errorTime = avgStopTime * errorCount
 			total += errorTime
