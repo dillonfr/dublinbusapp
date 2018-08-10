@@ -98,6 +98,7 @@ def journey(request):
 			print(stopnum)
 
 			seqstoplist = getStopList(conn, trip_id, startnum, stopnum)
+			print(seqstoplist)
 			# for i in range(0, len(seqstoplist), 1):
 			# 	print(seqstoplist[i][0])
 
@@ -128,6 +129,7 @@ def journey(request):
 
 			df_new.columns = ['dayofweek', 'peak', 'hour', 'stoppointid', 'nextstop_id', 'rain']
 
+			print('-------------------------------------------------------------')
 			print(df_new)
 
 			# Create dataframe
@@ -138,26 +140,24 @@ def journey(request):
 
 			loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route" + dbroute + "_model.sav", 'rb'))
 
-			print(dummies)
-
 			df_dum = pd.get_dummies(df_new)
-			print("df_dum \n ", df_dum)
+			# print("df_dum \n ", df_dum)
 
 			df_x, df_y = dummies.align(df_dum, fill_value=0)
 
-			print("df_y \n", df_y)
+			# print("df_y \n", df_y)
 
 			df_final = df_y.reindex(dummies.columns, axis=1)
-			print("df_final \n", df_final)
+			# print("df_final \n", df_final)
 
 
 			journeyTimePrediction = loaded_model.predict(df_final)
-			print(journeyTimePrediction)
+			print('-------------------------------------------------------------')
+			print('Journey Time Prediction for Each Stop: \n', journeyTimePrediction)
 			journeyTimePrediction = journeyTimePrediction.tolist()
 			# print(journeyTimePrediction)
 			# journeyTimePrediction = journeyTimePrediction[0]
 
-			print('------------------------------------------')
 			totalTrips = len(journeyTimePrediction)
 			errorCount = 0
 			total = 0
@@ -166,15 +166,15 @@ def journey(request):
 					errorCount += 1
 				else:
 					total += int(journeyTimePrediction[i])
-			print(errorCount)
-			print(total)
 			avgStopTime = total // (totalTrips - errorCount)
 			errorTime = avgStopTime * errorCount
 			total += errorTime
-			print(total)
+			print('Route Journey Time: \n', total)
 
 			busTime += total
 
+		print('-------------------------------------------------------------')
+		print('Total Journey Time (Sum of All Routes): \n', busTime)
 
 		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 		result = {

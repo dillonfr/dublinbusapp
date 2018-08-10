@@ -7,7 +7,8 @@ def connectDB():
     Raises an exception if connection cannot be made'''
     try:
         conn = sqlite3.connect('mydatabase')
-        print('Success')
+        print('-----------------------------------------------------------------')
+        print('Successfully connected to DB')
         return conn
     except Error as e:
         print(e)
@@ -61,7 +62,6 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
 
     rows = c.fetchall()
 
-    print(rows)
     return rows
 
 def getEndStop(conn, trip_id, destinationId):
@@ -74,7 +74,6 @@ def getEndStop(conn, trip_id, destinationId):
 
     rows = c.fetchall()
 
-    print(rows)
     return rows
 
 def getStopList(conn, trip_id, startnum, stopnum):
@@ -87,5 +86,4 @@ def getStopList(conn, trip_id, startnum, stopnum):
 
     rows = c.fetchall()
 
-    print(rows)
     return rows

@@ -12,13 +12,10 @@ def stripDay(date):
 	'''
 	if date == "":
 		DayInt = int(datetime.datetime.today().weekday()) + 1
-		print(DayInt)
 	elif date[-2] == 'p':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
-		print(DayInt)
 	elif date[-2] == 'a':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
-		print(DayInt)
 
 	if DayInt == 0:
 		return 7
