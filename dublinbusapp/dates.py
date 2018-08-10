@@ -11,15 +11,23 @@ def stripDay(date):
 	Sample input: "23 July 2018 - 04:30 pm"
 	'''
 	if date == "":
-		DayInt = datetime.datetime.today().weekday()
+		DayInt = int(datetime.datetime.today().weekday()) + 1
+		print(DayInt)
 	elif date[-2] == 'p':
-		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w')
+		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
+		print(DayInt)
 	elif date[-2] == 'a':
-		DayInt = datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w')
-	return int(DayInt) + 2
+		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
+		print(DayInt)
+
+	if DayInt == 0:
+		return 7
+	else:
+		return DayInt
 
 def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''
+
 	if date == "":
 		return datetime.datetime.today().hour
 	elif date[-2] == 'a': # Check if time is AM
@@ -34,21 +42,21 @@ def isPeak(date):
 	if date == "":
 		HourInt = datetime.datetime.today().hour
 		if HourInt >= 7 and HourInt <= 10 or HourInt >= 16 and HourInt <= 19:
-			return 2 # Within peak hours
+			return 1 # Within peak hours
 		else:
-			return 1 # Not within peak hours
+			return 0 # Not within peak hours
 	elif date[-2] == 'a':
 		HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
 		if HourInt >= 7 and HourInt <= 10:
-			return 2
-		else:
 			return 1
+		else:
+			return 0
 	elif date[-2] == 'p':
 		HourInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H'))
 		if HourInt >= 4 and HourInt <= 7:
-			return 2
-		else:
 			return 1
+		else:
+			return 0
 
 def unixTime(date):
     if date == "":
@@ -74,7 +82,7 @@ def getRouteStops(routeNumber):
 
 	#url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
 
-	jsonFile = "C:/Users/dillo_000/Desktop/dublinbusapp/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
+	jsonFile = "C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
 
 	# with urllib.request.urlopen(url) as req:
 	# 	Stops = json.loads(req.read().decode("utf-8"))
