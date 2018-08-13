@@ -80,8 +80,11 @@ def journey(request):
 			stopsDictList = getRouteStops(str(route))
 
 			# Find the closest stopid's with the given latitudes/longitudes
-			originId = str(getStopId(stopsDictList, originLatLng))
+			originId = str(getStopId(stopsDictList, originLatLng)[0])
 			destinationId = str(getStopId(stopsDictList, destinationLatLng))
+
+			print("Origin ID: \n", originId)
+			print("Destination ID: \n", destinationId)
 
 			# Get realtime info for the first bus stop id of the journey
 			if isFirstStopId == False:

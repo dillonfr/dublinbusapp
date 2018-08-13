@@ -112,4 +112,5 @@ def getStopId(dictlist, lat_lng):
 
 	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"]) # Sort the dictionary by the shortest distance
 
-	return sortedDict[0][0] # return the stopid with the shortest distance
+	needed_stops = sortedDict[0][0], sortedDict[1][0], sortedDict[2][0], sortedDict[3][0]
+	return needed_stops # return the stopid with the shortest distance
