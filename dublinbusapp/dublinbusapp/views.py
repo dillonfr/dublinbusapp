@@ -83,50 +83,79 @@ def journey(request):
 			originId = str(getStopId(stopsDictList, originLatLng)[0])
 			destinationId = str(getStopId(stopsDictList, destinationLatLng))
 
-			print("Origin ID: \n", originId)
-			print("Destination ID: \n", destinationId)
+			#print("Origin ID: \n", originId)
+			#print("Destination ID: \n", destinationId)
 
 			# Get realtime info for the first bus stop id of the journey
 			if isFirstStopId == False:
 				realTimeInfo = getRealTimeInfo(originId) # Returns a list
 				isFirstStopId = True
 
-			# Convert data we have into a format that can be used to query the database
-			dbroute = route.upper() # Routes are stored in database with capital letters e.g. 7D, 15B, etc.
-			gtfsday = getGTFSday(dateChosen) # Day of the week is stored in database in non-integer form
-			timeOfDay = getSeconds(dateChosen) # We need to get the time in seconds since midnight
+			try:
+				''' This block of code is executed if we can't use our main model
+				On rare occasions our main model fails because of issues with accurately determining the user's start stop
+				We have a more basic backup model for each route if this occurs '''
 
-			# Query the database with this data and return best result i.e. a journey that matches our parameters and is closest to the departure time
-			tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
-			trip_id = tripdata[0] # Store the tripid. We use this in the next query to guarantee we are using the same trip in the timetable
-			startnum = tripdata[1] # This is the sequence number for the starting stop
-			print('Trip ID:\n', trip_id)
-			print('Start Sequence No.:\n', startnum)
+				# Convert data we have into a format that can be used to query the database
+				dbroute = route.upper() # Routes are stored in database with capital letters e.g. 7D, 15B, etc.
+				gtfsday = getGTFSday(dateChosen) # Day of the week is stored in database in non-integer form
+				timeOfDay = getSeconds(dateChosen) # We need to get the time in seconds since midnight
 
-			# Query the database with the tripid and destination stopid to get the sequence number for the last stop
-			stopnum = getEndStop(conn, trip_id, destinationId)[0][0] # This is the sequence number for the last stop
-			print('Stop Sequence No.:\n', stopnum)
+				# Query the database with this data and return best result i.e. a journey that matches our parameters and is closest to the departure time
+				tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
+				trip_id = tripdata[0] # Store the tripid. We use this in the next query to guarantee we are using the same trip in the timetable
+				startnum = tripdata[1] # This is the sequence number for the starting stop
+				print('Trip ID:\n', trip_id)
+				print('Start Sequence No.:\n', startnum)
 
-			# Query the database for every stopid between the start and stop sequence numbers
-			seqstoplist = getStopList(conn, trip_id, startnum, stopnum) # A list of every stop between start and end
-			print('List of Stops in Sequential Order:\n', seqstoplist)
+				# Query the database with the tripid and destination stopid to get the sequence number for the last stop
+				stopnum = getEndStop(conn, trip_id, destinationId)[0][0] # This is the sequence number for the last stop
+				print('Stop Sequence No.:\n', stopnum)
 
-			print('-------------------------------------------------------------')
+				# Query the database for every stopid between the start and stop sequence numbers
+				seqstoplist = getStopList(conn, trip_id, startnum, stopnum) # A list of every stop between start and end
+				print('List of Stops in Sequential Order:\n', seqstoplist)
 
-			# Create a dataframe from the user data retrieved from frontend
-			df_user = getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
-			print('User Data DF: \n', df_user)
+				print('-------------------------------------------------------------')
 
-			# Create a new dataframe that combines the user one with an empty dataframe containing dummy variables for every route
-			df_combo = getCombinedDataFrame(dbroute, df_user)
-			#print(df_combo)
+				# Create a dataframe from the user data retrieved from frontend
+				df_user = getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
+				print('User Data DF: \n', df_user)
 
-			print('-------------------------------------------------------------')
+				# Create a new dataframe that combines the user one with an empty dataframe containing dummy variables for every route
+				df_combo = getCombinedDataFrame(dbroute, df_user)
+				#print(df_combo)
 
-			routeTime = getRouteTime(dbroute, df_combo)
-			print('Route Journey Time: \n', routeTime)
+				print('-------------------------------------------------------------')
 
-			busTime += routeTime
+				routeTime = getRouteTime(dbroute, df_combo)
+				print('Route Journey Time: \n', routeTime)
+
+				busTime += routeTime
+
+			except:
+				''' Code for our backup model '''
+
+				print('---------------------------------------------------------')
+				print('******** Backup Model Employed ********')
+				print('---------------------------------------------------------')
+
+				# Create a backup dataframe from the user data and information from Google Directions Service API
+				df_backup = getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain)
+				print('Backup Dataframe: \n', df_backup)
+
+				print('---------------------------------------------------------')
+
+				df_backupCombo = getBackupCombo(dbroute, df_backup)
+				print('Backup Combined Dataframe: \n', df_backupCombo)
+
+				print('-------------------------------------------------------------')
+
+				routeTime = getBackupRouteTime(dbroute, df_backupCombo)
+				print('Route Journey Time: \n', routeTime)
+
+				busTime += routeTime
+
 
 		print('-------------------------------------------------------------')
 		print('Total Journey Time (Sum of All Routes): \n', busTime)
