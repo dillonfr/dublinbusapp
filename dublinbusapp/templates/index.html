@@ -40,9 +40,9 @@
     <title>Dublin Bus</title>
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container-fluid" id="whole-page" data-role="page">
         <!-- Sidebar -->
-        <nav id="sidebar">
+        <nav id="sidebar" data-role="panel">
         <!-- Panel for displaying journey informations -->
         <div class="col-md-12">
             <!-- Back button -->
@@ -208,6 +208,25 @@
     });
 </script>
 <!-- Sidebar -->
+<!-- Swipe -->
+<script type="text/javascript">
+$( document ).on( "pageinit", "#whole-page", function() {
+    $( document ).on( "swipeleft swiperight", "#whole-page", function( e ) {
+        // We check if there is no open panel on the page because otherwise
+        // a swipe to close the left panel would also open the right panel (and v.v.).
+        // We do this by checking the data that the framework stores on the page element (panel: open).
+        if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+            if ( e.type === "swipeleft"  ) {
+                $( "#content" ).panel( "open" );
+            } else if ( e.type === "swiperight" ) {
+                $( "#sidebar" ).panel( "open" );
+            }
+        }
+    });
+});
+    
+</script>
+<!-- Swipe -->
       
 <!-- Exchange button -->
 <!--
