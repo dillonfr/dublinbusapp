@@ -98,7 +98,7 @@ def getRouteTime(dbroute, df_combo):
     total = 0
 
     for i in range(0, len(journeyTimePrediction)):
-    	if journeyTimePrediction[i] > 600 or journeyTimePrediction[i] < -600:
+    	if journeyTimePrediction[i] > 600 or journeyTimePrediction[i] < 0:
     		errorCount += 1
     	else:
     		total += int(journeyTimePrediction[i])
