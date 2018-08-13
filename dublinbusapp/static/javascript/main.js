@@ -126,15 +126,12 @@ function fillInEndAddress() {
     document.getElementById("searchEnd").value = val;
 }
 
-
 function toggleMarkers() {
     /* Toggles visibility of the markers in the global markers array */
     for (var i = 0; i < markers.length; i++) {
       markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
     }
 }
-
-
 
 function calcRoute(usedDragMarker) {
     /* Function that displays a user's route on the map */
@@ -282,9 +279,9 @@ $(document).ready(function() {
                         'walkingTime': response.walkingTime,
                         'totalTime': response.totalTime,
                         'realTimeInfo': response.realTimeInfo,
-                        'weatherNowText': response.weatherNowText,
-                        'weatherIcon': response.weatherIcon,
-                        'temperature': response.temperature,
+//                        'weatherNowText': response.weatherNowText,
+//                        'weatherIcon': response.weatherIcon,
+//                        'temperature': response.temperature,
                     };
 
                     displayJourney(journey)
@@ -315,23 +312,23 @@ function displayJourney(journey) {
 // `
 	
 	document.getElementById("modalBody").innerHTML = `
-    <b>Total journey time: ${journey.totalTime} mins</b><br>
-    <b>Routes: ${journey.routesToTake}</b><br>
+    <p>Total journey time: ${journey.totalTime} mins</p>
+    <p>Routes: ${journey.routesToTake}</p>
     `
     //<b>Date: ${journey.dateChosen}</b><br>
 
-    document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
-
-    document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
+    
+//    document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
 
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+    
+    document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
 
-    document.getElementById("weatherForecast").innerHTML = `
-    <b>Weather Forecast: ${journey.weatherNowText}</b><br>
-    <b>Temperature: ${journey.temperature}</b><br>
-    <b>Weather Icon: ${journey.weatherIcon}</b><br>
 
-    `
+//    document.getElementById("weatherForecast").innerHTML = `
+//    <b>Weather Forecast: ${journey.weatherNowText}</b><br>
+//    <b>Temperature: ${journey.temperature}</b><br>
+//    <b>Weather Icon: ${journey.weatherIcon}</b><br>`
 
 
 	// <div id = 'popupDiv1' class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
@@ -346,11 +343,11 @@ function displayRealTimeInfo(realTimeArray) {
 	Each dict contains route:arrivalTime as key:value
 	Displays realtime info on frontend */
 
-	document.getElementById("realTimeInfo").innerHTML = "<b>Real Time information</b><br>"
+	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
 
-	var numResults = realTimeArray.length;
+//	var numResults = realTimeArray.length;
 
-	for (var i = 0; i < numResults; i++) {
+	for (var i = 0; i < 5; i++) {
 		// Select single dict from the array
 		var busDict = realTimeArray[i];
 
@@ -377,18 +374,23 @@ function drawPieChart(journey) {
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Travel Mode', 'Minutes'],
-          ['Walking: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
-          ['Bus: ' + String(journey.busTime.toFixed(2)) + ' mins', journey.busTime],
+          ['Walking: ' + String(journey.walkingTime) + 'mins', journey.walkingTime],
+          ['Bus: ' + String(journey.busTime.toFixed(2)) + 'mins', journey.busTime],
           ['Waiting: 6 mins', 6],
         ]);
 
         var options = {
-          title: 'Journey Breakdown',
+//          title: 'Journey Breakdown',
           pieHole: 0.6,
           enableInteractivity: false,
           pieSliceText: 'none',
-          legend: { position:'labeled', textStyle: {color: 'white', fontSize: 16} },
+          legend: { position:'labeled', textStyle: {color: 'white', fontSize: '2rem'} },
           backgroundColor: 'transparent',
+          slices:{
+              0:{color:'#b2d0e3'},
+              1:{color:'#f0b917'},
+              2:{color:'#f9f8eb'},
+          }
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
