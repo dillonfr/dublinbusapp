@@ -71,7 +71,7 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
     return rows
 
 def getEndStop(conn, trip_id, destinationId):
-    ''' Takes in a unique tripid and the stopid for the last stop in the route
+    ''' Takes in a unique tripid and the 4 possible stopids for the last stop in the route
     Only searches entries in the database that have the same tripid. Guarantees that we are using the same trip from the first query
     Returns the sequence number for the last stop '''
 
