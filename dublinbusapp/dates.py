@@ -33,7 +33,12 @@ def stripTime(date):
 	elif date[-2] == 'a': # Check if time is AM
 		return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
 	elif date[-2] == 'p': # Check if time is PM
-		return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
+		time = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
+
+		if time > 23:
+			time = 12
+
+		return time
 
 def isPeak(date):
 	''' Function that checks if a specific datetime format is within peak hours
@@ -62,19 +67,20 @@ def unixTime(date):
 	''' Converts the given date into Unix time to get the weather forecast information '''
 
 	if date == "":
-	    return int(time.time())
+	    uTime = int(time.time())
 	elif date[-2] == 'p':
-	    uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())
+	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple()))
 	elif date[-2] == 'a':
-	    uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple())
+	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple()))
 
 
-	limit = time.time() + 604800 # Limit is current time + 7 days
+	limit = int(time.time()) + 604800 # Limit is current time + 7 days
 
 	if uTime > limit:
 	    return int(time.time())
 	else:
 	    return int(uTime)
+
 
 def getRouteStops(routeNumber):
 	''' Function that returns the latitude and longitude of each bus stopid in a given route

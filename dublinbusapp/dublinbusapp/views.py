@@ -16,6 +16,7 @@ from dates import *
 from weather import *
 from realtime import *
 from routedb import *
+from prediction import *
 
 
 @csrf_exempt
@@ -42,30 +43,39 @@ def journey(request):
 			conn = connectDB() # Establish a connection to the DB
 
 			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
-      
+
 			bestRoute = allRoutes[0] # The first journey suggested by google is the best
 
-		  walkingTime = bestRoute[-1]['walkingtime']
-		  walkTimeToStop = bestRoute[-1]['walkTimeToStop']
-		  totalLuasTime = bestRoute[-1]['totalLuasTime']
+			walkingTime = bestRoute[-1]['walkingtime']
+			walkTimeToStop = bestRoute[-1]['walkTimeToStop']
+			totalLuasTime = bestRoute[-1]['totalLuasTime']
 
 			numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
+
 
 
 			# Retrieve the date chosen by the user
 			dateChosen = request.POST["dateChosen"]
 
+			# Error check date chosen received from datetime picker, make sure date chosen is a string
+			if isinstance(dateChosen, str) == False:
+				dateChosen = ""
+
 			# Use the chosen date to get some of the features we need for the model
 			dayOfWeek = stripDay(dateChosen) # Returns integer representation of day of the week (1-7)
 			hourOfDay = stripTime(dateChosen) # Returns integer representation of hour of the day (0-23)
+
+			if hourOfDay < 6:
+				result = "<h3>Shhh the buses are sleeping...</h3><h6>(Dublin Bus service not available until 6am)</h6>"
+				return JsonResponse(result, safe=False)
+
 			peak = isPeak(dateChosen) # Returns 1 if chosen time is during peak travle times, 0 otherwise
-
-
-
 
 			# Get a weather forecast for the chosen date so we can pass this into the model
 			uTime = unixTime(dateChosen) # Need to get the chosen datetime in unix time
+
 			weatherDict = getWeather(uTime) # Create a dictionary of weather details
+
 
 			# Some basic error handling for the weather
 			if weatherDict != None: # If our API request to DarkSky is successful we proceed with the returned information
@@ -76,7 +86,6 @@ def journey(request):
 			else:
 				rain = 0 # If no forecast weather returns we default to 0 (not raining). We care about rain as this is used in the model
 
-			print('Rain: \n', rain)
 
 			routesToTake =[] # Initialise the number of different buses a user needs to take to 0
 			busTime = 0 # Intialise the time the total journey will take to 0
@@ -128,6 +137,7 @@ def journey(request):
 					stopnum = getEndStop(conn, trip_id, destinationId)[0][0] # This is the sequence number for the last stop
 					print('Stop Sequence No.:\n', stopnum)
 
+
 					# Query the database for every stopid between the start and stop sequence numbers
 					seqstoplist = getStopList(conn, trip_id, startnum, stopnum) # A list of every stop between start and end
 					print('List of Stops in Sequential Order:\n', seqstoplist)
@@ -149,7 +159,8 @@ def journey(request):
 
 					busTime += routeTime
 
-				except:
+				except Exception as e:
+					print(str(e))
 					try:
 						''' This block of code is executed if we can't use our main model
 						On rare occasions our main model fails because of issues with accurately determining the user's start stop
@@ -175,10 +186,13 @@ def journey(request):
 
 						busTime += routeTime
 
-					except:
+					except Exception as e:
 						''' If our backup model also fails we use the Google estimation for the route time
 						We don't envision this ever happening but it is just a failsafe if something goes wrong '''
+						print(str(e))
 						busTime += bestRoute[i]['googleTime']
+						
+
 
 			print('-------------------------------------------------------------')
 			print('Total Journey Time (Sum of All Routes): \n', busTime)
@@ -187,13 +201,12 @@ def journey(request):
 			result = {
 					'query': json.loads(request.POST["query"]),
 					'dateChosen': request.POST["dateChosen"],
-					'lastBusStepPrediction': routeTime/60, # Seconds to minutes
 					'routesToTake': routesToTake,
-					'busTime': busTime/60, # Seconds to minutes
+					'busTime': busTime//60, # Seconds to minutes
 					'walkingTime': walkingTime,
-          'walkTimeToStop': walkTimeToStop,
-          'totalLuasTime': totalLuasTime/60, # Seconds to minutes
-					'totalTime': (busTime/60) + walkingTime + (totalLuasTime/60),
+	      			'walkTimeToStop': walkTimeToStop,
+	      			'totalLuasTime': totalLuasTime//60, # Seconds to minutes
+					'totalTime': (busTime//60) + walkingTime + (totalLuasTime//60),
 					'realTimeInfo': realTimeInfo,
 					'weatherNowText': weatherNowText,
 					'weatherIcon': weatherIcon,

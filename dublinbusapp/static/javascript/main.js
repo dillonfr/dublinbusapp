@@ -212,6 +212,7 @@ function calcRoute(usedDragMarker) {
                         var departureLatLng = response.routes[j].legs[0].steps[i].start_location.lat() + ',' + response.routes[j].legs[0].steps[i].start_location.lng();
                         var arrivalLatLng = response.routes[j].legs[0].steps[i].end_location.lat() + ',' + response.routes[j].legs[0].steps[i].end_location.lng();
                         var numStops = response.routes[j].legs[0].steps[i].transit.num_stops; // Number of stops to take on bus
+                        var googleTime = response.routes[j].legs[0].steps[i].duration['value'] // Google's estimated journey time
 
                         // Add each key/value pair to the dictionary
                         routeDict['route'] = chosenRoute;
@@ -221,6 +222,7 @@ function calcRoute(usedDragMarker) {
                         routeDict['departureLatLng'] = departureLatLng;
                         routeDict['arrivalLatLng'] = arrivalLatLng;
                         routeDict['numStops'] = numStops;
+                        routeDict['googleTime'] = googleTime;
 
                         // Append the dictionary made for each bus
                         busStepsArray.push(routeDict);
@@ -278,28 +280,27 @@ $(document).ready(function() {
                     // $('#message').html("<h2>Journey Form Submitted!</h2>")
 
                     // Create dictionary with information received from Django/Python
-                    var journey = {
-                        'origin': response.origin,
-                        'destination': response.destination,
-                        'dateChosen': response.dateChosen,
-                        'lastBusStepPrediction': response.lastBusStepPrediction,
-                        'routesToTake': response.routesToTake,
-                        'busTime': response.busTime,
-                        'walkingTime': response.walkingTime,
-                        'walkTimeToStop': response.walkTimeToStop,
-                        'totalLuasTime': response.totalLuasTime,
-                        'totalTime': response.totalTime,
-                        'realTimeInfo': response.realTimeInfo,
-//                        'weatherNowText': response.weatherNowText,
-//                        'weatherIcon': response.weatherIcon,
-//                        'temperature': response.temperature,
-                    };
-
-
-                    displayJourney(journey)
-                    displayRealTimeInfo(journey.realTimeInfo)
-                    drawPieChart(journey)
-
+                    try {
+                        var journey = {
+                            'dateChosen': response.dateChosen,
+                            'routesToTake': response.routesToTake,
+                            'busTime': response.busTime,
+                            'walkingTime': response.walkingTime,
+                            'walkTimeToStop': response.walkTimeToStop,
+                            'totalLuasTime': response.totalLuasTime,
+                            'totalTime': response.totalTime,
+                            'realTimeInfo': response.realTimeInfo,
+                            'weatherNowText': response.weatherNowText,
+                            'weatherIcon': response.weatherIcon,
+                            'temperature': response.temperature,
+                        };
+                        displayJourney(journey)
+                        displayRealTimeInfo(journey.realTimeInfo)
+                        drawPieChart(journey)
+                    }
+                    catch(err) {
+                        everythingIsBroken(response)
+                    }
                  }
             });
             return false;
@@ -309,21 +310,8 @@ $(document).ready(function() {
 
 function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
-
-//     document.getElementById("journeySummary").innerHTML = `
-//     <b>Last bus leg of your journey takes:</b> ${journey.lastBusStepPrediction}<br>
-//     <b>Date:</b> ${journey.dateChosen}<br>
-//     <b>Routes to take:</b> ${journey.routesToTake}<br>
-//     <b>Time spent on the bus (minutes):</b> ${journey.busTime}<br>
-//     <b>Time spent walking:</b> ${journey.walkingTime}<br>
-//     <b>Total journey time:</b> ${journey.totalTime}<br>
-//     <b>Weather forecast:</b> ${journey.weatherNowText}<br>
-//     <b>Weather icon:</b> ${journey.weatherIcon}<br>
-
-// `
-
 	document.getElementById("modalBody").innerHTML = `
-    <b>Total journey time: ${journey.totalTime.toFixed(2)} mins</b><br>
+    <b>Total journey time: ${journey.totalTime} mins</b><br>
     <b>Routes: ${journey.routesToTake}</b><br>
     <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
     `
@@ -339,8 +327,6 @@ function displayJourney(journey) {
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <b>Weather Forecast: ${journey.weatherNowText}</b><br>
-    <b>Temperature: ${journey.temperature}</b><br>
     <b>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></b><br>`
 }
 
@@ -467,3 +453,7 @@ function getWeatherIcon(weatherIconText) {
     return icon;
 }
 
+function everythingIsBroken(response) {
+    document.getElementById("modalBody").innerHTML = response;
+    document.getElementById("modalBody").innerHTML += "<img id='buserrorpic' src='https://i.imgur.com/QS9hkyX.jpg' />";
+}

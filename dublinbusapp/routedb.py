@@ -48,7 +48,11 @@ def getSeconds(date):
     elif date[-2] =='p':
         time = datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H:%M:%S')
         h, m, s = time.split(':')
-        seconds = int(h) * 3600 + int(m) * 60 + int(s) + 43200
+
+        if h == "12":
+            seconds = int(h) * 3600 + int(m) * 60 + int(s)
+        else:
+            seconds = int(h) * 3600 + int(m) * 60 + int(s) + 43200
 
     return int(seconds)
 

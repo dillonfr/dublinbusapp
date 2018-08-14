@@ -140,7 +140,7 @@ def getBackupCombo(dbroute, df_user):
     Returns the new dataframe '''
 
     # Load the empty dataframe for the given route
-    dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\basic_route" + dbroute+ "_dummies.sav", 'rb'))
+    dummies = joblib.load(open("C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\basic_route" + dbroute+ "_dummies.sav", 'rb'))
 
     # Create a dummy variable for each feature in the user dataframe
     df_dum = pd.get_dummies(df_user)
@@ -158,7 +158,7 @@ def getBackupRouteTime(dbroute, df_backupCombo):
     Our backup model uses total number of stops on the journey rather than using stop-by-stop '''
 
     # Load the linear regression model for the given route
-    loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\basic_route" + dbroute + "_model.sav", 'rb'))
+    loaded_model = joblib.load(open("C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\basic_route" + dbroute + "_model.sav", 'rb'))
 
     # Use the loaded model to make a prediction of the journey time
     journeyTimePrediction = loaded_model.predict(df_backupCombo)
