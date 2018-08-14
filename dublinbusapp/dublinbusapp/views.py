@@ -26,6 +26,7 @@ def index(request):
 	return render(request, 'index.html')
 
 
+
 @csrf_exempt
 def journey(request):
 	''' Main function for our web app
@@ -40,13 +41,19 @@ def journey(request):
 
 			conn = connectDB() # Establish a connection to the DB
 
+
 			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
+
 
 			bestRoute = allRoutes[0] # The first journey suggested by google is the best
 
+
+		  walkingTime = bestRoute[-1]['walkingtime']
+		  walkTimeToStop = bestRoute[-1]['walkTimeToStop']
+		  totalLuasTime = bestRoute[-1]['totalLuasTime']
+
 			numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
-			walkingTime = bestRoute[-1]['walkingtime']
 
 			# Retrieve the date chosen by the user
 			dateChosen = request.POST["dateChosen"]
@@ -55,6 +62,7 @@ def journey(request):
 			dayOfWeek = stripDay(dateChosen) # Returns integer representation of day of the week (1-7)
 			hourOfDay = stripTime(dateChosen) # Returns integer representation of hour of the day (0-23)
 			peak = isPeak(dateChosen) # Returns 1 if chosen time is during peak travle times, 0 otherwise
+
 
 			# Get a weather forecast for the chosen date so we can pass this into the model
 			uTime = unixTime(dateChosen) # Need to get the chosen datetime in unix time
@@ -179,14 +187,14 @@ def journey(request):
 			# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 			result = {
 					'query': json.loads(request.POST["query"]),
-					'origin': request.POST["origin"],
-					'destination': request.POST["destination"],
 					'dateChosen': request.POST["dateChosen"],
 					'lastBusStepPrediction': routeTime/60, # Seconds to minutes
 					'routesToTake': routesToTake,
 					'busTime': busTime/60, # Seconds to minutes
 					'walkingTime': walkingTime,
-					'totalTime': (busTime/60) + walkingTime,
+          'walkTimeToStop': walkTimeToStop,
+          'totalLuasTime': totalLuasTime/60, # Seconds to minutes
+					'totalTime': (busTime/60) + walkingTime + (totalLuasTime/60),
 					'realTimeInfo': realTimeInfo,
 					'weatherNowText': weatherNowText,
 					'weatherIcon': weatherIcon,
@@ -200,3 +208,4 @@ def journey(request):
 		result = 'Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!'
 		#print(result)
 		return JsonResponse(result, safe=False)
+
