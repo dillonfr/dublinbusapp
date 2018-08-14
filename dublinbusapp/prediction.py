@@ -92,7 +92,7 @@ def getRouteTime(dbroute, df_combo):
     print('Journey Time Prediction for Each Stop: \n', journeyTimePrediction)
     journeyTimePrediction = journeyTimePrediction.tolist()
 
-    # Error handling for any stop-to-stop journey time > 10 minutes
+    # Error handling for any stop-to-stop journey time > 10 minutes or < 0
     totalTrips = len(journeyTimePrediction)
     errorCount = 0
     total = 0
@@ -111,14 +111,20 @@ def getRouteTime(dbroute, df_combo):
     return total
 
 def getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain):
+    ''' The dataframe for the backup model is slightly different to the main one
+    Takes in day of the week, peak, hour, number of stops and rain
+    Doesn't evaluate the journey time on a stop-by-stop basis
+    Only consists of one row '''
 
     # Create a dictionary that stores the route information we need to pass into the model
     backupData = {'dayofweek' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'stopsnumber' : numStops, 'rain' : rain}
     # Create a dataframe out of this information
     df_backup = pd.DataFrame(backupData, index=[0])
 
+    # Assign column names to the dataframe
     df_backup = df_backup[['dayofweek', 'peak', 'hour', 'stopsnumber', 'rain']]
 
+    # Change the necessary columns to categorical. stopsnumber kept as an int as it is continuous
     df_backup['dayofweek'] = df_backup['dayofweek'].astype('category')
     df_backup['peak'] = df_backup['peak'].astype('category')
     df_backup['hour'] = df_backup['hour'].astype('category')
@@ -135,7 +141,6 @@ def getBackupCombo(dbroute, df_user):
 
     # Load the empty dataframe for the given route
     dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\basic_route" + dbroute+ "_dummies.sav", 'rb'))
-    print(dummies)
 
     # Create a dummy variable for each feature in the user dataframe
     df_dum = pd.get_dummies(df_user)
@@ -149,6 +154,8 @@ def getBackupCombo(dbroute, df_user):
     return df_final
 
 def getBackupRouteTime(dbroute, df_backupCombo):
+    ''' Returns our predicted journey time based off our backup model
+    Our backup model uses total number of stops on the journey rather than using stop-by-stop '''
 
     # Load the linear regression model for the given route
     loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\basic_route" + dbroute + "_model.sav", 'rb'))

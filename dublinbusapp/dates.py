@@ -56,20 +56,22 @@ def isPeak(date):
 			return 0
 
 def unixTime(date):
-    if date == "":
-        return int(time.time())
-    elif date[-2] == 'p':
-        uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())
-    elif date[-2] == 'a':
-        uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple())
+	''' Converts the given date into Unix time to get the weather forecast information '''
+
+	if date == "":
+	    return int(time.time())
+	elif date[-2] == 'p':
+	    uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())
+	elif date[-2] == 'a':
+	    uTime = time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple())
 
 
-    limit = time.time() + 604800 # Limit is current time + 7 days
+	limit = time.time() + 604800 # Limit is current time + 7 days
 
-    if uTime > limit:
-        return int(time.time())
-    else:
-        return int(uTime)
+	if uTime > limit:
+	    return int(time.time())
+	else:
+	    return int(uTime)
 
 def getRouteStops(routeNumber):
 	''' Function that returns the latitude and longitude of each bus stopid in a given route
@@ -113,4 +115,4 @@ def getStopId(dictlist, lat_lng):
 	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"]) # Sort the dictionary by the shortest distance
 
 	needed_stops = sortedDict[0][0], sortedDict[1][0], sortedDict[2][0], sortedDict[3][0]
-	return needed_stops # return the stopid with the shortest distance
+	return needed_stops # return the 4 stopids with the shortest distance
