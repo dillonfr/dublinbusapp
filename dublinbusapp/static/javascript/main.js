@@ -181,8 +181,8 @@ function calcRoute(usedDragMarker) {
             // Time dictionary will contain walking and luas times if needed
             
             
-            // Iterates through every journey suggested by Google's response
-            for (var j = 0; j < 1; j++) { //response.routes.length
+            // Go through the best (first) route suggested by Google's response
+            for (var j = 0; j < 1; j++) { // To iterate through every route change j < 1 to j < response.routes.length
             
                 var numSteps = response.routes[j].legs[0].steps.length; // Number of steps involved in the journey (walk, bus, walk = 3)
                 var busStepsArray = []; // Array to store data for each bus on the journey
@@ -299,6 +299,7 @@ $(document).ready(function() {
                         'weatherIcon': response.weatherIcon,
                         'temperature': response.temperature,
                     };
+
 
                     displayJourney(journey)
                     displayRealTimeInfo(journey.realTimeInfo)
