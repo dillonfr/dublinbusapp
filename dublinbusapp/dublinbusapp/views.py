@@ -39,14 +39,18 @@ def journey(request):
 		allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
 
 		bestRoute = allRoutes[0] # The first journey suggested by google is the best
+		print(bestRoute)
+
 
 		numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
 		walkingTime = bestRoute[-1]['walkingtime']
 		walkTimeToStop = bestRoute[-1]['walkTimeToStop']
+		totalLuasTime = bestRoute[-1]['totalLuasTime']
 
 		# Retrieve the date chosen by the user
 		dateChosen = request.POST["dateChosen"]
+
 
 		# Use the chosen date to get some of the features we need for the model
 		dayOfWeek = stripDay(dateChosen) # Returns integer representation of day of the week (1-7)
@@ -142,15 +146,14 @@ def journey(request):
 		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 		result = {
 				'query': json.loads(request.POST["query"]),
-				'origin': request.POST["origin"],
-				'destination': request.POST["destination"],
 				'dateChosen': request.POST["dateChosen"],
 				'lastBusStepPrediction': routeTime/60, # Seconds to minutes
 				'routesToTake': routesToTake,
 				'busTime': busTime/60, # Seconds to minutes
 				'walkingTime': walkingTime,
 				'walkTimeToStop': walkTimeToStop,
-				'totalTime': (busTime/60) + walkingTime,
+				'totalLuasTime': totalLuasTime/60, # Seconds to minutes
+				'totalTime': (busTime/60) + walkingTime + (totalLuasTime/60),
 				'realTimeInfo': realTimeInfo,
 				'weatherNowText': weatherNowText,
 				'weatherIcon': weatherIcon,

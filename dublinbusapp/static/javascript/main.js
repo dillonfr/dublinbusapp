@@ -177,13 +177,17 @@ function calcRoute(usedDragMarker) {
 
             markerStart.setPosition(newStartPosition);
             markerEnd.setPosition(newEndPosition);
+
+            // Time dictionary will contain walking and luas times if needed
+            
             
             // Iterates through every journey suggested by Google's response
-            for (var j = 0; j < response.routes.length; j++) {
+            for (var j = 0; j < 1; j++) { //response.routes.length
             
                 var numSteps = response.routes[j].legs[0].steps.length; // Number of steps involved in the journey (walk, bus, walk = 3)
                 var busStepsArray = []; // Array to store data for each bus on the journey
                 var totalWalkingTime = 0;
+                var totalLuasTime = 0;
 
                 // Iterate through each step in the provided journey and extract information needed
                 for (var i = 0; i < numSteps; i++) {
@@ -195,6 +199,15 @@ function calcRoute(usedDragMarker) {
                         totalWalkingTime += walkingtime;
 
                     } else if (travelMode == "TRANSIT") {
+
+                        // Check if the journey is on the Luas based on the instructions received from Google
+                        var instructions = response.routes[j].legs[0].steps[i].instructions; // String e.g. "Tram towards Milltown", "Bus towards Ongar St"
+
+                        if (instructions.slice(0, 5) == "Tram") {
+                            var luasTravelTime = response.routes[j].legs[0].steps[i].duration['value']; // Travel time on Luas in seconds
+                            totalLuasTime += luasTravelTime 
+                            continue;
+                        }
 
                         var routeDict = {}; // New dictionary created for each bus
                         var chosenRoute = response.routes[j].legs[0].steps[i].transit.line.short_name; // Route number
@@ -222,6 +235,7 @@ function calcRoute(usedDragMarker) {
             // Create a new dictionary to store walking time and append it to the array
             var timedict = {};
             timedict['walkingtime'] = totalWalkingTime;
+            timedict['totalLuasTime'] = totalLuasTime;
 
             // Find out how long it takes to walk to the first bus stop if walking is the first part of the journey
             if (response.routes[0].legs[0].steps[0].travel_mode == "WALKING") {
@@ -258,8 +272,6 @@ $(document).ready(function() {
                 // Collect the data we want to send to Django
                 data: {
                         query: journeyData,
-                        'origin': $('#searchStart').val(),
-                        'destination': $('#searchEnd').val(),
                         'dateChosen': $('#dateChosen').val(),
                         'allRoutes': JSONallRoutesArray, // Contains all the journeys collected from the Google Direction Service object
                     },
@@ -280,6 +292,7 @@ $(document).ready(function() {
                         'busTime': response.busTime,
                         'walkingTime': response.walkingTime,
                         'walkTimeToStop': response.walkTimeToStop,
+                        'totalLuasTime': response.totalLuasTime,
                         'totalTime': response.totalTime,
                         'realTimeInfo': response.realTimeInfo,
                         'weatherNowText': response.weatherNowText,
