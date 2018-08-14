@@ -25,7 +25,7 @@ function initMap() {
     var mapProp = {
         center: new google.maps.LatLng(53.349976, -6.260354),
         zoom: 11,
-        
+
         styles: [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"geometry.fill","stylers":[{"visibility":"on"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#b2d0e3"},{"visibility":"on"}]}]
     };
 
@@ -43,7 +43,7 @@ function initMap() {
         icon: {
           url: "/static/images/start.png",
           scaledSize: new google.maps.Size(64,64),
-         
+
         },
 
     });
@@ -142,7 +142,6 @@ function calcRoute(usedDragMarker) {
     usedDragMarker = usedDragMarker || false; // true if user dragged marker, defaults to false
 
 
-
     console.log("Start: " + String(startPosition) + ". End: " + String(endPosition));
 
     console.log("Search box start: " + document.getElementById("searchStart").value + " End: " + document.getElementById("searchEnd").value);
@@ -168,7 +167,7 @@ function calcRoute(usedDragMarker) {
         console.log(response)
         if (status == 'OK') { // Checks there were no problems with the request and response
             directionsDisplay.setDirections(response); // Displays the route on the map
-            
+
             // Create global array that will contain the routes suggested by Google
             allRoutesArray = [];
 
@@ -178,12 +177,10 @@ function calcRoute(usedDragMarker) {
             markerStart.setPosition(newStartPosition);
             markerEnd.setPosition(newEndPosition);
 
-            // Time dictionary will contain walking and luas times if needed
-            
-            
+
             // Go through the best (first) route suggested by Google's response
             for (var j = 0; j < 1; j++) { // To iterate through every route change j < 1 to j < response.routes.length
-            
+
                 var numSteps = response.routes[j].legs[0].steps.length; // Number of steps involved in the journey (walk, bus, walk = 3)
                 var busStepsArray = []; // Array to store data for each bus on the journey
                 var totalWalkingTime = 0;
@@ -247,7 +244,7 @@ function calcRoute(usedDragMarker) {
             timedict['walkTimeToStop'] = walkTimeToStop;
 
             busStepsArray.push(timedict);
-                
+
             allRoutesArray.push(busStepsArray); // allRoutesArray: Array of arrays that contain info on each journey suggested by Google
 
             }
@@ -326,7 +323,7 @@ function displayJourney(journey) {
 //     <b>Weather icon:</b> ${journey.weatherIcon}<br>
 
 // `
-	
+
 	document.getElementById("modalBody").innerHTML = `
     <b>Total journey time: ${journey.totalTime.toFixed(2)} mins</b><br>
     <b>Routes: ${journey.routesToTake}</b><br>
@@ -355,11 +352,13 @@ function displayRealTimeInfo(realTimeArray) {
 
 	var numResults = realTimeArray.length;
 
-    if (numResults > 5) {
-        numResults = 5; // Limit number of results to 5
-    }
+
+  if (numResults > 5) {
+      numResults = 5; // Limit number of results to 5
+  }
 
 	for (var i = 0; i < numResults; i++) {
+
 		// Select single dict from the array
 		var busDict = realTimeArray[i];
 
@@ -463,3 +462,4 @@ function getWeatherIcon(weatherIconText) {
 
     return icon;
 }
+

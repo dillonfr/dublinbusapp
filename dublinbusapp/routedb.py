@@ -62,7 +62,7 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
     c = conn.cursor()
 
     print("---------------------------------------------------------------------")
-    print('Start Query: \nSELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+originID+'" AND departure_time >= "+timeOfDay+" ORDER BY departure_time LIMIT 1')
+    print('Start Query: \nSELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id IN ('+originID+') AND departure_time >= "+timeOfDay+" ORDER BY departure_time LIMIT 1')
 
     response = c.execute('SELECT trip_id, stop_sequence FROM routestops WHERE route_number = "'+route+'" AND day IN ('+dayOfWeek+') AND stop_id = "'+originID+'" AND departure_time >= ? ORDER BY departure_time LIMIT 1;', [timeOfDay])
 
@@ -71,16 +71,16 @@ def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
     return rows
 
 def getEndStop(conn, trip_id, destinationId):
-    ''' Takes in a unique tripid and the stopid for the last stop in the route
+    ''' Takes in a unique tripid and the 4 possible stopids for the last stop in the route
     Only searches entries in the database that have the same tripid. Guarantees that we are using the same trip from the first query
     Returns the sequence number for the last stop '''
 
     c = conn.cursor()
 
     print("---------------------------------------------------------------------")
-    print('End Query: \nSELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'"')
+    print('End Query: \nSELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id IN '+destinationId+'')
 
-    response = c.execute('SELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id = "'+destinationId+'";')
+    response = c.execute('SELECT stop_sequence FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_id IN '+destinationId+';')
 
     rows = c.fetchall()
 
@@ -96,7 +96,10 @@ def getStopList(conn, trip_id, startnum, stopnum):
     print("---------------------------------------------------------------------")
     print('Stoplist Query: \nSELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN "+startnum+" AND "+stopnum+"')
 
-    response = c.execute('SELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN ? AND ?;', (startnum, stopnum))
+    if startnum < stopnum:
+        response = c.execute('SELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN ? AND ?;', (startnum, stopnum))
+    else:
+        response = c.execute('SELECT stop_id FROM routestops WHERE trip_id = "'+trip_id+'" AND stop_sequence BETWEEN ? AND ?;', (stopnum, startnum))
 
     rows = c.fetchall()
 
