@@ -20,178 +20,190 @@ from routedb import *
 
 @csrf_exempt
 def index(request):
-	buslist = makeBusStopDict()
+	''' When someone visits our domain name this renders the homepage for them
+	Returns index.html '''
 
-	context = {
-		'buslist': buslist,
-	}
-	return render(request, 'index.html', context)
+	return render(request, 'index.html')
+
 
 
 @csrf_exempt
 def journey(request):
-	if request.method == "POST":
-
-		conn = connectDB()
-
-		allRoutes = json.loads(request.POST["allRoutes"])
-
-		bestRoute = allRoutes[0] # The first journey suggested by google is the best
-
-		numBusJourneys = len(bestRoute) - 1
-
-		walkingTime = bestRoute[-1]['walkingtime']
-
-		# Reformat date chosen into format that can be passed into model
-		dateChosen = request.POST["dateChosen"]
-		dayOfWeek = stripDay(dateChosen)
-		hourOfDay = stripTime(dateChosen)
-		peak = isPeak(dateChosen)
-		uTime = unixTime(dateChosen)
-		weatherDict = getWeather(uTime)
-
-		rain = weatherDict['raining']
-		temperature = weatherDict['temperature']
-		windSpeed = weatherDict['windSpeed']
-		weatherNowText = weatherDict['weatherNowText']
-		weatherIcon = weatherDict['weatherIcon']
-
-		routesToTake =[]
-		busTime = 0
-		isFirstStopId = False
-
-		#Go through each bus leg and get a prediction on journey time for that leg
-		for i in range(0, numBusJourneys):
-			# Add each route to list of routes to take
-			route = bestRoute[i]['route']
-			routesToTake.append(route)
-
-			# Extract data needed to pass into model
-			originLatLng = bestRoute[i]['departureLatLng']
-			destinationLatLng = bestRoute[i]['arrivalLatLng']
-			numStops = bestRoute[i]['numStops']
-
-			# Find all the stopid's on the route
-			stopsDictList = getRouteStops(str(route))
-
-			# Find the closest stopid's with the given latitudes/longitudes
-			originId = str(getStopId(stopsDictList, originLatLng))
-			destinationId = str(getStopId(stopsDictList, destinationLatLng))
-
-			# Get realtime info for the first bus stop id of the journey
-			if isFirstStopId == False:
-				realTimeInfo = getRealTimeInfo(originId) # Returns a list
-				isFirstStopId = True
-
-			# DB queries
-			dbroute = route.upper()
-			gtfsday = getGTFSday(dateChosen)
-			timeOfDay = getSeconds(dateChosen)
-
-			tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
-			trip_id = tripdata[0]
-			startnum = tripdata[1]
-			print(trip_id)
-			print(startnum)
-
-			stopnum = getEndStop(conn, trip_id, destinationId)[0][0]
-			print(stopnum)
-
-			seqstoplist = getStopList(conn, trip_id, startnum, stopnum)
-			# for i in range(0, len(seqstoplist), 1):
-			# 	print(seqstoplist[i][0])
-
-			# df created using DB
-			listOfStops = []
-			for i in range(0, len(seqstoplist)):
-				listOfStops.append(seqstoplist[i][0])
-
-			df_list = pd.DataFrame(listOfStops, columns=['stop_point_id'])
-
-			modelData = {'day' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'rain' : rain, 'temp' : temperature}
-			df_features = pd.DataFrame(modelData, index=[0])
-			# print(df_features)
-
-			df_new = pd.concat([df_features, df_list], axis=1, ignore_index=True)
-			df_new = df_new.fillna(method='ffill')
-
-			df_new[6]=df_new[5].shift(-1)
-			columnsTitles=[0, 1, 2, 5, 6, 3, 4]
-			df_new = df_new.reindex(columns=columnsTitles)
-			df_new = df_new[:-1]
-
-			for i in range(0, 7):
-				df_new[i] = df_new[i].astype('int')
-				df_new[i] = df_new[i].astype('category')
-
-			df_new = df_new.drop(df_new.columns[6], axis=1)
-
-			df_new.columns = ['dayofweek', 'peak', 'hour', 'stoppointid', 'nextstop_id', 'rain']
-
-			print(df_new)
-
-			# Create dataframe
-			# df = [[dayOfWeek, peak, originId, direction, destinationId, numStops]]
-			# Pass df into model and get prediction
-
-			dummies = joblib.load(open("/Users/yulia/Desktop/project/dublinbusapp/dublinbusapp/dummies/route" + dbroute+ "_dummies.sav", 'rb'))
-
-			loaded_model = joblib.load(open("/Users/yulia/Desktop/project/dublinbusapp/dublinbusapp/pickles/route" + dbroute + "_model.sav", 'rb'))
-
-			print(dummies)
-
-			df_dum = pd.get_dummies(df_new)
-			print("df_dum \n ", df_dum)
-
-			df_x, df_y = dummies.align(df_dum, fill_value=0)
-
-			print("df_y \n", df_y)
-
-			df_final = df_y.reindex(dummies.columns, axis=1)
-			print("df_final \n", df_final)
+	''' Main function for our web app
+	Takes in the user information from the frontend
+	Passes this information into our model to generate an estimation for the journey time
+	Queries the database containing information on the route timetables to ensure our provided time is valid
+	Returns a dictionary containing all of the information for the user
+	Dictionary is used to populate the pop-up window '''
 
 
-			journeyTimePrediction = loaded_model.predict(df_final)
-			print(journeyTimePrediction)
-			journeyTimePrediction = journeyTimePrediction.tolist()
-			# print(journeyTimePrediction)
-			# journeyTimePrediction = journeyTimePrediction[0]
+	try:
+		if request.method == "POST":
+			conn = connectDB() # Establish a connection to the DB
 
-			print('------------------------------------------')
-			totalTrips = len(journeyTimePrediction)
-			errorCount = 0
-			total = 0
-			for i in range(0, len(journeyTimePrediction)):
-				if journeyTimePrediction[i] > 500 or journeyTimePrediction[i] < -500:
-					errorCount += 1
-				else:
-					total += int(journeyTimePrediction[i])
-			print(errorCount)
-			print(total)
-			avgStopTime = total // (totalTrips - errorCount)
-			errorTime = avgStopTime * errorCount
-			total += errorTime
-			print(total)
+			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
+      
+			bestRoute = allRoutes[0] # The first journey suggested by google is the best
 
-			busTime += total
+		  walkingTime = bestRoute[-1]['walkingtime']
+		  walkTimeToStop = bestRoute[-1]['walkTimeToStop']
+		  totalLuasTime = bestRoute[-1]['totalLuasTime']
+
+			numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
 
-		# Put data from AJAX and the model into dictionary to send back to AJAX as a response
-		result = {
-				'query': json.loads(request.POST["query"]),
-				'origin': request.POST["origin"],
-				'destination': request.POST["destination"],
-				'dateChosen': request.POST["dateChosen"],
-				'lastBusStepPrediction': total/60, # Seconds to minutes
-				'routesToTake': routesToTake,
-				'busTime': busTime/60, # Seconds to minutes
-				'walkingTime': walkingTime,
-				'totalTime': (busTime/60) + walkingTime,
-				'realTimeInfo': realTimeInfo,
-				'weatherNowText': weatherNowText,
-				'weatherIcon': weatherIcon,
-				'temperature': temperature,
-				}
+			# Retrieve the date chosen by the user
+			dateChosen = request.POST["dateChosen"]
 
-	# Return the result dictionary to AJAX as a response
-	return JsonResponse(result, safe=False)
+			# Use the chosen date to get some of the features we need for the model
+			dayOfWeek = stripDay(dateChosen) # Returns integer representation of day of the week (1-7)
+			hourOfDay = stripTime(dateChosen) # Returns integer representation of hour of the day (0-23)
+			peak = isPeak(dateChosen) # Returns 1 if chosen time is during peak travle times, 0 otherwise
+
+
+
+
+			# Get a weather forecast for the chosen date so we can pass this into the model
+			uTime = unixTime(dateChosen) # Need to get the chosen datetime in unix time
+			weatherDict = getWeather(uTime) # Create a dictionary of weather details
+
+			# Some basic error handling for the weather
+			if weatherDict != None: # If our API request to DarkSky is successful we proceed with the returned information
+				rain = weatherDict['raining']
+				temperature = weatherDict['temperature']
+				weatherNowText = weatherDict['weatherNowText']
+				weatherIcon = weatherDict['weatherIcon']
+			else:
+				rain = 0 # If no forecast weather returns we default to 0 (not raining). We care about rain as this is used in the model
+
+			print('Rain: \n', rain)
+
+			routesToTake =[] # Initialise the number of different buses a user needs to take to 0
+			busTime = 0 # Intialise the time the total journey will take to 0
+			isFirstStopId = False
+
+			#Go through each bus leg and get a prediction on journey time for that leg
+			for i in range(0, numBusJourneys):
+				# Add each route to list of routes to take
+				route = bestRoute[i]['route']
+				routesToTake.append(route)
+
+				# Extract data needed to pass into model
+				originLatLng = bestRoute[i]['departureLatLng']
+				destinationLatLng = bestRoute[i]['arrivalLatLng']
+				numStops = bestRoute[i]['numStops']
+
+				# Find all of the stopid's on the route
+				stopsDictList = getRouteStops(str(route))
+
+				# Find the closest stopid's with the given latitudes/longitudes
+				originId = str(getStopId(stopsDictList, originLatLng)[0])
+				destinationId = str(getStopId(stopsDictList, destinationLatLng))
+
+				#print("Origin ID: \n", originId)
+				#print("Destination ID: \n", destinationId)
+
+				# Get realtime info for the first bus stop id of the journey
+				if isFirstStopId == False:
+					realTimeInfo = getRealTimeInfo(originId) # Returns a list
+					isFirstStopId = True
+
+				try:
+					''' We first try and use our main model to predict the time for the route
+					The main model only occasionaly fails so we use this most of the time '''
+
+					# Convert data we have into a format that can be used to query the database
+					dbroute = route.upper() # Routes are stored in database with capital letters e.g. 7D, 15B, etc.
+					gtfsday = getGTFSday(dateChosen) # Day of the week is stored in database in non-integer form
+					timeOfDay = getSeconds(dateChosen) # We need to get the time in seconds since midnight
+
+					# Query the database with this data and return best result i.e. a journey that matches our parameters and is closest to the departure time
+					tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
+					trip_id = tripdata[0] # Store the tripid. We use this in the next query to guarantee we are using the same trip in the timetable
+					startnum = tripdata[1] # This is the sequence number for the starting stop
+					print('Trip ID:\n', trip_id)
+					print('Start Sequence No.:\n', startnum)
+
+					# Query the database with the tripid and destination stopid to get the sequence number for the last stop
+					stopnum = getEndStop(conn, trip_id, destinationId)[0][0] # This is the sequence number for the last stop
+					print('Stop Sequence No.:\n', stopnum)
+
+					# Query the database for every stopid between the start and stop sequence numbers
+					seqstoplist = getStopList(conn, trip_id, startnum, stopnum) # A list of every stop between start and end
+					print('List of Stops in Sequential Order:\n', seqstoplist)
+
+					print('-------------------------------------------------------------')
+
+					# Create a dataframe from the user data retrieved from frontend
+					df_user = getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
+					print('User Data DF: \n', df_user)
+
+					# Create a new dataframe that combines the user one with an empty dataframe containing dummy variables for every route
+					df_combo = getCombinedDataFrame(dbroute, df_user)
+					#print(df_combo)
+
+					print('-------------------------------------------------------------')
+
+					routeTime = getRouteTime(dbroute, df_combo)
+					print('Route Journey Time: \n', routeTime)
+
+					busTime += routeTime
+
+				except:
+					try:
+						''' This block of code is executed if we can't use our main model
+						On rare occasions our main model fails because of issues with accurately determining the user's start stop
+						We have a more basic backup model for each route if this occurs '''
+
+						print('---------------------------------------------------------')
+						print('******** Backup Model Employed ********')
+						print('---------------------------------------------------------')
+
+						# Create a backup dataframe from the user data and information from Google Directions Service API
+						df_backup = getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain)
+						print('Backup Dataframe: \n', df_backup)
+
+						print('---------------------------------------------------------')
+
+						df_backupCombo = getBackupCombo(dbroute, df_backup)
+						#print('Backup Combined Dataframe: \n', df_backupCombo)
+
+						print('-------------------------------------------------------------')
+
+						routeTime = getBackupRouteTime(dbroute, df_backupCombo)
+						print('Route Journey Time: \n', routeTime)
+
+						busTime += routeTime
+
+					except:
+						''' If our backup model also fails we use the Google estimation for the route time
+						We don't envision this ever happening but it is just a failsafe if something goes wrong '''
+						busTime += bestRoute[i]['googleTime']
+
+			print('-------------------------------------------------------------')
+			print('Total Journey Time (Sum of All Routes): \n', busTime)
+
+			# Put data from AJAX and the model into dictionary to send back to AJAX as a response
+			result = {
+					'query': json.loads(request.POST["query"]),
+					'dateChosen': request.POST["dateChosen"],
+					'lastBusStepPrediction': routeTime/60, # Seconds to minutes
+					'routesToTake': routesToTake,
+					'busTime': busTime/60, # Seconds to minutes
+					'walkingTime': walkingTime,
+          'walkTimeToStop': walkTimeToStop,
+          'totalLuasTime': totalLuasTime/60, # Seconds to minutes
+					'totalTime': (busTime/60) + walkingTime + (totalLuasTime/60),
+					'realTimeInfo': realTimeInfo,
+					'weatherNowText': weatherNowText,
+					'weatherIcon': weatherIcon,
+					'temperature': temperature,
+					}
+
+		# Return the result dictionary to AJAX as a response
+		return JsonResponse(result, safe=False)
+
+	except:
+		result = 'Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!'
+		#print(result)
+		return JsonResponse(result, safe=False)

@@ -55,7 +55,7 @@ def getCombinedDataFrame(dbroute, df_user):
     Returns the new dataframe '''
 
     # Load the empty dataframe for the given route
-    dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\route" + dbroute+ "_dummies.sav", 'rb'))
+    dummies = joblib.load(open("C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\route" + dbroute+ "_dummies.sav", 'rb'))
 
     # Create a dummy variable for each feature in the user dataframe
     df_dum = pd.get_dummies(df_user)
@@ -83,7 +83,7 @@ def getRouteTime(dbroute, df_combo):
     If any journey takes longer than 10 minutes, we instead use the average journey time between stops and move on to the next stop '''
 
     # Load the linear regression model for the given route
-    loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route" + dbroute + "_model.sav", 'rb'))
+    loaded_model = joblib.load(open("C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route" + dbroute + "_model.sav", 'rb'))
 
     # Use the loaded model to make a prediction of the journey time
     journeyTimePrediction = loaded_model.predict(df_combo)
@@ -92,13 +92,13 @@ def getRouteTime(dbroute, df_combo):
     print('Journey Time Prediction for Each Stop: \n', journeyTimePrediction)
     journeyTimePrediction = journeyTimePrediction.tolist()
 
-    # Error handling for any stop-to-stop journey time > 10 minutes
+    # Error handling for any stop-to-stop journey time > 10 minutes or < 0
     totalTrips = len(journeyTimePrediction)
     errorCount = 0
     total = 0
 
     for i in range(0, len(journeyTimePrediction)):
-    	if journeyTimePrediction[i] > 600 or journeyTimePrediction[i] < -600:
+    	if journeyTimePrediction[i] > 600 or journeyTimePrediction[i] < 0:
     		errorCount += 1
     	else:
     		total += int(journeyTimePrediction[i])
@@ -109,3 +109,62 @@ def getRouteTime(dbroute, df_combo):
 
     # Return the route journey time
     return total
+
+def getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain):
+    ''' The dataframe for the backup model is slightly different to the main one
+    Takes in day of the week, peak, hour, number of stops and rain
+    Doesn't evaluate the journey time on a stop-by-stop basis
+    Only consists of one row '''
+
+    # Create a dictionary that stores the route information we need to pass into the model
+    backupData = {'dayofweek' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'stopsnumber' : numStops, 'rain' : rain}
+    # Create a dataframe out of this information
+    df_backup = pd.DataFrame(backupData, index=[0])
+
+    # Assign column names to the dataframe
+    df_backup = df_backup[['dayofweek', 'peak', 'hour', 'stopsnumber', 'rain']]
+
+    # Change the necessary columns to categorical. stopsnumber kept as an int as it is continuous
+    df_backup['dayofweek'] = df_backup['dayofweek'].astype('category')
+    df_backup['peak'] = df_backup['peak'].astype('category')
+    df_backup['hour'] = df_backup['hour'].astype('category')
+    df_backup['rain'] = df_backup['rain'].astype('category')
+
+    return df_backup
+
+def getBackupCombo(dbroute, df_user):
+    ''' Creates an empty dataframe containg all the dummy variables on a given route, except for the continuous feature stopsnumber
+    Changes the user dataframe by creating dummy variables for each catgeorical feature in it
+    Combines the empty dataframe and the user dataframe by aligining on matching column names
+    Reindexes the resulting dataframe so that it will fit the format expected by our model
+    Returns the new dataframe '''
+
+    # Load the empty dataframe for the given route
+    dummies = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\dummies\\basic_route" + dbroute+ "_dummies.sav", 'rb'))
+
+    # Create a dummy variable for each feature in the user dataframe
+    df_dum = pd.get_dummies(df_user)
+
+    # Align the user dataframe and empty dataframe by matching column names
+    df_x, df_y = dummies.align(df_dum, fill_value=0) # Fill all empty cells with 0
+
+    # Reindex the resulting dataframe to match the format expected by the model
+    df_final = df_y.reindex(dummies.columns, axis=1)
+
+    return df_final
+
+def getBackupRouteTime(dbroute, df_backupCombo):
+    ''' Returns our predicted journey time based off our backup model
+    Our backup model uses total number of stops on the journey rather than using stop-by-stop '''
+
+    # Load the linear regression model for the given route
+    loaded_model = joblib.load(open("C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\basic_route" + dbroute + "_model.sav", 'rb'))
+
+    # Use the loaded model to make a prediction of the journey time
+    journeyTimePrediction = loaded_model.predict(df_backupCombo)
+
+    # Print the journey time for each stop and convert to a list format
+    print('Journey Time Prediction: \n', journeyTimePrediction)
+    journeyTimePrediction = journeyTimePrediction.tolist()
+
+    return journeyTimePrediction[0]
