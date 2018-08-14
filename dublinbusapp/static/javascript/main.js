@@ -135,28 +135,17 @@ function toggleMarkers() {
 }
 
 
-
 function calcRoute(usedDragMarker) {
     /* Function that displays a user's route on the map */
 
     // Check if user dragged the markers
     usedDragMarker = usedDragMarker || false; // true if user dragged marker, defaults to false
 
-    // If user dragged markers take the markers lat/lng as the start and end
-    // if (usedDragMarker) {
-    //     var start = markerStartLat + ',' + markerStartLng;
-    //     var end = markerEndLat + ',' + markerEndLng;
-    // }
-    // // Else take the values entered the address search bars
-    // else {
-    //     var start = document.getElementById('searchStart').value; // This value is captured from the start address search bar
-    //     var end = document.getElementById('searchEnd').value; // This value is captured from the end address search bar    
-    // } 
 
-    // var start = startPosition;
-    // var end = endPosition;
 
     console.log("Start: " + String(startPosition) + ". End: " + String(endPosition));
+
+    console.log("Search box start: " + document.getElementById("searchStart").value + " End: " + document.getElementById("searchEnd").value);
 
     var unixDateChosen = findUnixDateChosen();
 
@@ -233,6 +222,16 @@ function calcRoute(usedDragMarker) {
             // Create a new dictionary to store walking time and append it to the array
             var timedict = {};
             timedict['walkingtime'] = totalWalkingTime;
+
+            // Find out how long it takes to walk to the first bus stop if walking is the first part of the journey
+            if (response.routes[0].legs[0].steps[0].travel_mode == "WALKING") {
+                walkTimeToStop = response.routes[0].legs[0].steps[0].duration['text'] // Returns walk time as a minutes string e.g. "3 mins"
+            } else {
+                walkTimeToStop = "0 mins";
+            }
+
+            timedict['walkTimeToStop'] = walkTimeToStop;
+
             busStepsArray.push(timedict);
                 
             allRoutesArray.push(busStepsArray); // allRoutesArray: Array of arrays that contain info on each journey suggested by Google
@@ -280,6 +279,7 @@ $(document).ready(function() {
                         'routesToTake': response.routesToTake,
                         'busTime': response.busTime,
                         'walkingTime': response.walkingTime,
+                        'walkTimeToStop': response.walkTimeToStop,
                         'totalTime': response.totalTime,
                         'realTimeInfo': response.realTimeInfo,
                         'weatherNowText': response.weatherNowText,
@@ -289,7 +289,6 @@ $(document).ready(function() {
 
                     displayJourney(journey)
                     displayRealTimeInfo(journey.realTimeInfo)
-                    //displayWeatherIcon(journey.weatherIcon)
                     drawPieChart(journey)
 
                  }
@@ -315,29 +314,22 @@ function displayJourney(journey) {
 // `
 	
 	document.getElementById("modalBody").innerHTML = `
-    <b>Total journey time: ${journey.totalTime} mins</b><br>
+    <b>Total journey time: ${journey.totalTime.toFixed(2)} mins</b><br>
     <b>Routes: ${journey.routesToTake}</b><br>
+    <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
     `
-    //<b>Date: ${journey.dateChosen}</b><br>
 
     document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
-
     document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
-
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+
+    var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
     <b>Weather Forecast: ${journey.weatherNowText}</b><br>
     <b>Temperature: ${journey.temperature}</b><br>
-    <b>Weather Icon: ${journey.weatherIcon}</b><br>
+    <b>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></b><br>`
 
-    `
-
-
-	// <div id = 'popupDiv1' class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
-	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
-	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
-	//   <div class="col-md-4 col-sm-6 col-xs-6"><h4>Journey info</h4></div>
 
 }
 
@@ -345,10 +337,13 @@ function displayRealTimeInfo(realTimeArray) {
 	/* Takes in a list of dictionaries
 	Each dict contains route:arrivalTime as key:value
 	Displays realtime info on frontend */
-
 	document.getElementById("realTimeInfo").innerHTML = "<b>Real Time information</b><br>"
 
 	var numResults = realTimeArray.length;
+
+    if (numResults > 5) {
+        numResults = 5; // Limit number of results to 5
+    }
 
 	for (var i = 0; i < numResults; i++) {
 		// Select single dict from the array
@@ -379,7 +374,6 @@ function drawPieChart(journey) {
           ['Travel Mode', 'Minutes'],
           ['Walking: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
           ['Bus: ' + String(journey.busTime.toFixed(2)) + ' mins', journey.busTime],
-          ['Waiting: 6 mins', 6],
         ]);
 
         var options = {
@@ -412,4 +406,46 @@ function findUnixDateChosen() {
 
     return unixDateChosen + 3600000; // Add 3.6 million milliseconds to the time (adding 1 hour) to correct for timezone difference
     // Returns datetime with an hour too early if you dont add the milliseconds needed
+}
+
+function getWeatherIcon(weatherIconText) {
+    /* Function that matches the weather forecast text received from DarkSky API with an icon from OpenWeather API 
+    DarkSky does not provide its own icons
+    The icon text is added to the src tag of an element to display the icon using OpenWeather url
+    E.g. http://openweathermap.org/img/w/09d.png
+    */
+
+    switch(weatherIconText) {
+        case "clear-day":
+            icon = "01d.png";
+            break;
+        case "clear-night":
+            icon = "01n.png";
+            break;
+        case "rain":
+            icon = "09d.png";
+            break;
+        case "snow":
+        case "sleet":
+            icon = "13d.png";
+            break;
+        case "wind":
+        case "fog":
+            icon = "50d.png";
+            break;
+        case "cloudy":
+            icon = "04d.png";
+            break;
+        case "partly-cloudy-day":
+            icon = "02d.png";
+            break;
+        case "partly-cloudy-night":
+            icon = "02n.png";
+            break;
+        default:
+            icon = "03d.png"; // Default to cloud icon
+            break;
+    }
+
+    return icon;
 }

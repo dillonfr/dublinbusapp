@@ -29,6 +29,7 @@ def index(request):
 	return render(request, 'index.html', context)
 
 
+
 @csrf_exempt
 def journey(request):
 	if request.method == "POST":
@@ -42,6 +43,7 @@ def journey(request):
 		numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
 		walkingTime = bestRoute[-1]['walkingtime']
+		walkTimeToStop = bestRoute[-1]['walkTimeToStop']
 
 		# Retrieve the date chosen by the user
 		dateChosen = request.POST["dateChosen"]
@@ -55,6 +57,11 @@ def journey(request):
 		uTime = unixTime(dateChosen) # Need to get the chosen datetime in unix time
 		weatherDict = getWeather(uTime) # Create a dictionary of weather details
 
+		print("----------------------------------------------------")
+		print("Weather")
+		print(weatherDict)
+
+		print("----------------------------------------------------")
 		rain = weatherDict['raining']
 		temperature = weatherDict['temperature']
 		windSpeed = weatherDict['windSpeed']
@@ -142,6 +149,7 @@ def journey(request):
 				'routesToTake': routesToTake,
 				'busTime': busTime/60, # Seconds to minutes
 				'walkingTime': walkingTime,
+				'walkTimeToStop': walkTimeToStop,
 				'totalTime': (busTime/60) + walkingTime,
 				'realTimeInfo': realTimeInfo,
 				'weatherNowText': weatherNowText,
