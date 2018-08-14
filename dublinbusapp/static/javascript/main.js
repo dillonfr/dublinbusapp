@@ -126,14 +126,12 @@ function fillInEndAddress() {
     document.getElementById("searchEnd").value = val;
 }
 
-
 function toggleMarkers() {
     /* Toggles visibility of the markers in the global markers array */
     for (var i = 0; i < markers.length; i++) {
       markers[i].visible ? markers[i].setVisible(false) : markers[i].setVisible(true);
     }
 }
-
 
 function calcRoute(usedDragMarker) {
     /* Function that displays a user's route on the map */
@@ -292,9 +290,9 @@ $(document).ready(function() {
                         'totalLuasTime': response.totalLuasTime,
                         'totalTime': response.totalTime,
                         'realTimeInfo': response.realTimeInfo,
-                        'weatherNowText': response.weatherNowText,
-                        'weatherIcon': response.weatherIcon,
-                        'temperature': response.temperature,
+//                        'weatherNowText': response.weatherNowText,
+//                        'weatherIcon': response.weatherIcon,
+//                        'temperature': response.temperature,
                     };
 
 
@@ -330,9 +328,13 @@ function displayJourney(journey) {
     <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
     `
 
+
     document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+    
+    document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
+
 
     var icon = getWeatherIcon(journey.weatherIcon);
 
@@ -340,25 +342,22 @@ function displayJourney(journey) {
     <b>Weather Forecast: ${journey.weatherNowText}</b><br>
     <b>Temperature: ${journey.temperature}</b><br>
     <b>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></b><br>`
-
-
 }
 
 function displayRealTimeInfo(realTimeArray) {
 	/* Takes in a list of dictionaries
 	Each dict contains route:arrivalTime as key:value
 	Displays realtime info on frontend */
-	document.getElementById("realTimeInfo").innerHTML = "<b>Real Time information</b><br>"
+
+	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
 
 	var numResults = realTimeArray.length;
-
 
   if (numResults > 5) {
       numResults = 5; // Limit number of results to 5
   }
 
 	for (var i = 0; i < numResults; i++) {
-
 		// Select single dict from the array
 		var busDict = realTimeArray[i];
 
@@ -390,12 +389,17 @@ function drawPieChart(journey) {
         ]);
 
         var options = {
-          title: 'Journey Breakdown',
+//          title: 'Journey Breakdown',
           pieHole: 0.6,
           enableInteractivity: false,
           pieSliceText: 'none',
-          legend: { position:'labeled', textStyle: {color: 'white', fontSize: 16} },
+          legend: { position:'labeled', textStyle: {color: 'white', fontSize: '2rem'} },
           backgroundColor: 'transparent',
+          slices:{
+              0:{color:'#b2d0e3'},
+              1:{color:'#f0b917'},
+              2:{color:'#f9f8eb'},
+          }
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));

@@ -16,7 +16,7 @@ from dates import *
 from weather import *
 from realtime import *
 from routedb import *
-from prediction import *
+
 
 @csrf_exempt
 def index(request):
@@ -36,17 +36,14 @@ def journey(request):
 	Returns a dictionary containing all of the information for the user
 	Dictionary is used to populate the pop-up window '''
 
+
 	try:
 		if request.method == "POST":
-
 			conn = connectDB() # Establish a connection to the DB
 
-
 			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
-
-
+      
 			bestRoute = allRoutes[0] # The first journey suggested by google is the best
-
 
 		  walkingTime = bestRoute[-1]['walkingtime']
 		  walkTimeToStop = bestRoute[-1]['walkTimeToStop']
@@ -62,6 +59,8 @@ def journey(request):
 			dayOfWeek = stripDay(dateChosen) # Returns integer representation of day of the week (1-7)
 			hourOfDay = stripTime(dateChosen) # Returns integer representation of hour of the day (0-23)
 			peak = isPeak(dateChosen) # Returns 1 if chosen time is during peak travle times, 0 otherwise
+
+
 
 
 			# Get a weather forecast for the chosen date so we can pass this into the model
@@ -208,4 +207,3 @@ def journey(request):
 		result = 'Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!'
 		#print(result)
 		return JsonResponse(result, safe=False)
-

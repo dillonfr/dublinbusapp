@@ -12,10 +12,13 @@ def stripDay(date):
 	'''
 	if date == "":
 		DayInt = int(datetime.datetime.today().weekday()) + 1
+		print(DayInt)
 	elif date[-2] == 'p':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
+		print(DayInt)
 	elif date[-2] == 'a':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
+		print(DayInt)
 
 	if DayInt == 0:
 		return 7
@@ -81,7 +84,9 @@ def getRouteStops(routeNumber):
 
 	#url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
 
+
 	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
+
 
 	# with urllib.request.urlopen(url) as req:
 	# 	Stops = json.loads(req.read().decode("utf-8"))
