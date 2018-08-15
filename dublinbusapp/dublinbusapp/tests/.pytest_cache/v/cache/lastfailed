@@ -1,1 +1,5 @@
-{}
+{
+  "test_realtime.py::testGetRealTimeInfo": true,
+  "test_routedb.py::testGetEndStop": true,
+  "test_weather.py::testGetWeather": true
+}
