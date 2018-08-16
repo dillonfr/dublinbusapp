@@ -1,0 +1,6 @@
+{
+  "dublinbusapp/dublinbusapp/tests/test_dates.py::testGetRouteStops": true,
+  "dublinbusapp/dublinbusapp/tests/test_dates.py::testGetStopId": true,
+  "dublinbusapp/dublinbusapp/tests/test_dates.py::testIsPeak": true,
+  "dublinbusapp/dublinbusapp/tests/test_dates.py::testStripDay": true
+}
