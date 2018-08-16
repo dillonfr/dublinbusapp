@@ -69,7 +69,7 @@ def unixTime(date):
 	if date == "":
 	    uTime = int(time.time())
 	elif date[-2] == 'p':
-	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple()))
+	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())) + 43200
 	elif date[-2] == 'a':
 	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple()))
 

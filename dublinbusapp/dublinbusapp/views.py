@@ -10,7 +10,7 @@ import pickle
 import numpy
 import pandas as pd
 
-# Import the packages containing the functions we need
+# Import the modules containing the functions we need
 from buslist import *
 from dates import *
 from weather import *
@@ -21,8 +21,7 @@ from prediction import *
 
 @csrf_exempt
 def index(request):
-	''' When someone visits our domain name this renders the homepage for them
-	Returns index.html '''
+	''' When someone visits our domain name this renders the homepage for them'''
 
 	return render(request, 'index.html')
 
@@ -108,6 +107,7 @@ def journey(request):
 				# Find the closest stopid's with the given latitudes/longitudes
 				originId = str(getStopId(stopsDictList, originLatLng)[0])
 				destinationId = str(getStopId(stopsDictList, destinationLatLng))
+
 
 				#print("Origin ID: \n", originId)
 				#print("Destination ID: \n", destinationId)
@@ -217,6 +217,5 @@ def journey(request):
 		return JsonResponse(result, safe=False)
 
 	except:
-		result = 'Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!'
-		#print(result)
+		result = "<h3>Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!</h3>"
 		return JsonResponse(result, safe=False)
