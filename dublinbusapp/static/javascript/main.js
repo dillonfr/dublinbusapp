@@ -310,9 +310,9 @@ function displayJourney(journey) {
 
     // Display text at top of popup window
 	document.getElementById("modalBody").innerHTML = `
-    <b>Total journey time: ${journey.totalTime} mins</b><br>
-    <b>Routes: ${journey.routesToTake}</b><br>
-    <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
+    <p>Total journey time: ${journey.totalTime} mins<br>
+    Routes: ${journey.routesToTake}<br>
+    Walk time to bus stop: ${journey.walkTimeToStop}</p>
     `
 
     // Create divs that info will be put into
@@ -322,11 +322,12 @@ function displayJourney(journey) {
     // Hide pie chart for phone users (not displaying properly)
     document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
 
+
     // Display weather icon
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <b>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></b><br>`
+    <p>Weather Icon:<img src="/static/images/weather_icons/` + icon + `"></p>`
 }
 
 function displayRealTimeInfo(realTimeArray) {
@@ -422,33 +423,31 @@ function getWeatherIcon(weatherIconText) {
     console.log(weatherIconText);
     switch(weatherIconText) {
         case "clear-day":
-            icon = "01d.png";
+            icon = "Sunny.ico";
             break;
         case "clear-night":
-            icon = "01n.png";
+            icon = "Moon.ico";
             break;
         case "rain":
-            icon = "09d.png";
+            icon = "Rain.ico";
             break;
         case "snow":
         case "sleet":
-            icon = "13d.png";
+            icon = "Snow.ico";
             break;
         case "wind":
         case "fog":
-            icon = "50d.png";
+            icon = "Fog.ico";
             break;
         case "cloudy":
-            icon = "04d.png";
-            break;
         case "partly-cloudy-day":
-            icon = "02d.png";
+            icon = "Cloud.ico";
             break;
         case "partly-cloudy-night":
-            icon = "02n.png";
+            icon = "Moon.ico";
             break;
         default:
-            icon = "03d.png"; // Default to cloud icon
+            icon = "Cloud.ico"; // Default to cloud icon
             break;
     }
 

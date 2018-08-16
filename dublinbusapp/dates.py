@@ -87,6 +87,7 @@ def getRouteStops(routeNumber):
 
 
 	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
+	#jsonFile = "/Users/yulia/Desktop/prefinal/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 
 
 	with open(jsonFile, encoding='utf-8') as data_file:

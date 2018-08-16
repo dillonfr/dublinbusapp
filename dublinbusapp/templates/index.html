@@ -49,7 +49,7 @@
             </div>
             <!-- sidebar-header-->
             <div class="sidebar-header">
-                <h2>Find Your Journey</h2>
+                <h2>Plan Your Journey</h2>
             </div>
 
 
@@ -84,7 +84,8 @@
         <!-- Form to submit and toggle markers -->
         <form method="post" id="journeyForm" name="journeyForm" class="col-md-12">
             <button type="submit" id="routebtn" name="start_id" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Go !</button>
-            <input type="button" id="toggle" value="Toggle" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
+            <input type="button" id="toggle" value="Toggle" data-toggle="tooltip" data-placement="bottom"
+            title="Hide the marker on map" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
         </form>
 
             
@@ -97,7 +98,7 @@
                 <div class="modal-content" id="move">
                     <div class="modal-header">
                         <h4 class="modal-title w-100">
-                            Journey info
+                            Find your Journey
                         </h4>
                         <button type="button" class="close" data-dismiss="modal" 
                                 aria-hidden="true">&times;
@@ -121,7 +122,7 @@
 
             <!-- twitter widget -->
             <div id="twitter" class="col-md-12">
-                <a class="twitter-timeline" data-height="380" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
             <!-- twitter widget -->
         </div>
@@ -148,8 +149,16 @@
                 </div>
             <!-- Weather widget -->
             </div>
+            <div class="row">
             <!-- Google map -->
-            <div id='map'></div>
+                <div id='map' ></div>
+                <div id='annotation'>
+                    <div>
+                    <img src="{% static 'images/start.png' %}">:start<br><br>
+                    <img src="{% static 'images/end.png' %}">:end
+                    </div>
+                </div>
+            </div>
             <!-- Google map -->
             
           <!-- Footer -->
@@ -161,7 +170,9 @@
         <!-- Main page -->
 </div>
 
+
     <div id="piechart"></div>
+-->
 
      <!-- Main page -->
 
@@ -182,6 +193,10 @@
             // open sidebar
             $('#sidebar').toggleClass('active');
         });
+    });
+//   toggleMarkers tooltip 
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
     });
 </script>
 <!-- Sidebar -->
