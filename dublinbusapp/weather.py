@@ -6,6 +6,8 @@ def getWeather(unixTime):
 
 
 	# Make request with time specified
+	print("UNIX TIME INPUT:")
+	print(unixTime)
 	url = "https://api.darksky.net/forecast/677b0825944f34372369ece7b0a8bc46/53.2049,6.1531," + str(unixTime) + "?units=si"
 
 	weatherData = requests.get(url).json()

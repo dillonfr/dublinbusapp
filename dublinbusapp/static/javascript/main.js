@@ -371,7 +371,7 @@ function drawPieChart(journey) {
         var data = google.visualization.arrayToDataTable([
           ['Travel Mode', 'Minutes'],
           ['Walking: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
-          ['Bus: ' + String(journey.busTime.toFixed(2)) + ' mins', journey.busTime],
+          ['Bus: ' + String(journey.busTime) + ' mins', journey.busTime],
         ]);
 
         var options = {
@@ -417,7 +417,7 @@ function getWeatherIcon(weatherIconText) {
     The icon text is added to the src tag of an element to display the icon using OpenWeather url
     E.g. http://openweathermap.org/img/w/09d.png
     */
-
+    console.log(weatherIconText);
     switch(weatherIconText) {
         case "clear-day":
             icon = "01d.png";
@@ -450,10 +450,13 @@ function getWeatherIcon(weatherIconText) {
             break;
     }
 
+    console.log("ICON");
+    console.log(icon);
+
     return icon;
 }
 
 function everythingIsBroken(response) {
     document.getElementById("modalBody").innerHTML = response;
-    document.getElementById("modalBody").innerHTML += "<img id='buserrorpic' src='https://i.imgur.com/QS9hkyX.jpg' />";
+    document.getElementById("modalBody").innerHTML += "<img id='busErrorPic' src='https://i.imgur.com/QS9hkyX.jpg' />";
 }
