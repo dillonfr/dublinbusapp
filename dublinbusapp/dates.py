@@ -26,7 +26,7 @@ def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''
 
 	if date == "":
-		return datetime.datetime.today().hour
+		return datetime.datetime.today().hour + 1
 	elif date[-2] == 'a': # Check if time is AM
 		return int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%H'))
 	elif date[-2] == 'p': # Check if time is PM
@@ -89,7 +89,7 @@ def getRouteStops(routeNumber):
 
 	#jsonFile = "C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
 	#jsonFile = "/Users/yulia/Desktop/prefinal/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
-	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
+	jsonFile = "/home/student/dublinbusapp/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 
 	with open(jsonFile, encoding='utf-8') as data_file:
 	    Stops = json.loads(data_file.read())
