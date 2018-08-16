@@ -1,17 +1,16 @@
-# Import the necessary Django packages
+# Django modules
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-# Import the data analytics packages
+# Data analytics modules
 from sklearn.externals import joblib
 import pickle
 import numpy
 import pandas as pd
 
-# Import the modules containing the functions we need
-from buslist import *
+# Modules containing various functions needed
 from dates import *
 from weather import *
 from realtime import *
@@ -19,10 +18,10 @@ from routedb import *
 from prediction import *
 
 
+
 @csrf_exempt
 def index(request):
 	''' When someone visits our domain name this renders the homepage for them'''
-
 	return render(request, 'index.html')
 
 
@@ -39,11 +38,11 @@ def journey(request):
 
 	try:
 		if request.method == "POST":
-			conn = connectDB() # Establish a connection to the DB
+			conn = connectDB()
 
-			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys
+			allRoutes = json.loads(request.POST["allRoutes"]) # Retrieve all possible journeys suggested by Google
 
-			bestRoute = allRoutes[0] # The first journey suggested by google is the best
+			bestRoute = allRoutes[0] # The first journey suggested by Google is the best
 
 			walkingTime = bestRoute[-1]['walkingtime']
 			walkTimeToStop = bestRoute[-1]['walkTimeToStop']
@@ -52,8 +51,7 @@ def journey(request):
 			numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
 
-
-			# Retrieve the date chosen by the user
+			# Retrieve date chosen by the user
 			dateChosen = request.POST["dateChosen"]
 
 			# Error check date chosen received from datetime picker, make sure date chosen is a string
@@ -86,9 +84,11 @@ def journey(request):
 				rain = 0 # If no forecast weather returns we default to 0 (not raining). We care about rain as this is used in the model
 
 
-			routesToTake =[] # Initialise the number of different buses a user needs to take to 0
-			busTime = 0 # Intialise the time the total journey will take to 0
-			isFirstStopId = False
+
+
+			routesToTake =[] # Bus routes needed to complete the journey
+			busTime = 0 # Time spent on bus
+			isFirstStopId = True
 
 			#Go through each bus leg and get a prediction on journey time for that leg
 			for i in range(0, numBusJourneys):
@@ -113,18 +113,17 @@ def journey(request):
 				#print("Destination ID: \n", destinationId)
 
 				# Get realtime info for the first bus stop id of the journey
-				if isFirstStopId == False:
+				if isFirstStopId == True:
 					realTimeInfo = getRealTimeInfo(originId) # Returns a list
-					isFirstStopId = True
+					isFirstStopId = False
 
 				try:
-					''' We first try and use our main model to predict the time for the route
-					The main model only occasionaly fails so we use this most of the time '''
+					''' Use main model to predict the time for the route'''
 
 					# Convert data we have into a format that can be used to query the database
-					dbroute = route.upper() # Routes are stored in database with capital letters e.g. 7D, 15B, etc.
+					dbroute = route.upper() # Change letters to uppercase e.g. 15B
 					gtfsday = getGTFSday(dateChosen) # Day of the week is stored in database in non-integer form
-					timeOfDay = getSeconds(dateChosen) # We need to get the time in seconds since midnight
+					timeOfDay = getSeconds(dateChosen) # Seconds since midnight
 
 					# Query the database with this data and return best result i.e. a journey that matches our parameters and is closest to the departure time
 					tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]

@@ -8,7 +8,7 @@ def getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
     Concatenates these two dataframes
     Reformats the resulting dataframe for use in the prediction model '''
 
-    # We first turn the stopids into a list
+    # Turn the stopids into a list
     listOfStops = []
     for i in range(0, len(seqstoplist)):
     	listOfStops.append(seqstoplist[i][0])
@@ -16,29 +16,29 @@ def getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
     # Create a dataframe out of this list. Consists of one column with a row for each stopid on the journey
     df_list = pd.DataFrame(listOfStops, columns=['stop_point_id'])
 
-    # Create a dictionary that stores the route information we need to pass into the model
+    # Dictionary that stores the route information we need to pass into the model
     modelData = {'day' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'rain' : rain, 'temp' : temperature}
     # Create a dataframe out of this information
     df_features = pd.DataFrame(modelData, index=[0])
 
-    # We concatenate the stopids dataframe and the route information dataframes
+    # Concatenate the stopids dataframe and the route information dataframes
     df_new = pd.concat([df_features, df_list], axis=1, ignore_index=True)
     df_new = df_new.fillna(method='ffill') # We use this to fill each row in the new dataframe with the route information data
 
     # Our model works by estimating the time between every stop on a route. We need to create a new column that has the stopid for the next stop
-    df_new[6]=df_new[5].shift(-1) # We shift all the data in the stopids column down one place and store this as a new column representing nextstopid
-    # We have to reindex the dataframe to fit our model
+    df_new[6]=df_new[5].shift(-1) # Shift all the data in the stopids column down one place and store this as a new column representing nextstopid
+    # Reindex the dataframe to fit our model
     columnsTitles=[0, 2, 1, 5, 6, 3, 4]
     df_new = df_new.reindex(columns=columnsTitles)
-    # We drop the last row of the dataframe as this has no next stop to go to
+    # Drop the last row of the dataframe as this has no next stop to go to
     df_new = df_new[:-1]
 
-    # We need to change the data type to int and then category so that our model reads it correctly
+    # Change the data type to int and then category so that our model reads it correctly
     for i in range(0, 7):
     	df_new[i] = df_new[i].astype('int')
     	df_new[i] = df_new[i].astype('category')
 
-    # We drop the temperature column
+    # Drop the temperature column
     df_new = df_new.drop(df_new.columns[6], axis=1)
 
     # Assign column titles to the new dataframe
@@ -85,36 +85,34 @@ def getRouteTime(dbroute, df_combo):
     # Load the linear regression model for the given route
     loaded_model = joblib.load(open("C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\dublinbusapp\\pickles\\route" + dbroute + "_model.sav", 'rb'))
 
-    # Use the loaded model to make a prediction of the journey time
+    # Make a prediction of the journey time
     journeyTimePrediction = loaded_model.predict(df_combo)
 
-    # Print the journey time for each stop and convert to a list format
-    print('Journey Time Prediction for Each Stop: \n', journeyTimePrediction)
     journeyTimePrediction = journeyTimePrediction.tolist()
 
-    # Error handling for any stop-to-stop journey time > 10 minutes or < 0
+    # Error handling for any stop-to-stop journey time > 15 minutes or < 0
     totalTrips = len(journeyTimePrediction)
     errorCount = 0
     total = 0
 
     for i in range(0, len(journeyTimePrediction)):
-    	if journeyTimePrediction[i] > 600 or journeyTimePrediction[i] < 0:
+    	if journeyTimePrediction[i] > 900 or journeyTimePrediction[i] < 0:
     		errorCount += 1
     	else:
     		total += int(journeyTimePrediction[i])
 
+    # Removes unrealistic predictions and replaces them with an average
     avgStopTime = total // (totalTrips - errorCount)
     errorTime = avgStopTime * errorCount
     total += errorTime
 
-    # Return the route journey time
+    # Return the total route journey time
     return total
 
 def getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain):
     ''' The dataframe for the backup model is slightly different to the main one
-    Takes in day of the week, peak, hour, number of stops and rain
-    Doesn't evaluate the journey time on a stop-by-stop basis
-    Only consists of one row '''
+    Evaluates journey time based on total number of stops, not a stop-by-stop evaluation
+    '''
 
     # Create a dictionary that stores the route information we need to pass into the model
     backupData = {'dayofweek' : dayOfWeek, 'peak' : peak, 'hour' : hourOfDay, 'stopsnumber' : numStops, 'rain' : rain}
@@ -163,8 +161,6 @@ def getBackupRouteTime(dbroute, df_backupCombo):
     # Use the loaded model to make a prediction of the journey time
     journeyTimePrediction = loaded_model.predict(df_backupCombo)
 
-    # Print the journey time for each stop and convert to a list format
-    print('Journey Time Prediction: \n', journeyTimePrediction)
     journeyTimePrediction = journeyTimePrediction.tolist()
 
     return journeyTimePrediction[0]

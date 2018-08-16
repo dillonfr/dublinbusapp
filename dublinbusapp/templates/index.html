@@ -6,7 +6,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Tittle icon-->
+    <!-- Title icon-->
     <link href="{% static 'images/favicon.ico' %}"  rel="icon" type="image/x-icon" />
 
     <!-- Bootstrap CSS CDN -->
@@ -27,9 +27,9 @@
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-
+    <!-- JavaScript -->
     <script src="{% static 'javascript/main.js' %}"></script>
-    <!-- datetimepicker -->
+    <!-- Datetimepicker -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'javascript/bootstrap-datetimepicker.js' %}" charset="UTF-8"></script>
@@ -57,18 +57,12 @@
             {% csrf_token %}
             <div id="journeyInput" class="col-md-12">
 
-<!--                    <h3>From</h3>-->
+
                 <div class="input-group">
                     <input type="text" class="form-control" id="searchStart" onchange="setTimeout(calcRoute, 500)" value="" placeholder="From:"/><span class="input-group-addon" onclick="document.getElementById('searchStart').value = ''">&times;</span>
                 </div>
-<!--
-                <div id="change">
-                    <button type="button" class="btn" id="transfer">
-                        <img src="{% static 'images/transfer.png' %}">
-                    </button>
-                </div>
--->
-<!--                    <h3>To</h3>-->
+
+
                 <div class="input-group" id="end">
                     <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value="" placeholder="To:"/>
                     <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
@@ -77,13 +71,8 @@
             </div>
 
 
-            <!-- <div id = 'message'></div> -->
-
-<!--            <div id = 'journeySummary'></div>-->
-
             <!--datetimepicker-->
             <div id="datetimepicker" class="col-md-12">
-<!--                <h3>Departure date</h3>-->
                 <div class="input-group date form_datetime" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input">
                     <input class="form-control" id="dateChosen" onchange="setTimeout(calcRoute, 500)" size="16" type="text" value="" readonly placeholder="Departure date:">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
@@ -92,10 +81,7 @@
              </div>
             <!--datetimepicker-->
             
-      
-
-
-        <!-- TODO Fix post request -->
+        <!-- Form to submit and toggle markers -->
         <form method="post" id="journeyForm" name="journeyForm" class="col-md-12">
             <button type="submit" id="routebtn" name="start_id" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Go !</button>
             <input type="button" id="toggle" value="Toggle" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
@@ -175,13 +161,6 @@
         <!-- Main page -->
 </div>
 
-      
-    <!-- Google Maps API -->
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&callback=initMap"></script> -->
-<!--    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>-->
-
-
-
     <div id="piechart"></div>
 
      <!-- Main page -->
@@ -225,19 +204,7 @@ $( document ).on( "pageinit", "#whole-page", function() {
     
 </script>
 <!-- Swipe -->
-      
-<!-- Exchange button -->
-<!--
-<script type="text/javascript">
-document.getElementById('change').onclick = function() {
-    var tmp = document.getElementById('searchStart').value;
-    document.getElementById('searchStart').value = document.getElementById('searchEnd').value;
-    document.getElementById('searchEnd').value = tmp;
-};
-</script>
--->
-<!-- Exchange button -->
-      
+
 <!-- pop up window -->
 <script type="text/javascript">
     var mouseStartPoint = {"left":0,"top":  0};
