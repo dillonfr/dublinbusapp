@@ -327,7 +327,7 @@ function displayJourney(journey) {
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <p>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></p>`
+    <p>Weather Icon:<img src="/static/images/weather_icons/` + icon + `"></p>`
 }
 
 function displayRealTimeInfo(realTimeArray) {
@@ -335,7 +335,7 @@ function displayRealTimeInfo(realTimeArray) {
 	Each dict contains route:arrivalTime as key:value
 	Displays realtime info on frontend */
 
-	document.getElementById("realTimeInfo").innerHTML = "Real Time information"
+	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
 
 	var numResults = realTimeArray.length;
 
@@ -420,33 +420,31 @@ function getWeatherIcon(weatherIconText) {
 
     switch(weatherIconText) {
         case "clear-day":
-            icon = "01d.png";
+            icon = "Sunny.ico";
             break;
         case "clear-night":
-            icon = "01n.png";
+            icon = "Moon.ico";
             break;
         case "rain":
-            icon = "09d.png";
+            icon = "Rain.ico";
             break;
         case "snow":
         case "sleet":
-            icon = "13d.png";
+            icon = "Snow.ico";
             break;
         case "wind":
         case "fog":
-            icon = "50d.png";
+            icon = "Fog.ico";
             break;
         case "cloudy":
-            icon = "04d.png";
-            break;
         case "partly-cloudy-day":
-            icon = "02d.png";
+            icon = "Cloud.ico";
             break;
         case "partly-cloudy-night":
-            icon = "02n.png";
+            icon = "Moon.ico";
             break;
         default:
-            icon = "03d.png"; // Default to cloud icon
+            icon = "Cloud.ico"; // Default to cloud icon
             break;
     }
 

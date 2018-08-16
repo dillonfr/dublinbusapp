@@ -3,7 +3,7 @@
  
 @media only screen and (max-width:320px)and (max-width:359px){
     h1{
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     #logo{
@@ -93,18 +93,21 @@
 }
 */
 
-@media only screen and (min-width:768px)and (max-width:1024px){
+@media only screen and (min-width:768px) and (max-width:1024px){
+/*
     #weather{
+        height: 40px;
+        top: 90px;
         position: relative;
-        top: 0vh;
     }
+*/
     
     #map{
         height: 90vh;
     } 
 }
 
-@media only screen and (max-width:768px){
+@media only screen and (max-width:767px){
     #piechart{
         display: none;
     }

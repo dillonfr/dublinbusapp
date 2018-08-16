@@ -178,6 +178,11 @@ html {
     color: white;
 }
 
+#weatherForecast img{
+    height: 40px;
+    width: 40px;
+    display: inline;
+}
 
 /* ---------------------------------------------------
     MAIN PAGE

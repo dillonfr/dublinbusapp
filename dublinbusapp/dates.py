@@ -91,8 +91,9 @@ def getRouteStops(routeNumber):
 	#url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
 
 
-	 jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
-	
+	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
+	#jsonFile = "/Users/yulia/Desktop/prefinal/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
+
 
 	# with urllib.request.urlopen(url) as req:
 	# 	Stops = json.loads(req.read().decode("utf-8"))
