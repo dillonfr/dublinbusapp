@@ -102,12 +102,21 @@ def journey(request):
 				destinationLatLng = bestRoute[i]['arrivalLatLng']
 				numStops = bestRoute[i]['numStops']
 
-				# Find all of the stopid's on the route
-				stopsDictList = getRouteStops(str(route))
+				try:
+					# Find all of the stopid's on the route
+					stopsDictList = getRouteStops(str(route))
 
-				# Find the closest stopid's with the given latitudes/longitudes
-				originId = str(getStopId(stopsDictList, originLatLng)[0])
-				destinationId = str(getStopId(stopsDictList, destinationLatLng))
+					# Find the closest stopid's with the given latitudes/longitudes
+					originId = str(getStopId(stopsDictList, originLatLng)[0])
+					destinationId = str(getStopId(stopsDictList, destinationLatLng))
+
+				except Exception as e:
+					print(str(e))
+					if i == 0:
+						realTimeInfo =[]
+						isFirstStopId = False
+					busTime += bestRoute[i]['googleTime']
+					continue
 
 				#print("Origin ID: \n", originId)
 				#print("Destination ID: \n", destinationId)
