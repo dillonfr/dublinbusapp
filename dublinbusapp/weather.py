@@ -4,7 +4,6 @@ import requests
 def getWeather(unixTime):
 	'''Gets the weather conditions at a given time from DarkSky API'''
 
-
 	# Make request with time specified
 	url = "https://api.darksky.net/forecast/677b0825944f34372369ece7b0a8bc46/53.2049,6.1531," + str(unixTime) + "?units=si"
 

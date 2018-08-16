@@ -12,13 +12,10 @@ def stripDay(date):
 	'''
 	if date == "":
 		DayInt = int(datetime.datetime.today().weekday()) + 1
-		print(DayInt)
 	elif date[-2] == 'p':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%w'))
-		print(DayInt)
 	elif date[-2] == 'a':
 		DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
-		print(DayInt)
 
 	if DayInt == 0:
 		return 7
@@ -35,10 +32,10 @@ def stripTime(date):
 	elif date[-2] == 'p': # Check if time is PM
 		time = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').strftime('%H')) + 12
 
-		if time > 23:
-			time = 12
+	if time > 23: # Error check for midday
+		time = 12
 
-		return time
+	return time
 
 def isPeak(date):
 	''' Function that checks if a specific datetime format is within peak hours
@@ -69,7 +66,7 @@ def unixTime(date):
 	if date == "":
 	    uTime = int(time.time())
 	elif date[-2] == 'p':
-	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple()))
+	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())) + 43200
 	elif date[-2] == 'a':
 	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple()))
 
@@ -88,15 +85,10 @@ def getRouteStops(routeNumber):
 
 	stopidDict = {}
 
-	#url = "https://data.dublinked.ie/cgi-bin/rtpi/routeinformation?routeid=" + str(routeNumber) + "&operator=bac&format=json"
-
 
 	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
 	#jsonFile = "/Users/yulia/Desktop/prefinal/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 
-
-	# with urllib.request.urlopen(url) as req:
-	# 	Stops = json.loads(req.read().decode("utf-8"))
 
 	with open(jsonFile, encoding='utf-8') as data_file:
 	    Stops = json.loads(data_file.read())
@@ -114,17 +106,18 @@ def getRouteStops(routeNumber):
 
 
 def getStopId(dictlist, lat_lng):
-	''' Function that returns the stopid for the stop that is closest to the given lat/long
+	''' Function that returns the stopid's for the closest stops to the given lat/long
 	The Google Directions Service returns lat/long for each stop that is slightly different to Dublin Bus lat/long for the same stop
 	Finds the closest matching latitude and longtude to the inputted one and returns the corresponding stopid
-	Calculates the distance between each stopid in a route and the inputted lat/long
-	Sorts by distance and returns the stopid that is closest
-	Takes a dictionary of stopid: lat/long and a lat/long as arguments '''
+	Takes a dictionary of stopid: lat/long and a target lat/long as arguments '''
 
+	# Calculate the distance between each stopid in a route and the inputted lat/long
 	for key in dictlist.keys():
-		dictlist[key].update({"distance": geopy.distance.vincenty([dictlist[key]["lat"], dictlist[key]["lng"]], lat_lng).km}) # Create a new value called 'distance' that records the distance between the two lat/longs
+		dictlist[key].update({"distance": geopy.distance.vincenty([dictlist[key]["lat"], dictlist[key]["lng"]], lat_lng).km})
 
-	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"]) # Sort the dictionary by the shortest distance
+	# Sort the dictionary by the shortest distance
+	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"]) 
 
+	# Return the 4 closest stop id's to the given lat_lng
 	needed_stops = sortedDict[0][0], sortedDict[1][0], sortedDict[2][0], sortedDict[3][0]
-	return needed_stops # return the 4 stopids with the shortest distance
+	return needed_stops 
