@@ -1,9 +1,11 @@
+// Global variables needed to pass around the marker information
 var markerStartLat;
 var markerStartLng;
 var markerEndLat;
 var markerEndLng;
 var markers = [];
 
+// Default positions of markers
 var startPosition = {
 	lat: 53.321712,
 	lng: -6.266006
@@ -60,6 +62,7 @@ function initMap() {
         },
     });
 
+    // Add markers to global array
     markers.push(markerStart);
     markers.push(markerEnd);
 
@@ -81,7 +84,7 @@ function initMap() {
         setTimeout(calcRoute(true), 500); //true indicates the marker was dragged
     });
 
-    // Set search options for addresses bound to Dublin
+    // Set autocomplete search options for addresses bound to Dublin area
     var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(52.999804, -6.841221),
       new google.maps.LatLng(53.693350, -5.914248));
@@ -139,11 +142,6 @@ function calcRoute(usedDragMarker) {
     // Check if user dragged the markers
     usedDragMarker = usedDragMarker || false; // true if user dragged marker, defaults to false
 
-
-    console.log("Start: " + String(startPosition) + ". End: " + String(endPosition));
-
-    console.log("Search box start: " + document.getElementById("searchStart").value + " End: " + document.getElementById("searchEnd").value);
-
     var unixDateChosen = findUnixDateChosen();
 
     // Set up the request that will be sent to Google
@@ -170,7 +168,7 @@ function calcRoute(usedDragMarker) {
             allRoutesArray = [];
 
             var newStartPosition = response.routes[0].legs[0].start_location;
-            var newEndPosition = response.routes[0].legs[0].end_location; //.toUrlValue(6)
+            var newEndPosition = response.routes[0].legs[0].end_location;
 
             markerStart.setPosition(newStartPosition);
             markerEnd.setPosition(newEndPosition);
@@ -195,7 +193,7 @@ function calcRoute(usedDragMarker) {
 
                     } else if (travelMode == "TRANSIT") {
 
-                        // Check if the journey is on the Luas based on the instructions received from Google
+                        // Error check to see if the journey is on the Luas based on the instructions received from Google
                         var instructions = response.routes[j].legs[0].steps[i].instructions; // String e.g. "Tram towards Milltown", "Bus towards Ongar St"
 
                         if (instructions.slice(0, 5) == "Tram") {
@@ -264,7 +262,7 @@ $(document).ready(function() {
 
             $.ajax({
                 type:"POST",
-                url:"/journey/", // Sends post request to the url journey, which calls a function in views.py
+                url:"/journey/", // Sends post request to the url '/journey', which calls a function in views.py
 
                 // Collect the data we want to send to Django
                 data: {
@@ -277,7 +275,6 @@ $(document).ready(function() {
                 success: function(response){
                     console.log("success")
                     console.log(response)
-                    // $('#message').html("<h2>Journey Form Submitted!</h2>")
 
                     // Create dictionary with information received from Django/Python
                     try {
@@ -299,7 +296,7 @@ $(document).ready(function() {
                         drawPieChart(journey)
                     }
                     catch(err) {
-                        everythingIsBroken(response)
+                        somethingIsBroken(response)
                     }
                  }
             });
@@ -310,20 +307,22 @@ $(document).ready(function() {
 
 function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
+
+    // Display text at top of popup window
 	document.getElementById("modalBody").innerHTML = `
     <b>Total journey time: ${journey.totalTime} mins</b><br>
     <b>Routes: ${journey.routesToTake}</b><br>
     <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
     `
 
-
+    // Create divs that info will be put into
     document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
-    
+    // Hide pie chart for phone users (not displaying properly)
     document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
 
-
+    // Display weather icon
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
@@ -331,17 +330,18 @@ function displayJourney(journey) {
 }
 
 function displayRealTimeInfo(realTimeArray) {
-	/* Takes in a list of dictionaries
+	/* Displays realtime info on frontend
+    Takes in a list of dictionaries
 	Each dict contains route:arrivalTime as key:value
-	Displays realtime info on frontend */
+	 */
 
 	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
 
 	var numResults = realTimeArray.length;
 
-  if (numResults > 5) {
-      numResults = 5; // Limit number of results to 5
-  }
+    if (numResults > 5) {
+        numResults = 5; // Limit number of results to 5
+    }
 
 	for (var i = 0; i < numResults; i++) {
 		// Select single dict from the array
@@ -363,6 +363,7 @@ function displayRealTimeInfo(realTimeArray) {
 }
 
 function drawPieChart(journey) {
+    // Draw pie chart showing time spent on bus versus walking
 	google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(drawChart);
 
@@ -395,6 +396,7 @@ function drawPieChart(journey) {
 }
 
 function findUnixDateChosen() {
+    // Converts date chosen into a unix time
     var dateChosen =  document.getElementById("dateChosen").value;
     var unixDateChosen;
 
@@ -456,7 +458,8 @@ function getWeatherIcon(weatherIconText) {
     return icon;
 }
 
-function everythingIsBroken(response) {
+function somethingIsBroken(response) {
+    // Displays error response message and picture
     document.getElementById("modalBody").innerHTML = response;
     document.getElementById("modalBody").innerHTML += "<img id='busErrorPic' src='https://i.imgur.com/QS9hkyX.jpg' />";
 }

@@ -3,8 +3,7 @@ import time
 import datetime
 
 def connectDB():
-    ''' Connects to the sqlite database
-    Raises an exception if connection cannot be made'''
+    ''' Connects to the sqlite database'''
     try:
         conn = sqlite3.connect('mydatabase')
         print('-----------------------------------------------------------------')
@@ -24,6 +23,7 @@ def getGTFSday(date):
     elif date[-2] == 'a':
         DayInt = int(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').strftime('%w'))
 
+    # Convert days to the format needed to query the DB
     if DayInt >= 0 and DayInt <= 4:
         gtfsday = '"y102v", "y1022", "y1023"'
     elif DayInt == 5:
@@ -57,9 +57,9 @@ def getSeconds(date):
     return int(seconds)
 
 def getStartStop(conn, route, dayOfWeek, originID, timeOfDay):
-    ''' Takes in route, day of the week, stopid of first stop and time of day
+    ''' Searches database for trips that fit the given parameters
+    originID is the stopid of first stop
     The database contains the timetable for every stop and every route for the month of August
-    Searches database for trips that fit the given parameters
     timeOfDay is in seconds from midnight. We return the trip with a departure time from the stop that is closest to the user's chosen one
     Returns the unique tripid for the chosen trip and the sequence number for the starting stop '''
 

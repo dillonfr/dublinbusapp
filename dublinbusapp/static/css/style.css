@@ -112,30 +112,6 @@ html {
     color: black;
 }
 
-/*
-#change{
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0);
-}
-
-#change img{
-    height: 30px;
-    width: 30px;
-    z-index: 99999;
-    display: block;
-}
-*/
-/*
-
-#transfer{
-    background-color: rgba(0, 0, 0, 0);  
-}
-
-#transit{
-    width: 20px;
-    height: 20px;
-}
-*/
 #end{
     margin-top:20px;
 }
