@@ -26,7 +26,7 @@ b{
 }
 
 p{
-    font-size: 1.5rem;
+/*    font-size: 1rem;*/
     color: #f9f8eb;
 }
 
@@ -153,6 +153,7 @@ html {
 #twitter{
     top:1vh;
     position: relative;
+    margin-top: 20px;
 }
 /* ---------------------------------------------------
     popWindow
@@ -232,15 +233,29 @@ html {
     left: 0px;
     border: 3px solid #f0b917;
     border-radius: 5px;
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 #weather {
-    position: relative; 
     width: 221px;
     height: 40px;
     float: right;
 }
 
+#annotation{
+    z-index: 998;
+    position: absolute;
+    color: #000;
+    margin-left: 90vw;
+    margin-top: 20vh;
+}
+#annotation img{
+    height: 35px;
+    width: 35px;
+    display: inline;
+    margin-bottom: -20px;
+}
 
 .footer {
     position: fixed;

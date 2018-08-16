@@ -311,23 +311,23 @@ $(document).ready(function() {
 function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
 	document.getElementById("modalBody").innerHTML = `
-    <b>Total journey time: ${journey.totalTime} mins</b><br>
-    <b>Routes: ${journey.routesToTake}</b><br>
-    <b>Walk time to bus stop: ${journey.walkTimeToStop}</b><br>
+    <p>Total journey time: ${journey.totalTime} mins<br>
+    Routes: ${journey.routesToTake}<br>
+    Walk time to bus stop: ${journey.walkTimeToStop}</p>
     `
 
 
-    document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
+    document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
     
-    document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
+//    document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
 
 
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <b>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></b><br>`
+    <p>Weather Icon:<img src="http://openweathermap.org/img/w/` + icon + `"/></p>`
 }
 
 function displayRealTimeInfo(realTimeArray) {
@@ -335,7 +335,7 @@ function displayRealTimeInfo(realTimeArray) {
 	Each dict contains route:arrivalTime as key:value
 	Displays realtime info on frontend */
 
-	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
+	document.getElementById("realTimeInfo").innerHTML = "Real Time information"
 
 	var numResults = realTimeArray.length;
 
