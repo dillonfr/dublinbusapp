@@ -49,6 +49,12 @@ html {
     background-color: #f0b917;
     color: #f0b917;
 }
+
+.inactiveLink {
+    pointer-events: none;
+    cursor: default;
+}
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */

@@ -192,6 +192,9 @@ def journey(request):
 						routeTime = getBackupRouteTime(dbroute, df_backupCombo)
 						print('Route Journey Time: \n', routeTime)
 
+						if routeTime > 20000:
+							raise Exception("Dataframe Error. Backup model valuation invalid")
+
 						busTime += routeTime
 
 					except Exception as e:

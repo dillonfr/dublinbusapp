@@ -42,7 +42,7 @@ def isPeak(date):
 	Peak hours are between 7-10am and 4-7pm
 	'''
 	if date == "":
-		HourInt = datetime.datetime.today().hour
+		HourInt = datetime.datetime.today().hour + 1
 		if HourInt >= 7 and HourInt <= 10 or HourInt >= 16 and HourInt <= 19:
 			return 1 # Within peak hours
 		else:
