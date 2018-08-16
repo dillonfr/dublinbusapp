@@ -198,7 +198,7 @@ function calcRoute(usedDragMarker) {
 
                         if (instructions.slice(0, 5) == "Tram") {
                             var luasTravelTime = response.routes[j].legs[0].steps[i].duration['value']; // Travel time on Luas in seconds
-                            totalLuasTime += luasTravelTime 
+                            totalLuasTime += luasTravelTime
                             continue;
                         }
 
@@ -310,9 +310,8 @@ function displayJourney(journey) {
 
     // Display text at top of popup window
 	document.getElementById("modalBody").innerHTML = `
-    <p>Total journey time: ${journey.totalTime} mins<br>
-    Routes: ${journey.routesToTake}<br>
-    Walk time to bus stop: ${journey.walkTimeToStop}</p>
+    <p><b class="popupheading">Journey Time:</b> ${journey.totalTime} mins<br>
+    <b class="popupheading">Routes:</b> ${journey.routesToTake}</p>
     `
 
     // Create divs that info will be put into
@@ -327,7 +326,7 @@ function displayJourney(journey) {
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <p>Weather Icon:<img src="/static/images/weather_icons/` + icon + `"></p>`
+    <p><b class="popupheading">Forecast:</b><img src="/static/images/weather_icons/` + icon + `"></p>`
 }
 
 function displayRealTimeInfo(realTimeArray) {
@@ -336,8 +335,8 @@ function displayRealTimeInfo(realTimeArray) {
 	Each dict contains route:arrivalTime as key:value
 	 */
 
-	document.getElementById("realTimeInfo").innerHTML = "Real Time information<br>"
-
+	document.getElementById("realTimeInfo").innerHTML = "<b class='popupheading'>Real Time Information:</b><br>"
+  document.getElementById("realTimeInfo").innerHTML += "<b>Walk Time to First Stop:</b> ${journey.walkTimeToStop}"
 	var numResults = realTimeArray.length;
 
     if (numResults > 5) {
@@ -372,8 +371,8 @@ function drawPieChart(journey) {
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Travel Mode', 'Minutes'],
-          ['Walking: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
-          ['Bus: ' + String(journey.busTime) + ' mins', journey.busTime],
+          ['Total Walking Time: ' + String(journey.walkingTime) + ' mins', journey.walkingTime],
+          ['Total Bus Time: ' + String(journey.busTime) + ' mins', journey.busTime],
         ]);
 
         var options = {
@@ -385,7 +384,7 @@ function drawPieChart(journey) {
           backgroundColor: 'transparent',
           slices:{
               0:{color:'#b2d0e3'},
-              1:{color:'#f0b917'},
+              1:{color:'#b543d2'},
               2:{color:'#f9f8eb'},
           }
         };
@@ -415,7 +414,7 @@ function findUnixDateChosen() {
 }
 
 function getWeatherIcon(weatherIconText) {
-    /* Function that matches the weather forecast text received from DarkSky API with an icon from OpenWeather API 
+    /* Function that matches the weather forecast text received from DarkSky API with an icon from OpenWeather API
     DarkSky does not provide its own icons
     The icon text is added to the src tag of an element to display the icon using OpenWeather url
     E.g. http://openweathermap.org/img/w/09d.png

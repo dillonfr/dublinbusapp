@@ -86,7 +86,7 @@ def getRouteStops(routeNumber):
 	stopidDict = {}
 
 
-	jsonFile = "C:\\Users\\dillo_000\\Desktop\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
+	jsonFile = "C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
 	#jsonFile = "/Users/yulia/Desktop/prefinal/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 
 
@@ -116,8 +116,8 @@ def getStopId(dictlist, lat_lng):
 		dictlist[key].update({"distance": geopy.distance.vincenty([dictlist[key]["lat"], dictlist[key]["lng"]], lat_lng).km})
 
 	# Sort the dictionary by the shortest distance
-	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"]) 
+	sortedDict = sorted(dictlist.items(), key = lambda x_y: x_y[1]["distance"])
 
 	# Return the 4 closest stop id's to the given lat_lng
 	needed_stops = sortedDict[0][0], sortedDict[1][0], sortedDict[2][0], sortedDict[3][0]
-	return needed_stops 
+	return needed_stops

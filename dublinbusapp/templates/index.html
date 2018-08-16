@@ -16,7 +16,7 @@
     <link href="{% static 'css/media.css' %}" rel="stylesheet">
 
     <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- Popper.JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
@@ -67,7 +67,7 @@
                     <input type="text" class="form-control" id="searchEnd" onchange="setTimeout(calcRoute, 500)" value="" placeholder="To:"/>
                     <span class="input-group-addon" onclick="document.getElementById('searchEnd').value = ''">&times;</span>
                 </div>
-   
+
             </div>
 
 
@@ -80,7 +80,7 @@
                 </div>
              </div>
             <!--datetimepicker-->
-            
+
         <!-- Form to submit and toggle markers -->
         <form method="post" id="journeyForm" name="journeyForm" class="col-md-12">
             <button type="submit" id="routebtn" name="start_id" class="btn col-md-5 btn-lg" data-toggle="modal" data-target="#popWindow">Go !</button>
@@ -88,7 +88,7 @@
             title="Hide the marker on map" class="btn col-md-5 btn-lg" onclick="toggleMarkers();"/>
         </form>
 
-            
+
 
         <!-- pop up window -->
         <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="false">
@@ -98,15 +98,15 @@
                 <div class="modal-content" id="move">
                     <div class="modal-header">
                         <h4 class="modal-title w-100">
-                            Find your Journey
+                            Journey Details
                         </h4>
-                        <button type="button" class="close" data-dismiss="modal" 
+                        <button type="button" class="close" data-dismiss="modal"
                                 aria-hidden="true">&times;
                         </button>
-                        
+
                     </div>
                     <div class="modal-body" id="modalBody">
-                       <div class="loader"></div> 
+                       <div class="loader"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn" data-dismiss="modal">
@@ -139,7 +139,7 @@
                     <button type="button" id="sidebarCollapse">
                         <i class="fa fa-search"></i>
                     </button>
-                    <!-- Side bar button --> 
+                    <!-- Side bar button -->
                 </div>
             <!-- Weather widget -->
                 <div class="col-sm-3 align-right">
@@ -160,7 +160,7 @@
                 </div>
             </div>
             <!-- Google map -->
-            
+
           <!-- Footer -->
           <!-- Copyright -->
           <div class="footer">© 2018 Copyright: Team 14</div>
@@ -180,7 +180,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMns2Y33xj53IYHDDwQQb5P-R2mi5nxQk&libraries=places&callback=initMap" async defer></script>
     <!-- Google Maps API -->
 
-<!-- Sidebar -->   
+<!-- Sidebar -->
 <script type="text/javascript">
     $(document).ready(function () {
 
@@ -194,9 +194,9 @@
             $('#sidebar').toggleClass('active');
         });
     });
-//   toggleMarkers tooltip 
+//   toggleMarkers tooltip
     $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();   
+        $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
 <!-- Sidebar -->
@@ -216,7 +216,7 @@ $( document ).on( "pageinit", "#whole-page", function() {
         }
     });
 });
-    
+
 </script>
 <!-- Swipe -->
 
@@ -258,7 +258,7 @@ $( document ).on( "pageinit", "#whole-page", function() {
     });
 </script>
 <!-- pop up window -->
-      
+
 <!-- datetimepicker -->
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({
@@ -293,12 +293,12 @@ $( document ).on( "pageinit", "#whole-page", function() {
     });
 </script>
 <!-- datetimepicker -->
-      
+
 <!-- Weather widget -->
 <script>
     !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 </script>
 <!-- Weather widget -->
-      
+
   </body>
 </html>
