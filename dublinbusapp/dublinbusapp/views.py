@@ -26,6 +26,7 @@ def index(request):
 
 
 
+
 @csrf_exempt
 def journey(request):
 	''' Main function for our web app
@@ -214,6 +215,8 @@ def journey(request):
 		# Return the result dictionary to AJAX as a response
 		return JsonResponse(result, safe=False)
 
-	except:
+
+	except Exception as e:
+		print(str(e))
 		result = "<h3>Error! Something Has Gone Horribly Wrong! Oh Boy! What a Mess!</h3>"
 		return JsonResponse(result, safe=False)

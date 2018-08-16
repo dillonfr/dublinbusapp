@@ -292,7 +292,7 @@ $(document).ready(function() {
                             'temperature': response.temperature,
                         };
                         displayJourney(journey)
-                        displayRealTimeInfo(journey.realTimeInfo)
+                        displayRealTimeInfo(journey.realTimeInfo, journey.walkTimeToStop)
                         drawPieChart(journey)
                     }
                     catch(err) {
@@ -309,11 +309,30 @@ function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
 
     // Display text at top of popup window
-	document.getElementById("modalBody").innerHTML = `
-    <p><b class="popupheading">Journey Time:</b> ${journey.totalTime} mins<br>
-    <b class="popupheading">Routes:</b> ${journey.routesToTake}</p>
-    `
+    console.log("Route length")
+    console.log(journey.routesToTake.length)
+    if (journey.routesToTake.length > 1) {
+        var isMultiRoute = true;
+        var label = "Routes";
+    } else {
+        var isMultiRoute = false;
+        var label = "Route";
+    }
 
+
+	document.getElementById("modalBody").innerHTML = `
+    <p><b class='popupheading'>Journey Time:</b> ${journey.totalTime} mins<br>`
+
+    if (isMultiRoute == false) {
+        document.getElementById("modalBody").innerHTML += `<b class='popupheading'>` + label + `:</b> ${journey.routesToTake}`
+    } else {
+        document.getElementById("modalBody").innerHTML += `<b class='popupheading'>` + label + `:</b> ${journey.routesToTake[0]}`
+        for (var i = 1; i < journey.routesToTake.length; i++) {
+            document.getElementById("modalBody").innerHTML += ` <i class="fa fa-arrow-right"></i> `
+            document.getElementById("modalBody").innerHTML += `${journey.routesToTake[i]}`
+        }
+    }
+    document.getElementById("modalBody").innerHTML += `</p>`
     // Create divs that info will be put into
     document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
     document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
@@ -326,17 +345,17 @@ function displayJourney(journey) {
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <p><b class="popupheading">Forecast:</b><img src="/static/images/weather_icons/` + icon + `"></p>`
+    <p><b class="popupheading">Forecast</b><br><img src="/static/images/weather_icon/` + icon + `"></p><br>`
+
 }
 
-function displayRealTimeInfo(realTimeArray) {
+function displayRealTimeInfo(realTimeArray, walkTimeToStop) {
 	/* Displays realtime info on frontend
     Takes in a list of dictionaries
 	Each dict contains route:arrivalTime as key:value
 	 */
 
-	document.getElementById("realTimeInfo").innerHTML = "<b class='popupheading'>Real Time Information:</b><br>"
-  document.getElementById("realTimeInfo").innerHTML += "<b>Walk Time to First Stop:</b> ${journey.walkTimeToStop}"
+	document.getElementById("realTimeInfo").innerHTML = "<b class='popupheading'>Real Time Information</b><br>"
 	var numResults = realTimeArray.length;
 
     if (numResults > 5) {
@@ -360,6 +379,10 @@ function displayRealTimeInfo(realTimeArray) {
 			document.getElementById("realTimeInfo").innerHTML += "<b>Route:</b> " + route + "<b> Due: </b>" + arrivalTime + " mins<br>";
 		}
 	}
+
+    document.getElementById("realTimeInfo").innerHTML += "<br><b>Walk Time to First Stop: </b>" + walkTimeToStop +"<br>"
+
+
 }
 
 function drawPieChart(journey) {
@@ -384,7 +407,7 @@ function drawPieChart(journey) {
           backgroundColor: 'transparent',
           slices:{
               0:{color:'#b2d0e3'},
-              1:{color:'#b543d2'},
+              1:{color:'#5483a1'},
               2:{color:'#f9f8eb'},
           }
         };
@@ -422,31 +445,33 @@ function getWeatherIcon(weatherIconText) {
     console.log(weatherIconText);
     switch(weatherIconText) {
         case "clear-day":
-            icon = "Sunny.ico";
+            icon = "sun.png";
             break;
         case "clear-night":
-            icon = "Moon.ico";
+            icon = "moon.png";
             break;
         case "rain":
-            icon = "Rain.ico";
+            icon = "rain.png";
             break;
         case "snow":
         case "sleet":
-            icon = "Snow.ico";
+            icon = "snow.png";
             break;
         case "wind":
         case "fog":
-            icon = "Fog.ico";
+            icon = "cloud.png";
             break;
         case "cloudy":
+            icon = "cloud.png";
+            break;
         case "partly-cloudy-day":
-            icon = "Cloud.ico";
+            icon = "cloud_day.png";
             break;
         case "partly-cloudy-night":
-            icon = "Moon.ico";
+            icon = "cloud_night.png";
             break;
         default:
-            icon = "Cloud.ico"; // Default to cloud icon
+            icon = "cloud.png"; // Default to cloud icon
             break;
     }
 

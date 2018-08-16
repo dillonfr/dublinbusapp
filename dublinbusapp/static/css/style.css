@@ -155,8 +155,8 @@ html {
 }
 
 #weatherForecast img{
-    height: 40px;
-    width: 40px;
+    height: 80px;
+    width: 80px;
     display: inline;
 }
 
@@ -164,6 +164,7 @@ html {
 	color: #f0b917;
 	font-size: 1.2rem;
 }
+
 /* ---------------------------------------------------
     MAIN PAGE
 ----------------------------------------------------- */
@@ -179,6 +180,9 @@ html {
     margin-left: 0;
     margin-right: 0;
 }
+#content b{
+    color: #f0b917;
+}
 
 #logo{
     height: 45px;
@@ -188,16 +192,16 @@ html {
 }
 
 #sidebarCollapse{
+    display: inline;
+    width: 50px;
+    height: 50px;
+    text-align: center;
     color: #f0b917;
     font-size: 35px;
     border: 1px;
     border-radius: 15px;
     border-bottom-color: white;
     cursor: pointer;
-    display: inline;
-    width: 50px;
-    height: 50px;
-    text-align: center;
     background-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
