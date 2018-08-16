@@ -109,8 +109,8 @@ def journey(request):
 				originId = str(getStopId(stopsDictList, originLatLng)[0])
 				destinationId = str(getStopId(stopsDictList, destinationLatLng))
 
-				#print("Origin ID: \n", originId)
-				#print("Destination ID: \n", destinationId)
+				print("Origin ID: \n", originId)
+				print("Destination ID: \n", destinationId)
 
 				# Get realtime info for the first bus stop id of the journey
 				if isFirstStopId == False:
@@ -191,7 +191,7 @@ def journey(request):
 						We don't envision this ever happening but it is just a failsafe if something goes wrong '''
 						print(str(e))
 						busTime += bestRoute[i]['googleTime']
-						
+
 
 
 			print('-------------------------------------------------------------')
