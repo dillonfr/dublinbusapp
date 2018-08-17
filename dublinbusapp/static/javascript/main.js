@@ -9,8 +9,8 @@ var endAddress;
 
 // Default positions of markers
 var startPosition = {
-	lat: 53.305149,
-	lng: -6.216521
+	lat: 53.307837,
+	lng: -6.236875
 };
 
 var endPosition ={
