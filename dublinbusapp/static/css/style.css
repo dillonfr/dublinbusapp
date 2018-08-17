@@ -50,9 +50,8 @@ html {
     color: #f0b917;
 }
 
-.inactiveLink {
-    pointer-events: none;
-    cursor: default;
+.title {
+    z-index: 99;
 }
 
 /* ---------------------------------------------------
@@ -236,6 +235,7 @@ html {
     width: 221px;
     height: 40px;
     float: right;
+    z-index: 0;
 }
 
 #annotation{
