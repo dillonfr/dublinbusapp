@@ -18,13 +18,10 @@ from routedb import *
 from prediction import *
 
 
-
 @csrf_exempt
 def index(request):
 	''' When someone visits our domain name this renders the homepage for them'''
 	return render(request, 'index.html')
-
-
 
 
 @csrf_exempt
@@ -51,7 +48,6 @@ def journey(request):
 
 			numBusJourneys = len(bestRoute) - 1 # Calulate the number of different buses a user needs to take
 
-
 			# Retrieve date chosen by the user
 			dateChosen = request.POST["dateChosen"]
 
@@ -74,7 +70,6 @@ def journey(request):
 
 			weatherDict = getWeather(uTime) # Create a dictionary of weather details
 
-
 			# Some basic error handling for the weather
 			if weatherDict != None: # If our API request to DarkSky is successful we proceed with the returned information
 				rain = weatherDict['raining']
@@ -83,9 +78,6 @@ def journey(request):
 				weatherIcon = weatherDict['weatherIcon']
 			else:
 				rain = 0 # If no forecast weather returns we default to 0 (not raining). We care about rain as this is used in the model
-
-
-
 
 			routesToTake =[] # Bus routes needed to complete the journey
 			busTime = 0 # Time spent on bus
@@ -118,9 +110,6 @@ def journey(request):
 					busTime += bestRoute[i]['googleTime']
 					continue
 
-				#print("Origin ID: \n", originId)
-				#print("Destination ID: \n", destinationId)
-
 				# Get realtime info for the first bus stop id of the journey
 				if isFirstStopId == True:
 					realTimeInfo = getRealTimeInfo(originId) # Returns a list
@@ -138,32 +127,20 @@ def journey(request):
 					tripdata = getStartStop(conn, dbroute, gtfsday, originId, timeOfDay)[0]
 					trip_id = tripdata[0] # Store the tripid. We use this in the next query to guarantee we are using the same trip in the timetable
 					startnum = tripdata[1] # This is the sequence number for the starting stop
-					print('Trip ID:\n', trip_id)
-					print('Start Sequence No.:\n', startnum)
 
 					# Query the database with the tripid and destination stopid to get the sequence number for the last stop
 					stopnum = getEndStop(conn, trip_id, destinationId)[0][0] # This is the sequence number for the last stop
-					print('Stop Sequence No.:\n', stopnum)
-
 
 					# Query the database for every stopid between the start and stop sequence numbers
 					seqstoplist = getStopList(conn, trip_id, startnum, stopnum) # A list of every stop between start and end
-					print('List of Stops in Sequential Order:\n', seqstoplist)
-
-					print('-------------------------------------------------------------')
 
 					# Create a dataframe from the user data retrieved from frontend
 					df_user = getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
-					print('User Data DF: \n', df_user)
 
 					# Create a new dataframe that combines the user one with an empty dataframe containing dummy variables for every route
 					df_combo = getCombinedDataFrame(dbroute, df_user)
-					#print(df_combo)
-
-					print('-------------------------------------------------------------')
 
 					routeTime = getRouteTime(dbroute, df_combo)
-					print('Route Journey Time: \n', routeTime)
 
 					busTime += routeTime
 
@@ -174,23 +151,12 @@ def journey(request):
 						On rare occasions our main model fails because of issues with accurately determining the user's start stop
 						We have a more basic backup model for each route if this occurs '''
 
-						print('---------------------------------------------------------')
-						print('******** Backup Model Employed ********')
-						print('---------------------------------------------------------')
-
 						# Create a backup dataframe from the user data and information from Google Directions Service API
 						df_backup = getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain)
-						print('Backup Dataframe: \n', df_backup)
-
-						print('---------------------------------------------------------')
 
 						df_backupCombo = getBackupCombo(dbroute, df_backup)
-						#print('Backup Combined Dataframe: \n', df_backupCombo)
-
-						print('-------------------------------------------------------------')
 
 						routeTime = getBackupRouteTime(dbroute, df_backupCombo)
-						print('Route Journey Time: \n', routeTime)
 
 						if routeTime > 20000:
 							raise Exception("Dataframe Error. Backup model valuation invalid")
@@ -202,11 +168,6 @@ def journey(request):
 						We don't envision this ever happening but it is just a failsafe if something goes wrong '''
 						print(str(e))
 						busTime += bestRoute[i]['googleTime']
-
-
-
-			print('-------------------------------------------------------------')
-			print('Total Journey Time (Sum of All Routes): \n', busTime)
 
 			# Put data from AJAX and the model into dictionary to send back to AJAX as a response
 			result = {

@@ -22,6 +22,7 @@ def stripDay(date):
 	else:
 		return DayInt
 
+
 def stripTime(date):
 	''' Takes in specific datetime format and returns the hour as an int between 0 and 23'''
 
@@ -36,6 +37,7 @@ def stripTime(date):
 		time = 12
 
 	return time
+
 
 def isPeak(date):
 	''' Function that checks if a specific datetime format is within peak hours
@@ -60,6 +62,7 @@ def isPeak(date):
 		else:
 			return 0
 
+
 def unixTime(date):
 	''' Converts the given date into Unix time to get the weather forecast information '''
 
@@ -69,7 +72,6 @@ def unixTime(date):
 	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M pm').timetuple())) + 43200
 	elif date[-2] == 'a':
 	    uTime = int(time.mktime(datetime.datetime.strptime(date, '%d %B %Y - %H:%M am').timetuple()))
-
 
 	limit = int(time.time()) + 604800 # Limit is current time + 7 days
 
@@ -85,15 +87,10 @@ def getRouteStops(routeNumber):
 
 	stopidDict = {}
 
-
-
-	#jsonFile = "C:\\Users\\Emmet\\Documents\\MScComputerScienceConversion\\Summer_Project\\Team14\\Git\\dublinbusapp\\dublinbusapp\\static\\all_stops_on_routes\\" + str(routeNumber) + ".json"
-	#jsonFile = "/Users/yulia/Desktop/final/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 	jsonFile = "/home/student/dublinbusapp/dublinbusapp/static/all_stops_on_routes/" + str(routeNumber) + ".json"
 
 	with open(jsonFile, encoding='utf-8') as data_file:
 	    Stops = json.loads(data_file.read())
-
 
 	for chosenRoute in Stops["results"]:
 		for stop in chosenRoute["stops"]:
@@ -103,7 +100,6 @@ def getRouteStops(routeNumber):
 			stopidDict[stopID] = {"lat":lat, "lng":lng} # We only care about the stopids and their lat/long
 
 	return stopidDict
-
 
 
 def getStopId(dictlist, lat_lng):

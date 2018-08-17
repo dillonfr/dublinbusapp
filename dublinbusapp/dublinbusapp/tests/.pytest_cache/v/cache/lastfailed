@@ -1,1 +1,9 @@
-{}
+{
+  "test_dates.py::testGetRouteStops": true,
+  "test_dates.py::testGetStopId": true,
+  "test_dates.py::testUnixTime": true,
+  "test_prediction.py::testGetBackpCombo": true,
+  "test_prediction.py::testGetBackupRouteTime": true,
+  "test_prediction.py::testGetCombinedDataFrame": true,
+  "test_prediction.py::testGetRouteTime": true
+}

@@ -1,6 +1,5 @@
 import requests
 
-
 def getWeather(unixTime):
 	'''Gets the weather conditions at a given time from DarkSky API'''
 
@@ -32,4 +31,3 @@ def getWeather(unixTime):
 	}
 
 	return weatherDict
-	

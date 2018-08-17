@@ -47,6 +47,7 @@ def getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature)
     # Return the combined dataframe
     return df_new
 
+
 def getCombinedDataFrame(dbroute, df_user):
     ''' Creates an empty dataframe containg all the dummy variables on a given route
     Changes the user dataframe by creating dummy variables for each feature in it
@@ -56,7 +57,6 @@ def getCombinedDataFrame(dbroute, df_user):
 
     # Load the empty dataframe for the given route
     dummies = joblib.load(open("/home/student/dublinbusapp/dublinbusapp/dublinbusapp/dummies/route" + dbroute+ "_dummies.sav", 'rb'))
-
 
     # Create a dummy variable for each feature in the user dataframe
     df_dum = pd.get_dummies(df_user)
@@ -68,6 +68,7 @@ def getCombinedDataFrame(dbroute, df_user):
     df_final = df_y.reindex(dummies.columns, axis=1)
 
     return df_final
+
 
 def getRouteTime(dbroute, df_combo):
     '''We use GTFS data from July 2018
@@ -110,6 +111,7 @@ def getRouteTime(dbroute, df_combo):
     # Return the total route journey time
     return total
 
+
 def getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain):
     ''' The dataframe for the backup model is slightly different to the main one
     Evaluates journey time based on total number of stops, not a stop-by-stop evaluation
@@ -131,6 +133,7 @@ def getBackupDataFrame(dayOfWeek, peak, hourOfDay, numStops, rain):
 
     return df_backup
 
+
 def getBackupCombo(dbroute, df_user):
     ''' Creates an empty dataframe containg all the dummy variables on a given route, except for the continuous feature stopsnumber
     Changes the user dataframe by creating dummy variables for each catgeorical feature in it
@@ -151,6 +154,7 @@ def getBackupCombo(dbroute, df_user):
     df_final = df_y.reindex(dummies.columns, axis=1)
 
     return df_final
+
 
 def getBackupRouteTime(dbroute, df_backupCombo):
     ''' Returns our predicted journey time based off our backup model
