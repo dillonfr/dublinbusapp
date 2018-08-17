@@ -4,16 +4,18 @@ var markerStartLng;
 var markerEndLat;
 var markerEndLng;
 var markers = [];
+var startAddress;
+var endAddress;
 
 // Default positions of markers
 var startPosition = {
-	lat: 53.321712,
-	lng: -6.266006
+	lat: 53.305149,
+	lng: -6.216521
 };
 
 var endPosition ={
-	lat: 53.360863,
-	lng: -6.272701
+	lat: 53.352620,
+	lng: -6.261336
 };
 
 function initMap() {
@@ -53,7 +55,7 @@ function initMap() {
     markerEnd = new google.maps.Marker({
         position: endPosition,
         map: map,
-        title: 'Finish',
+        title: 'End',
         draggable: true,
         visible: true,
         icon: {
@@ -173,6 +175,15 @@ function calcRoute(usedDragMarker) {
             markerStart.setPosition(newStartPosition);
             markerEnd.setPosition(newEndPosition);
 
+	    startAddress = response.routes[0].legs[0].start_address;
+	    startAddress = startAddress.split(",", 2);
+	    startAddress = startAddress.join(",");
+	    console.log(startAddress);
+	    console.log("START ABOVE");
+
+	    endAddress = response.routes[0].legs[0].end_address;
+	    endAddress = endAddress.split(",", 2);
+	    endAddress = endAddress.join(",");
 
             // Go through the best (first) route suggested by Google's response
             for (var j = 0; j < 1; j++) { // To iterate through every route change j < 1 to j < response.routes.length
@@ -309,8 +320,6 @@ function displayJourney(journey) {
     //Takes a dictionary containing journey info and puts info into HTML elements
 
     // Display text at top of popup window
-    console.log("Route length")
-    console.log(journey.routesToTake.length)
     if (journey.routesToTake.length > 1) {
         var isMultiRoute = true;
         var label = "Routes";
@@ -319,20 +328,25 @@ function displayJourney(journey) {
         var label = "Route";
     }
 
+    document.getElementById("modalBody").innerHTML = `<b class='popupheading'>Start:</b> ${startAddress} <br>`
+    document.getElementById("modalBody").innerHTML += `<b class='popupheading'>End:</b> ${endAddress} <br>`
 
-	document.getElementById("modalBody").innerHTML = `
-    <p><b class='popupheading'>Journey Time:</b> ${journey.totalTime} mins`
 
     if (isMultiRoute == false) {
-        document.getElementById("modalBody").innerHTML += `<b>` + label + `:</b> ${journey.routesToTake}`
+        document.getElementById("modalBody").innerHTML += `<b class='popupheading'>` + label + `:</b> ${journey.routesToTake} <br>`
+
     } else {
         document.getElementById("modalBody").innerHTML += `<b>` + label + `:</b> ${journey.routesToTake[0]}`
         for (var i = 1; i < journey.routesToTake.length; i++) {
             document.getElementById("modalBody").innerHTML += ` <i class="fa fa-arrow-right"></i> `
             document.getElementById("modalBody").innerHTML += `${journey.routesToTake[i]}`
         }
+        document.getElementById("modalBody").innerHTML += ` <br>`
     }
-    document.getElementById("modalBody").innerHTML += `</p>`
+
+    document.getElementById("modalBody").innerHTML += `
+    <div style="margin-top:20px;margin-bottom:0px;"><b class='popupheading'>Journey Time:</b> ${journey.totalTime} mins</div>`
+
     // Create divs that info will be put into
     // Hide pie chart for phone users (not displaying properly)
     document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
@@ -345,7 +359,9 @@ function displayJourney(journey) {
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <p><b class="popupheading">Forecast</b><br><img src="/static/images/weather_icon/` + icon + `"></p>`
+
+    <p><b class="popupheading">Forecast:</b><br><img src="/static/images/weather_icon/` + icon + `"></p>`
+
 
 }
 
@@ -355,7 +371,9 @@ function displayRealTimeInfo(realTimeArray, walkTimeToStop) {
 	Each dict contains route:arrivalTime as key:value
 	 */
 
-	document.getElementById("realTimeInfo").innerHTML = `<p>Real Time Information`
+
+	document.getElementById("realTimeInfo").innerHTML = `<p>First Stop Real Time Information:`
+
 	var numResults = realTimeArray.length;
 
     if (numResults > 5) {
