@@ -90,36 +90,6 @@
 
 
 
-        <!-- pop up window -->
-        <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="false">
-            <!-- /.modal-dialog -->
-            <div class="modal-dialog" data-backdrop="static">
-                <!-- /.modal-content -->
-                <div class="modal-content" id="move">
-                    <div class="modal-header">
-                        <h4 class="modal-title w-100">
-                            Journey Details
-                        </h4>
-                        <button type="button" class="close" data-dismiss="modal"
-                                aria-hidden="true">&times;
-                        </button>
-
-                    </div>
-                    <div class="modal-body" id="modalBody">
-                       <div class="loader"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" data-dismiss="modal">
-                            OK
-                        </button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-        <!-- pop up window -->
-
-
-
             <!-- twitter widget -->
             <div id="twitter" class="col-md-12">
                 <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/dublinbusnews?ref_src=twsrc%5Etfw">Tweets by dublinbusnews</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -152,12 +122,57 @@
             <div class="row">
             <!-- Google map -->
                 <div id='map' ></div>
-                <div id='annotation'>
-                    <div>
-                    <img src="{% static 'images/start.png' %}">:start<br><br>
-                    <img src="{% static 'images/end.png' %}">:end
-                    </div>
+                
+                <!-- pop up window -->
+                <div class="modal fade" id="popWindow" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="false">
+                    <!-- /.modal-dialog -->
+                    <div class="modal-dialog" data-backdrop="static">
+                        <!-- /.modal-content -->
+                        <div class="modal-content" id="move">
+                            <div class="modal-header">
+                                <h4 class="modal-title w-100">
+                                    Journey Details
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modalBody">
+                               <div class="loader"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn" data-dismiss="modal">
+                                    OK
+                                </button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
                 </div>
+                <!-- pop up window -->
+                
+                <!-- use this for popup-->
+                <div id="boxes">
+                  <div id="dialog" class="window">
+                      <h3 class="modal-title w-100">
+                          Welcome!
+                      </h3>
+                    <div id="box-content">
+                      <p>Move the markers:</p>
+                        <div id="markers">
+                            <img src="{% static 'images/start.png' %}">:start
+                            <img src="{% static 'images/end.png' %}">:end
+                        </div>
+                        <p>Click <b><i class="fa fa-search"></i></b> for more</p>
+                      <button type="button" class="btn close col-md-12">
+                            Go! Find your journey!
+                      </button>
+                    </div>
+                  </div>
+                  <div id="mask"></div>
+                </div>
+                <!-- use this for popup-->
+
+
             </div>
             <!-- Google map -->
 
@@ -197,26 +212,7 @@
     });
 </script>
 <!-- Sidebar -->
-<!-- Swipe -->
-<script type="text/javascript">
-$( document ).on( "pageinit", "#whole-page", function() {
-    $( document ).on( "swipeleft swiperight", "#whole-page", function( e ) {
-        // We check if there is no open panel on the page because otherwise
-        // a swipe to close the left panel would also open the right panel (and v.v.).
-        // We do this by checking the data that the framework stores on the page element (panel: open).
-        if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
-            if ( e.type === "swipeleft"  ) {
-                $( "#content" ).panel( "open" );
-            } else if ( e.type === "swiperight" ) {
-                $( "#sidebar" ).panel( "open" );
-            }
-        }
-    });
-});
-
-</script>
-<!-- Swipe -->
-
+      
 <!-- pop up window -->
 <script type="text/javascript">
     var mouseStartPoint = {"left":0,"top":  0};
@@ -255,7 +251,59 @@ $( document ).on( "pageinit", "#whole-page", function() {
     });
 </script>
 <!-- pop up window -->
+      
+<!-- load popup -->
+<script type="text/javascript">
+    $(document).ready(function() {    
+    
+		var id = '#dialog';
+	
+		//Get the screen height and width
+		var maskHeight = $(document).height();
+		var maskWidth = $(window).width();
+	
+		//Set heigth and width to mask to fill up the whole screen
+		$('#mask').css({'width':maskWidth,'height':maskHeight});
+		
+		//transition effect		
+		$('#mask').fadeIn(500);	
+		$('#mask').fadeTo("slow",0.9);	
+	
+		//Get the window height and width
+		var winH = $(window).height();
+		var winW = $(window).width();
+              
+		//Set the popup window to center
+		$(id).css('top',  winH/2-$(id).height()/2);
+		$(id).css('left', winW/2-$(id).width()/2);
+	
+		//transition effect
+		$(id).fadeIn(2000); 	
+	
+        //if close button is clicked
+        $('.window .close').click(function (e) {
+            //Cancel the link behavior
+            e.preventDefault();
 
+            $('#mask').hide();
+            $('.window').hide();
+        });		
+
+        //if mask is clicked
+        $('#mask').click(function () {
+            $(this).hide();
+            $('.window').hide();
+        });	
+        
+//        setTimeout(function(){
+//            $("#boxes").hide()
+//            },3000);
+            
+	
+});
+</script>
+<!-- load popup -->
+      
 <!-- datetimepicker -->
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({

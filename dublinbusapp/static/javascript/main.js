@@ -321,12 +321,12 @@ function displayJourney(journey) {
 
 
 	document.getElementById("modalBody").innerHTML = `
-    <p><b class='popupheading'>Journey Time:</b> ${journey.totalTime} mins<br>`
+    <p><b class='popupheading'>Journey Time:</b> ${journey.totalTime} mins`
 
     if (isMultiRoute == false) {
-        document.getElementById("modalBody").innerHTML += `<b class='popupheading'>` + label + `:</b> ${journey.routesToTake}`
+        document.getElementById("modalBody").innerHTML += `<b>` + label + `:</b> ${journey.routesToTake}`
     } else {
-        document.getElementById("modalBody").innerHTML += `<b class='popupheading'>` + label + `:</b> ${journey.routesToTake[0]}`
+        document.getElementById("modalBody").innerHTML += `<b>` + label + `:</b> ${journey.routesToTake[0]}`
         for (var i = 1; i < journey.routesToTake.length; i++) {
             document.getElementById("modalBody").innerHTML += ` <i class="fa fa-arrow-right"></i> `
             document.getElementById("modalBody").innerHTML += `${journey.routesToTake[i]}`
@@ -334,18 +334,18 @@ function displayJourney(journey) {
     }
     document.getElementById("modalBody").innerHTML += `</p>`
     // Create divs that info will be put into
-    document.getElementById("modalBody").innerHTML += `<div id="piechart"></div>`
-    document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
-    document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
     // Hide pie chart for phone users (not displaying properly)
     document.getElementById("modalBody").innerHTML += `<div id="piechart" class="hidden-phone"></div>`
+    document.getElementById("modalBody").innerHTML += `<div id="weatherForecast"></div>`
+    document.getElementById("modalBody").innerHTML += `<div id="realTimeInfo"></div>`
+
 
 
     // Display weather icon
     var icon = getWeatherIcon(journey.weatherIcon);
 
     document.getElementById("weatherForecast").innerHTML = `
-    <p><b class="popupheading">Forecast</b><br><img src="/static/images/weather_icon/` + icon + `"></p><br>`
+    <p><b class="popupheading">Forecast</b><br><img src="/static/images/weather_icon/` + icon + `"></p>`
 
 }
 
@@ -355,7 +355,7 @@ function displayRealTimeInfo(realTimeArray, walkTimeToStop) {
 	Each dict contains route:arrivalTime as key:value
 	 */
 
-	document.getElementById("realTimeInfo").innerHTML = "<b class='popupheading'>Real Time Information</b><br>"
+	document.getElementById("realTimeInfo").innerHTML = `<p>Real Time Information`
 	var numResults = realTimeArray.length;
 
     if (numResults > 5) {
@@ -380,7 +380,7 @@ function displayRealTimeInfo(realTimeArray, walkTimeToStop) {
 		}
 	}
 
-    document.getElementById("realTimeInfo").innerHTML += "<br><b>Walk Time to First Stop: </b>" + walkTimeToStop +"<br>"
+    document.getElementById("realTimeInfo").innerHTML += "<br><b>Walk Time to First Stop: </b>" + walkTimeToStop +"</p>"
 
 
 }

@@ -21,15 +21,6 @@ h3,h4{
     color: #f9f8eb;
 }
 
-b{
-    color: grey;
-}
-
-p{
-/*    font-size: 1rem;*/
-    color: #f9f8eb;
-}
-
 body {
     font-family: 'Poppins', sans-serif;
 }
@@ -38,6 +29,11 @@ body,
 html {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
+b{
+    color: #f0b917;
+}
+
 
 .btn{
     display: block;
@@ -52,6 +48,74 @@ html {
 
 .title {
     z-index: 99;
+}
+
+/* ---------------------------------------------------
+    load pop window
+----------------------------------------------------- */
+
+#mask {
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:9000;
+    background-color:rgba(0, 0, 0, 0.2);
+    display:none;
+    width: 1478px; 
+    font-size: 32pt; 
+    color:white; 
+    height: 602px; 
+    display: none; 
+}   
+
+#boxes .window {
+    position:absolute;
+    left:0;
+    top:0;
+    width:440px;
+    height:200px;
+    display:none;
+    z-index:9999;
+    padding:20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+#boxes #dialog {
+    width:450px; 
+    height:auto;
+    padding:10px;
+    background-color: #f4f9f4;
+    font-family: 'Optima', sans-serif;
+    font-size: 15pt;
+    top: 199.5px; 
+    left: 551.5px; 
+    display: none;
+}
+
+#boxes h3{
+    color: #000;
+    font-family:'Futura', sans-serif;
+}
+
+#boxes .btn{
+    text-align: center;
+    color: #000;
+    font-size: 0.9rem;
+}
+
+#boxes img{
+    height: 35px;
+    width: 35px;
+    display: inline;
+}
+
+#box-content p{
+    color: #000;
+}
+
+#markers{
+    margin-bottom: 1vh;
 }
 
 /* ---------------------------------------------------
@@ -104,13 +168,13 @@ html {
     height: 35px;
 }
 
-
 #sidebar .sidebar-header {
     padding: 30px;
     background: black;
     height: 15vh;
     top:10vh;
     text-align: center;
+    font-family:'Verdana', sans-serif;
 }
 
 #journeyInput{
@@ -144,6 +208,9 @@ html {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 999999;
 }
+.modal-header h4{
+    font-family:'Verdana', sans-serif;
+}
 
 .modal-header .close{
     color: #fff;
@@ -165,11 +232,15 @@ html {
     display: inline;
 }
 
-.popupheading {
-	color: #f0b917;
-	font-size: 1.2rem;
+#realTimeInfo b{
+    color: gray;
 }
 
+#realTimeInfo p{
+    color: #f0b917;
+    margin-bottom: 0;
+    font-weight: 900;
+}
 /* ---------------------------------------------------
     MAIN PAGE
 ----------------------------------------------------- */
@@ -184,9 +255,6 @@ html {
     left: 0;
     margin-left: 0;
     margin-right: 0;
-}
-#content b{
-    color: #f0b917;
 }
 
 #logo{
@@ -238,19 +306,6 @@ html {
     z-index: 0;
 }
 
-#annotation{
-    z-index: 998;
-    position: absolute;
-    color: #000;
-    margin-left: 90vw;
-    margin-top: 20vh;
-}
-#annotation img{
-    height: 35px;
-    width: 35px;
-    display: inline;
-}
-
 .footer {
     position: fixed;
     left: 0;
@@ -259,8 +314,6 @@ html {
     color: white;
     text-align: center;
 }
-
-
 
 
 /* Spinning loader in popWindow */
@@ -278,10 +331,6 @@ html {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-#realTimeInfo {
-    color: white;
 }
 
 #busErrorPic {
