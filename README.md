@@ -1,8 +1,12 @@
 # dublinbusapp
 
-<h2>https://dudewheresmybus.club</h2>
-
 Web application for planning your journey with Dublin Bus.
+
+Summer group project completed as part of the M.Sc Computer Science course, UCD.
+
+<h2>https://dudewheresmybus.club (Expired)</h2>
+
+
 
 
 <h3>Screenshots:</h3>
