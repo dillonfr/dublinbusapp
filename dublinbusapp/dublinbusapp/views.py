@@ -5,10 +5,10 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 # Data analytics modules
-from sklearn.externals import joblib
-import pickle
-import numpy
-import pandas as pd
+# from sklearn.externals import joblib
+# import pickle
+# import numpy
+# import pandas as pd
 
 # Modules containing various functions needed
 from dates import *

@@ -1,6 +1,6 @@
-import numpy
-import pandas as pd
-from sklearn.externals import joblib
+# import numpy
+# import pandas as pd
+# from sklearn.externals import joblib
 
 def getUserDataFrame(seqstoplist, dayOfWeek, peak, hourOfDay, rain, temperature):
     ''' Takes in the sequential list of stopids and creates a dataframe of them
